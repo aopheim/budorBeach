@@ -5,5 +5,13 @@
     <UserSecretsId>79a332cd-2f65-4fd3-b669-0c8f2808d1a7</UserSecretsId>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Models\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MMALSharp" Version="0.6.0" />
+  </ItemGroup>
+
 
 </Project>
