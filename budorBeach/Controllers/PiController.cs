@@ -10,7 +10,7 @@ namespace budorBeach.Controllers
     [ApiController]
     public class PiController : ControllerBase
     {
-        [HttpPost]
+        [HttpPost("takePicture")]
         public async Task TakePicture()
         {
             var cam = MMALCamera.Instance;
