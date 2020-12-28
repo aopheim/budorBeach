@@ -13,11 +13,7 @@ namespace budorBeach
         public static IHostBuilder CreateHostBuilder(string[] args)
         {
             return Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder
-                        .UseUrls("http://0.0.0.0:80").UseStartup<Startup>();
-                });
+                .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); });
         }
     }
 }
