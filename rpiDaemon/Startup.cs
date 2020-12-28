@@ -18,13 +18,16 @@ namespace rpiDaemon
             services.AddQuartz(q =>
             {
                 var jobKey = new JobKey(nameof(TakePictureJob), "secondJobs");
-                q.AddJob<TakePictureJob>(j => j.StoreDurably());
+                q.AddJob<TakePictureJob>(j => j.WithIdentity(jobKey));
                 q.AddTrigger(t => t
-                    .WithIdentity("secondly trigger")
+                    .WithIdentity("secondsTrigger")
                     .ForJob(jobKey)
                     .StartNow()
                     .WithSimpleSchedule(s => s.WithInterval(TimeSpan.FromSeconds(2)).RepeatForever()));
+
+                q.UseMicrosoftDependencyInjectionScopedJobFactory();
             });
+            services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
