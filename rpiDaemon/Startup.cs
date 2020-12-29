@@ -31,8 +31,8 @@ namespace rpiDaemon
                 q.AddTrigger(t => t
                     .WithIdentity("secondsTrigger")
                     .ForJob(jobKey)
-                    .StartNow()
-                    .WithSimpleSchedule(s => s.WithInterval(TimeSpan.FromSeconds(2)).RepeatForever()));
+                    .StartAt(DateTimeOffset.UtcNow.AddSeconds(10))
+                    .WithSimpleSchedule(s => s.WithInterval(TimeSpan.FromSeconds(10)).RepeatForever()));
 
                 q.UseMicrosoftDependencyInjectionScopedJobFactory();
             });
