@@ -2,6 +2,9 @@
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
+using MMALSharp;
+using MMALSharp.Common;
+using MMALSharp.Handlers;
 using Quartz;
 
 namespace rpiDaemon.Jobs
@@ -20,19 +23,25 @@ namespace rpiDaemon.Jobs
             _logger = logger;
         }
 
-        public Task Execute(IJobExecutionContext context)
+        public async Task Execute(IJobExecutionContext context)
         {
-            _logger.LogInformation($"Taking image at time {DateTime.UtcNow}");
-            return Task.FromResult(true);
+            try
+            {
+                var cam = MMALCamera.Instance;
 
-            //var cam = MMALCamera.Instance;
+                using (var imgCaptureHandler = new ImageStreamCaptureHandler("/home/pi/images/", "jpg"))
+                {
+                    await cam.TakePicture(imgCaptureHandler, MMALEncoding.JPEG, MMALEncoding.I420);
+                }
 
-            //using (var imgCaptureHandler = new ImageStreamCaptureHandler("/home/pi/images/", "jpg"))
-            //{
-            //    await cam.TakePicture(imgCaptureHandler, MMALEncoding.JPEG, MMALEncoding.I420);
-            //}
-
-            //cam.Cleanup();
+                cam.Cleanup();
+            }
+            catch (Exception e)
+            {
+                if (e is DllNotFoundException) _logger.LogError("Raspberry Pi camera not found");
+                else
+                    throw;
+            }
         }
     }
 }
