@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Quartz;
+using rpiDaemon.Models;
 
 namespace rpiDaemon.Jobs
 {
@@ -8,7 +9,17 @@ namespace rpiDaemon.Jobs
     {
         public Task Execute(IJobExecutionContext context)
         {
-            throw new NotImplementedException();
+            var temperatureReading = GetCurrentTemperatureReading();
+
+            var sensorReadingModel = new SensorReadingModel
+                {MeasuredAtUtc = DateTime.UtcNow, TemperatureInDegreesC = temperatureReading};
+
+            return Task.CompletedTask;
+        }
+
+        private double GetCurrentTemperatureReading()
+        {
+            return new Random().NextDouble();
         }
     }
 }
