@@ -9,7 +9,7 @@ using rpiDaemon;
 
 namespace rpiDaemon.Migrations
 {
-    [DbContext(typeof(SensorContext))]
+    [DbContext(typeof(ApplicationDbContext))]
     [Migration("20201229174920_InitialCreate")]
     partial class InitialCreate
     {

@@ -27,9 +27,12 @@ namespace rpiDaemon.Jobs
         {
             try
             {
+                var now = DateTime.UtcNow;
+                var folderName = $"{now.Year}-{now.Month}-{now.Day}";
+
                 var cam = MMALCamera.Instance;
 
-                using (var imgCaptureHandler = new ImageStreamCaptureHandler("/home/pi/images/", "jpg"))
+                using (var imgCaptureHandler = new ImageStreamCaptureHandler($"/home/pi/images/{folderName}", "jpg"))
                 {
                     await cam.TakePicture(imgCaptureHandler, MMALEncoding.JPEG, MMALEncoding.I420);
                 }

@@ -13,8 +13,11 @@ namespace rpiDaemon
 {
     public class Startup
     {
-        public Startup(IConfiguration config)
+        private readonly IWebHostEnvironment _environment;
+
+        public Startup(IConfiguration config, IWebHostEnvironment environment)
         {
+            _environment = environment;
             Configuration = config;
         }
 
@@ -26,11 +29,20 @@ namespace rpiDaemon
         {
             services.AddQuartz(q =>
             {
-                var jobKey = new JobKey(nameof(TakePictureJob), "secondJobs");
-                q.AddJob<TakePictureJob>(j => j.WithIdentity(jobKey));
+                var pictureJobKey = new JobKey(nameof(TakePictureJob), "secondJobs");
+                var temperatureJobKey = new JobKey(nameof(GetCurrentTemperatureJob), "secondJobs");
+
+                q.AddJob<TakePictureJob>(j => j.WithIdentity(pictureJobKey));
+                q.AddJob<GetCurrentTemperatureJob>(j => j.WithIdentity(temperatureJobKey));
+
                 q.AddTrigger(t => t
-                    .WithIdentity("secondsTrigger")
-                    .ForJob(jobKey)
+                    .WithIdentity("pictureTrigger")
+                    .ForJob(pictureJobKey)
+                    .StartAt(DateTimeOffset.UtcNow.AddSeconds(10))
+                    .WithSimpleSchedule(s => s.WithInterval(TimeSpan.FromSeconds(10)).RepeatForever()));
+                q.AddTrigger(t => t
+                    .WithIdentity("sensorTrigger")
+                    .ForJob(temperatureJobKey)
                     .StartAt(DateTimeOffset.UtcNow.AddSeconds(10))
                     .WithSimpleSchedule(s => s.WithInterval(TimeSpan.FromSeconds(10)).RepeatForever()));
 
@@ -38,8 +50,12 @@ namespace rpiDaemon
             });
             services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
 
-            services.AddDbContext<SensorContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            if (_environment.IsProduction())
+                services.AddDbContext<ApplicationDbContext>(options =>
+                    options.UseSqlServer(Configuration.GetConnectionString("ProductionDb")));
+            else
+                services.AddDbContext<ApplicationDbContext>(options =>
+                    options.UseSqlServer(Configuration.GetConnectionString("DevelopmentDb")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
