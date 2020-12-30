@@ -6,7 +6,7 @@ namespace rpiDaemon.Init
 {
     public class DbInitializer
     {
-        public static void Initialize(SensorContext context)
+        public static void Initialize(ApplicationDbContext context)
         {
             context.Database.EnsureCreated();
 
