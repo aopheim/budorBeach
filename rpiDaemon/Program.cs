@@ -12,7 +12,7 @@ namespace rpiDaemon
         public static void Main(string[] args)
         {
             var host = CreateHostBuilder(args).Build();
-            CreateDbIfNotExists(host);
+            //CreateDbIfNotExists(host);
 
             host.Run();
         }
@@ -30,7 +30,7 @@ namespace rpiDaemon
                 var services = scope.ServiceProvider;
                 try
                 {
-                    var context = services.GetRequiredService<SensorContext>();
+                    var context = services.GetRequiredService<ApplicationDbContext>();
                     DbInitializer.Initialize(context);
                 }
                 catch (Exception ex)

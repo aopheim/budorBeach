@@ -7,14 +7,22 @@ namespace rpiDaemon.Jobs
 {
     public class GetCurrentTemperatureJob : IJob
     {
-        public Task Execute(IJobExecutionContext context)
+        private readonly ApplicationDbContext _context;
+
+        public GetCurrentTemperatureJob(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
+        public async Task Execute(IJobExecutionContext context)
         {
             var temperatureReading = GetCurrentTemperatureReading();
 
             var sensorReadingModel = new SensorReadingModel
                 {MeasuredAtUtc = DateTime.UtcNow, TemperatureInDegreesC = temperatureReading};
+            await _context.SensorReadings.AddAsync(sensorReadingModel);
 
-            return Task.CompletedTask;
+            await _context.SaveChangesAsync(context.CancellationToken);
         }
 
         private double GetCurrentTemperatureReading()
