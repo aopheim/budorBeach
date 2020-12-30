@@ -12,5 +12,6 @@ namespace rpiDaemon.Models
 
         public DateTime MeasuredAtUtc { get; set; }
         public double TemperatureInDegreesC { get; set; }
+        public double PressureInKPa { get; set; }
     }
 }

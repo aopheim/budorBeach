@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using rpiDaemon;
 
 namespace rpiDaemon.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class SensorContextModelSnapshot : ModelSnapshot
+    [Migration("20201230221643_AddPressure")]
+    partial class AddPressure
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
