@@ -3,9 +3,9 @@ using rpiDaemon.Models;
 
 namespace rpiDaemon
 {
-    public class SensorContext : DbContext
+    public class ApplicationDbContext : DbContext
     {
-        public SensorContext(DbContextOptions<SensorContext> options) : base(options)
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
         }
 
