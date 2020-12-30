@@ -29,5 +29,4 @@ void loop(){
     
     object.printTo(Serial);
     Serial.println();
-    delay(5000);
 }
