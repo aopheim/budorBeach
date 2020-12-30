@@ -1,10 +1,9 @@
 ﻿using System;
 using System.IO.Ports;
-using System.Threading;
+using System.Text.Json;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using Quartz;
 using rpiDaemon.Models;
 
@@ -55,7 +54,7 @@ namespace rpiDaemon.Jobs
                     port.Open();
 
                     var serialData = port.ReadLine();
-                    sensorModel = JsonConvert.DeserializeObject<SensorReadingModel>(serialData);
+                    sensorModel = JsonSerializer.Deserialize<SensorReadingModel>(serialData);
                     sensorModel.MeasuredAtUtc = DateTime.UtcNow;
                 }
             }
@@ -67,9 +66,8 @@ namespace rpiDaemon.Jobs
 
             port.Close();
             port.Dispose();
-            Thread.Sleep(200);
 
-            _logger.LogInformation($"{sensorModel?.TemperatureInDegreesC ?? 0} {sensorModel?.PressureInKPa ?? 0}");
+            _logger.LogInformation($"{JsonSerializer.Serialize(sensorModel)}");
             return sensorModel;
         }
     }
