@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO.Ports;
+using System.Threading;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Quartz;
@@ -8,6 +10,7 @@ using rpiDaemon.Models;
 
 namespace rpiDaemon.Jobs
 {
+    [UsedImplicitly]
     public class GetCurrentTemperatureJob : IJob
     {
         private readonly ApplicationDbContext _context;
@@ -23,17 +26,20 @@ namespace rpiDaemon.Jobs
         {
             var sensorReadingModel = GetCurrentSensorReadings();
 
-            await _context.SensorReadings.AddAsync(sensorReadingModel);
-
-            await _context.SaveChangesAsync(context.CancellationToken);
+            if (sensorReadingModel != null)
+            {
+                await _context.SensorReadings.AddAsync(sensorReadingModel);
+                await _context.SaveChangesAsync(context.CancellationToken);
+            }
         }
 
+        [CanBeNull]
         private SensorReadingModel GetCurrentSensorReadings()
         {
             const string portName = "COM5";
-            var sensorModel = new SensorReadingModel();
+            SensorReadingModel sensorModel = null;
 
-            using var port = new SerialPort(portName)
+            var port = new SerialPort(portName)
             {
                 BaudRate = 9600,
                 Parity = Parity.None,
@@ -41,22 +47,29 @@ namespace rpiDaemon.Jobs
                 DataBits = 8,
                 Handshake = Handshake.None
             };
-            port.DataReceived += SerialPortDataReceived;
 
-            void SerialPortDataReceived(object sender, SerialDataReceivedEventArgs e)
+            try
             {
-                var serialPort = (SerialPort) sender;
+                if (!port.IsOpen)
+                {
+                    port.Open();
 
-                var serialData = serialPort.ReadExisting();
-
-                sensorModel = JsonConvert.DeserializeObject<SensorReadingModel>(serialData);
-                sensorModel.MeasuredAtUtc = DateTime.UtcNow;
+                    var serialData = port.ReadLine();
+                    sensorModel = JsonConvert.DeserializeObject<SensorReadingModel>(serialData);
+                    sensorModel.MeasuredAtUtc = DateTime.UtcNow;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
             }
 
-            _logger.LogInformation($"{sensorModel.TemperatureInDegreesC}");
-            port.Open();
             port.Close();
             port.Dispose();
+            Thread.Sleep(200);
+
+            _logger.LogInformation($"{sensorModel?.TemperatureInDegreesC ?? 0} {sensorModel?.PressureInKPa ?? 0}");
             return sensorModel;
         }
     }
