@@ -44,7 +44,7 @@ namespace rpiDaemon
                     .WithIdentity("sensorTrigger")
                     .ForJob(temperatureJobKey)
                     .StartAt(DateTimeOffset.UtcNow.AddSeconds(10))
-                    .WithSimpleSchedule(s => s.WithInterval(TimeSpan.FromSeconds(10)).RepeatForever()));
+                    .WithSimpleSchedule(s => s.WithInterval(TimeSpan.FromSeconds(3)).RepeatForever()));
 
                 q.UseMicrosoftDependencyInjectionScopedJobFactory();
             });
