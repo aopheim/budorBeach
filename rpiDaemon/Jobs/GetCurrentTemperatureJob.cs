@@ -12,6 +12,7 @@ namespace rpiDaemon.Jobs
     [UsedImplicitly]
     public class GetCurrentTemperatureJob : IJob
     {
+        private const string PortName = "/dev/ttyUSB0";
         private readonly ApplicationDbContext _context;
         private readonly ILogger<GetCurrentTemperatureJob> _logger;
 
@@ -35,10 +36,9 @@ namespace rpiDaemon.Jobs
         [CanBeNull]
         private SensorReadingModel GetCurrentSensorReadings()
         {
-            const string portName = "COM5";
             SensorReadingModel sensorModel = null;
 
-            var port = new SerialPort(portName)
+            var port = new SerialPort(PortName)
             {
                 BaudRate = 9600,
                 Parity = Parity.None,
