@@ -55,7 +55,7 @@ namespace rpiDaemon.Jobs
                     throw;
             }
 
-            var blobClient = _containerClient.GetBlobClient($"/{folderName}/{fileName}.jpg");
+            var blobClient = _containerClient.GetBlobClient($"{folderName}/{fileName}.jpg");
             await using var uploadFileStream = File.OpenRead(fullPath);
             await blobClient.UploadAsync(uploadFileStream, true);
             uploadFileStream.Close();
