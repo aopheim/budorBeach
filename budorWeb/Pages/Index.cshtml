@@ -1,9 +1,20 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Budor Beach";
+}
+
+@section Styles {
+    <link href="@Url.Content("~/css/index.css")" rel="stylesheet" type="text/css" />
 }
 
 <div class="text-center">
     <h1>Budor Beach</h1>
+    @foreach (var blob in @Model.AllImagesInBlob)
+    {
+        <h3>@blob.Name</h3>
+        <div class="image-container">
+            <img class="center-fit" src="@blob.Uri" alt="@blob.Name">
+        </div>
+    }
 </div>
