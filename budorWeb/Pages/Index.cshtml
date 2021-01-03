@@ -1,5 +1,6 @@
 ﻿@page
-@model IndexModel
+@using budorWeb.Helpers
+@model BudorBeachModel
 @{
     ViewData["Title"] = "Budor Beach";
 }
@@ -10,6 +11,17 @@
 
 <div class="text-center">
     <h1>Budor Beach</h1>
+    <h2>Alle temperaturmålinger:</h2>
+    @foreach (var reading in @Model.AllSensorReadings)
+    {
+        <p>Dato: @reading.MeasuredAtUtc, temperatur: @reading.TemperatureInDegreesC, trykk: @reading.PressureInKPa </p>
+    }
+    <h2>Gjennomsnitt siste uke</h2>
+    <p>@SensorReadingModelHelper.GetAverageReadingFromRange(@Model.SensorReadingsFromLastSevenDays.Select(m => m.TemperatureInDegreesC))</p>
+
+    <h2>Gjennomsnitt siste måned</h2>
+    <p>@SensorReadingModelHelper.GetAverageReadingFromRange(@Model.SensorReadingsFromLastMonth.Select(m => m.TemperatureInDegreesC))</p>
+
     @foreach (var blob in @Model.AllImagesInBlob)
     {
         <h3>@blob.Name</h3>
