@@ -1,20 +1,20 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using rpiDaemon;
 
 namespace budorWeb
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        private readonly IWebHostEnvironment _hostingEnvironment;
+
+        public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
+            _hostingEnvironment = environment;
             Configuration = configuration;
         }
 
@@ -24,6 +24,18 @@ namespace budorWeb
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddRazorPages();
+            if (_hostingEnvironment.IsProduction())
+                services.AddDbContext<ApplicationDbContext>(options =>
+                {
+                    options.UseSqlServer(Configuration.GetConnectionString("ProductionDb"));
+                    options.EnableSensitiveDataLogging();
+                });
+            else
+                services.AddDbContext<ApplicationDbContext>(options =>
+                {
+                    options.UseSqlServer("DevelopmentDb");
+                    options.EnableSensitiveDataLogging();
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -47,10 +59,7 @@ namespace budorWeb
 
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapRazorPages();
-            });
+            app.UseEndpoints(endpoints => { endpoints.MapRazorPages(); });
         }
     }
 }
