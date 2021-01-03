@@ -1,0 +1,10 @@
+﻿.image-container {
+    padding: 10px;
+    margin: 0 auto;
+}
+
+.center-fit {
+    width: 67vh;
+    height: auto;
+    max-width: 100%;
+}
