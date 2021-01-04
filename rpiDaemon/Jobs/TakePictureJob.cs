@@ -6,7 +6,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using MMALSharp;
 using MMALSharp.Common;
-using MMALSharp.Common.Utility;
 using MMALSharp.Handlers;
 using Quartz;
 using rpiDaemon.DateTimeHelpers;
@@ -44,8 +43,6 @@ namespace rpiDaemon.Jobs
                 var cam = MMALCamera.Instance;
                 using (var imgCaptureHandler = new ImageStreamCaptureHandler(fullPath))
                 {
-                    MMALCameraConfig.StillResolution = Resolution.As03MPixel;
-                    MMALCameraConfig.ISO = 800;
                     MMALCameraConfig.Debug = true;
                     await cam.TakePicture(imgCaptureHandler, MMALEncoding.JPEG, MMALEncoding.I420);
                 }
