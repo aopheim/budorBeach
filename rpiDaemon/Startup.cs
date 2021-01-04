@@ -30,21 +30,21 @@ namespace rpiDaemon
             services.AddQuartz(q =>
             {
                 var pictureJobKey = new JobKey(nameof(TakePictureJob), "secondJobs");
-                var temperatureJobKey = new JobKey(nameof(GetCurrentTemperatureJob), "secondJobs");
+                //var temperatureJobKey = new JobKey(nameof(GetCurrentTemperatureJob), "secondJobs");
 
                 q.AddJob<TakePictureJob>(j => j.WithIdentity(pictureJobKey));
-                q.AddJob<GetCurrentTemperatureJob>(j => j.WithIdentity(temperatureJobKey));
+                //q.AddJob<GetCurrentTemperatureJob>(j => j.WithIdentity(temperatureJobKey));
 
+                //q.AddTrigger(t => t
+                //    .WithIdentity("sensorTrigger")
+                //    .ForJob(temperatureJobKey)
+                //    .StartAt(DateTimeOffset.UtcNow.AddSeconds(10))
+                //    .WithSimpleSchedule(s => s.WithInterval(TimeSpan.FromSeconds(3)).RepeatForever()));
                 q.AddTrigger(t => t
                     .WithIdentity("pictureTrigger")
                     .ForJob(pictureJobKey)
                     .StartAt(DateTimeOffset.UtcNow.AddSeconds(10))
                     .WithSimpleSchedule(s => s.WithInterval(TimeSpan.FromSeconds(10)).RepeatForever()));
-                q.AddTrigger(t => t
-                    .WithIdentity("sensorTrigger")
-                    .ForJob(temperatureJobKey)
-                    .StartAt(DateTimeOffset.UtcNow.AddSeconds(10))
-                    .WithSimpleSchedule(s => s.WithInterval(TimeSpan.FromSeconds(3)).RepeatForever()));
 
                 q.UseMicrosoftDependencyInjectionScopedJobFactory();
             });
