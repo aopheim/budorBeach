@@ -47,6 +47,7 @@ namespace rpiDaemon.Jobs
                 {
                     MMALCameraConfig.StillResolution = Resolution.As1MPixel;
                     MMALCameraConfig.ISO = 2000;
+                    MMALCameraConfig.Debug = true;
                     await cam.TakePicture(imgCaptureHandler, MMALEncoding.JPEG, MMALEncoding.I420);
                 }
 
