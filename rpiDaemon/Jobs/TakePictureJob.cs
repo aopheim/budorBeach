@@ -48,7 +48,6 @@ namespace rpiDaemon.Jobs
                 _logger.LogInformation("Camera config set");
                 await cam.TakePicture(imgCaptureHandler, MMALEncoding.JPEG, MMALEncoding.I420);
                 _logger.LogInformation("Picture taken");
-                cam.Cleanup();
             }
             catch (Exception e)
             {
