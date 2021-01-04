@@ -45,7 +45,7 @@ namespace rpiDaemon.Jobs
                 var cam = MMALCamera.Instance;
                 using (var imgCaptureHandler = new ImageStreamCaptureHandler(fullPath))
                 {
-                    MMALCameraConfig.StillResolution = Resolution.As1MPixel;
+                    MMALCameraConfig.StillResolution = Resolution.As03MPixel;
                     MMALCameraConfig.ISO = 800;
                     MMALCameraConfig.Debug = true;
                     await cam.TakePicture(imgCaptureHandler, MMALEncoding.JPEG, MMALEncoding.I420);
