@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Threading.Tasks;
 using Azure.Storage.Blobs;
 using JetBrains.Annotations;
@@ -60,10 +59,11 @@ namespace rpiDaemon.Jobs
                     throw;
             }
 
-            var blobClient = _containerClient.GetBlobClient($"{folderName}/{fileName}.jpg");
-            await using var uploadFileStream = File.OpenRead(fullPath);
-            await blobClient.UploadAsync(uploadFileStream, true);
-            uploadFileStream.Close();
+            _logger.LogInformation($"Picture taken at {DateTime.UtcNow}");
+            //var blobClient = _containerClient.GetBlobClient($"{folderName}/{fileName}.jpg");
+            //await using var uploadFileStream = File.OpenRead(fullPath);
+            //await blobClient.UploadAsync(uploadFileStream, true);
+            //uploadFileStream.Close();
         }
     }
 }
