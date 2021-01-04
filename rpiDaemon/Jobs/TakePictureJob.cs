@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 using Azure.Storage.Blobs;
 using JetBrains.Annotations;
@@ -41,10 +42,13 @@ namespace rpiDaemon.Jobs
             try
             {
                 var cam = MMALCamera.Instance;
+                _logger.LogInformation("Acquired instance");
                 using (var imgCaptureHandler = new ImageStreamCaptureHandler(fullPath))
                 {
                     MMALCameraConfig.Debug = true;
+                    _logger.LogInformation("Camera config set");
                     await cam.TakePicture(imgCaptureHandler, MMALEncoding.JPEG, MMALEncoding.I420);
+                    _logger.LogInformation("Picture taken");
                 }
 
                 cam.Cleanup();
@@ -57,10 +61,10 @@ namespace rpiDaemon.Jobs
             }
 
             _logger.LogInformation($"Picture taken at {DateTime.UtcNow}");
-            //var blobClient = _containerClient.GetBlobClient($"{folderName}/{fileName}.jpg");
-            //await using var uploadFileStream = File.OpenRead(fullPath);
-            //await blobClient.UploadAsync(uploadFileStream, true);
-            //uploadFileStream.Close();
+            var blobClient = _containerClient.GetBlobClient($"{folderName}/{fileName}.jpg");
+            await using var uploadFileStream = File.OpenRead(fullPath);
+            await blobClient.UploadAsync(uploadFileStream, true);
+            uploadFileStream.Close();
         }
     }
 }
