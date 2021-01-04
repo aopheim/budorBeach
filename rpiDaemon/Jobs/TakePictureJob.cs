@@ -43,14 +43,11 @@ namespace rpiDaemon.Jobs
             {
                 var cam = MMALCamera.Instance;
                 _logger.LogInformation("Acquired instance");
-                using (var imgCaptureHandler = new ImageStreamCaptureHandler(fullPath))
-                {
-                    MMALCameraConfig.Debug = true;
-                    _logger.LogInformation("Camera config set");
-                    await cam.TakePicture(imgCaptureHandler, MMALEncoding.JPEG, MMALEncoding.I420);
-                    _logger.LogInformation("Picture taken");
-                }
-
+                using var imgCaptureHandler = new ImageStreamCaptureHandler(fullPath);
+                MMALCameraConfig.Debug = true;
+                _logger.LogInformation("Camera config set");
+                await cam.TakePicture(imgCaptureHandler, MMALEncoding.JPEG, MMALEncoding.I420);
+                _logger.LogInformation("Picture taken");
                 cam.Cleanup();
             }
             catch (Exception e)
