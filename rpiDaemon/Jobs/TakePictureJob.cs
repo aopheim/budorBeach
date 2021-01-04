@@ -9,6 +9,7 @@ using MMALSharp;
 using MMALSharp.Common;
 using MMALSharp.Handlers;
 using Quartz;
+using rpiDaemon.DateTimeHelpers;
 
 namespace rpiDaemon.Jobs
 {
@@ -35,8 +36,8 @@ namespace rpiDaemon.Jobs
         public async Task Execute(IJobExecutionContext context)
         {
             var now = DateTime.UtcNow;
-            var folderName = $"{now.Year}-{now.Month}-{now.Day}";
-            var fileName = $"{now.Hour}-{now.Minute}-{now.Second}";
+            var folderName = DateTimeParser.GetFolderName(now);
+            var fileName = DateTimeParser.GetFileName(now);
             var fullPath = $"/home/pi/images/{folderName}/{fileName}.jpg";
             try
             {
