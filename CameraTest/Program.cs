@@ -16,6 +16,7 @@ namespace CameraTest
             var fileName = DateTimeParser.GetFileName(now);
             var fullPath = $"/home/pi/images/{folderName}/{fileName}.jpg";
 
+            Console.WriteLine("Taking 10 pictures...");
             for (var i = 0; i < 10; i++)
             {
                 var camera = MMALCamera.Instance;
@@ -23,6 +24,8 @@ namespace CameraTest
 
                 using var imgCaptureHandler = new ImageStreamCaptureHandler(fullPath);
                 await camera.TakePicture(imgCaptureHandler, MMALEncoding.JPEG, MMALEncoding.I420);
+
+                Console.WriteLine($"Picture taken at {now}");
             }
         }
     }
