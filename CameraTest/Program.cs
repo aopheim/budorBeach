@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using MMALSharp;
-using MMALSharp.Common;
 using MMALSharp.Handlers;
 using rpiDaemon.DateTimeHelpers;
 
@@ -11,6 +11,9 @@ namespace CameraTest
     {
         private static async Task Main(string[] args)
         {
+            var cToken = new CancellationTokenSource();
+            cToken.CancelAfter(3000);
+
             var now = DateTime.UtcNow;
             var folderName = DateTimeParser.GetFolderName(now);
             var fileName = DateTimeParser.GetFileName(now);
@@ -25,9 +28,10 @@ namespace CameraTest
 
                 try
                 {
-                    using var imgCaptureHandler = new ImageStreamCaptureHandler(fullPath);
+                    using var videoHandler = new VideoStreamCaptureHandler(fullPath);
                     Console.WriteLine("Got ImageStreamCaptureHandler");
-                    await camera.TakePicture(imgCaptureHandler, MMALEncoding.JPEG, MMALEncoding.I420);
+                    //await camera.TakePicture(videoHandler, MMALEncoding.JPEG, MMALEncoding.I420);
+                    await camera.TakeVideo(videoHandler, cToken.Token);
                 }
                 catch (Exception e)
                 {
