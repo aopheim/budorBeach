@@ -14,7 +14,7 @@ namespace CameraTest
             var now = DateTime.UtcNow;
             var folderName = DateTimeParser.GetFolderName(now);
             var fileName = DateTimeParser.GetFileName(now);
-            var fullPath = $"/home/pi/images/{folderName}/{fileName}.jpg";
+            var fullPath = $"/home/pi/images/{folderName}/{fileName}.png";
 
             Console.WriteLine("Taking 10 pictures...");
             for (var i = 0; i < 10; i++)
@@ -27,7 +27,7 @@ namespace CameraTest
                 {
                     using var imageCaptureHandler = new ImageStreamCaptureHandler(fullPath);
                     Console.WriteLine("Got ImageStreamCaptureHandler");
-                    await camera.TakePicture(imageCaptureHandler, MMALEncoding.JPEG, MMALEncoding.I420);
+                    await camera.TakePicture(imageCaptureHandler, MMALEncoding.PNG, MMALEncoding.I420);
                 }
                 catch (Exception e)
                 {
