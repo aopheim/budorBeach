@@ -20,10 +20,19 @@ namespace CameraTest
             for (var i = 0; i < 10; i++)
             {
                 var camera = MMALCamera.Instance;
+                Console.WriteLine("Acquired instance");
                 MMALCameraConfig.Debug = true;
 
-                using var imgCaptureHandler = new ImageStreamCaptureHandler(fullPath);
-                await camera.TakePicture(imgCaptureHandler, MMALEncoding.JPEG, MMALEncoding.I420);
+                try
+                {
+                    using var imgCaptureHandler = new ImageStreamCaptureHandler(fullPath);
+                    await camera.TakePicture(imgCaptureHandler, MMALEncoding.JPEG, MMALEncoding.I420);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    throw;
+                }
 
                 Console.WriteLine($"Picture taken at {now}");
             }
