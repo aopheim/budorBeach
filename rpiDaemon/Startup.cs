@@ -44,7 +44,7 @@ namespace rpiDaemon
                     .WithIdentity("pictureTrigger")
                     .ForJob(pictureJobKey)
                     .StartAt(DateTimeOffset.UtcNow.AddSeconds(10))
-                    .WithSimpleSchedule(s => s.WithInterval(TimeSpan.FromSeconds(20)).RepeatForever()));
+                    .WithSimpleSchedule(s => s.WithInterval(TimeSpan.FromMinutes(10)).RepeatForever()));
 
                 q.UseMicrosoftDependencyInjectionScopedJobFactory();
             });
