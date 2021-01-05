@@ -26,6 +26,7 @@ namespace CameraTest
                 try
                 {
                     using var imgCaptureHandler = new ImageStreamCaptureHandler(fullPath);
+                    Console.WriteLine("Got ImageStreamCaptureHandler");
                     await camera.TakePicture(imgCaptureHandler, MMALEncoding.JPEG, MMALEncoding.I420);
                 }
                 catch (Exception e)
@@ -34,6 +35,7 @@ namespace CameraTest
                     throw;
                 }
 
+                camera.Cleanup();
                 Console.WriteLine($"Picture taken at {now}");
             }
         }
