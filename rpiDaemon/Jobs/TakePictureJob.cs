@@ -17,6 +17,8 @@ namespace rpiDaemon.Jobs
     public class TakePictureJob : IJob
     {
         private const string BlobContainerName = "images";
+
+        private readonly MMALCamera _camera;
         private readonly IConfiguration _config;
         private readonly BlobContainerClient _containerClient;
         private readonly ILogger<TakePictureJob> _logger;
@@ -31,7 +33,11 @@ namespace rpiDaemon.Jobs
             _config = config;
             _containerClient =
                 new BlobContainerClient(_config.GetConnectionString("AzureStorageConnectionString"), BlobContainerName);
+
+            _camera = MMALCamera.Instance;
+            MMALCameraConfig.Debug = true;
         }
+
 
         public async Task Execute(IJobExecutionContext context)
         {
@@ -41,13 +47,8 @@ namespace rpiDaemon.Jobs
             var fullPath = $"/home/pi/images/{folderName}/{fileName}.jpg";
             try
             {
-                var cam = MMALCamera.Instance;
-                _logger.LogInformation("Acquired instance");
                 using var imgCaptureHandler = new ImageStreamCaptureHandler(fullPath);
-                MMALCameraConfig.Debug = true;
-                _logger.LogInformation("Camera config set");
-                await cam.TakePicture(imgCaptureHandler, MMALEncoding.JPEG, MMALEncoding.I420);
-                _logger.LogInformation("Picture taken");
+                await _camera.TakePicture(imgCaptureHandler, MMALEncoding.JPEG, MMALEncoding.I420);
             }
             catch (Exception e)
             {
