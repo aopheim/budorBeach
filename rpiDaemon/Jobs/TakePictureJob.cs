@@ -49,8 +49,6 @@ namespace rpiDaemon.Jobs
             {
                 using var imgCaptureHandler = new ImageStreamCaptureHandler(fullPath);
                 MMALCameraConfig.Debug = true;
-                MMALCameraConfig.ISO = 200;
-                MMALCameraConfig.ShutterSpeed = 2000;
                 _camera.ConfigureCameraSettings();
 
                 await _camera.TakePicture(imgCaptureHandler, MMALEncoding.JPEG, MMALEncoding.I420);
