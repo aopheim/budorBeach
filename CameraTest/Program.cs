@@ -23,8 +23,8 @@ namespace CameraTest
                 Console.WriteLine("Acquired instance");
                 MMALCameraConfig.Debug = true;
 
-                MMALCameraConfig.ISO = 800;
-                MMALCameraConfig.ShutterSpeed = 2000000;
+                //MMALCameraConfig.ISO = 800;
+                //MMALCameraConfig.ShutterSpeed = 2000000;
 
                 using var imgCaptureHandler = new ImageStreamCaptureHandler(fullPath);
                 cam.ConfigureCameraSettings();
