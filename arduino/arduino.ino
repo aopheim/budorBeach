@@ -5,7 +5,7 @@ int pressurePin = 3;
 unsigned long startMillis;  
 unsigned long currentMillis;
 const unsigned long period = 1000;  
-const signed long offset = -3.1;
+const signed long offset = -9.1;
  
 void setup(){
   Serial.begin(9600);
@@ -17,7 +17,6 @@ void loop(){
   if (currentMillis - startMillis >= period){
 
       int tempReading = analogRead(tempPin);
-
       float voltage = tempReading * (5.0 / 1024.0);
       float temperatureC = (voltage - 0.5) * 100.0 ;  
       temperatureC += offset;
