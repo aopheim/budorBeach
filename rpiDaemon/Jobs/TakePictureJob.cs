@@ -48,6 +48,8 @@ namespace rpiDaemon.Jobs
             try
             {
                 using var imgCaptureHandler = new ImageStreamCaptureHandler(fullPath);
+                _camera.ConfigureCameraSettings();
+
                 await _camera.TakePicture(imgCaptureHandler, MMALEncoding.JPEG, MMALEncoding.I420);
             }
             catch (Exception e)
