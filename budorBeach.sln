@@ -9,8 +9,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rpiDaemon.Test", "rpiDaemon
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "budorWeb", "budorWeb\budorWeb.csproj", "{1F162345-C688-46D0-B707-DB4500579855}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CameraTest", "CameraTest\CameraTest.csproj", "{49B411C1-3E2E-4436-BFA9-E6C803EDB29D}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,10 +27,6 @@ Global
 		{1F162345-C688-46D0-B707-DB4500579855}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1F162345-C688-46D0-B707-DB4500579855}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1F162345-C688-46D0-B707-DB4500579855}.Release|Any CPU.Build.0 = Release|Any CPU
-		{49B411C1-3E2E-4436-BFA9-E6C803EDB29D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{49B411C1-3E2E-4436-BFA9-E6C803EDB29D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{49B411C1-3E2E-4436-BFA9-E6C803EDB29D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{49B411C1-3E2E-4436-BFA9-E6C803EDB29D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
