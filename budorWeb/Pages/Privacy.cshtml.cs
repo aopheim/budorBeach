@@ -1,18 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
+﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace budorWeb.Pages
 {
-    public class PrivacyModel : PageModel
+    public class SignalRTestModel : PageModel
     {
-        private readonly ILogger<PrivacyModel> _logger;
+        private readonly ILogger<SignalRTestModel> _logger;
 
-        public PrivacyModel(ILogger<PrivacyModel> logger)
+        public SignalRTestModel(ILogger<SignalRTestModel> logger)
         {
             _logger = logger;
         }
