@@ -1,3 +1,4 @@
+using budorWeb.Hubs;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -24,7 +25,9 @@ namespace budorWeb
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddRazorPages();
-            if (_hostingEnvironment.IsProduction())
+            services.AddSignalR();
+
+            if (_hostingEnvironment.IsDevelopment())
                 services.AddDbContext<ApplicationDbContext>(options =>
                 {
                     options.UseSqlServer(Configuration.GetConnectionString("ProductionDb"));
@@ -59,7 +62,11 @@ namespace budorWeb
 
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints => { endpoints.MapRazorPages(); });
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapRazorPages();
+                endpoints.MapHub<BudorHub>("/budorhub");
+            });
         }
     }
 }
