@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.IO;
 using System.Threading.Tasks;
 using Azure.Storage.Blobs;
@@ -7,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using MMALSharp;
 using MMALSharp.Common;
+using MMALSharp.Config;
 using MMALSharp.Handlers;
 using Quartz;
 using rpiDaemon.DateTimeHelpers;
@@ -48,7 +50,10 @@ namespace rpiDaemon.Jobs
             try
             {
                 using var imgCaptureHandler = new ImageStreamCaptureHandler(fullPath);
-                MMALCameraConfig.Debug = true;
+
+                MMALCameraConfig.ISO = 800;
+                MMALCameraConfig.Annotate = new AnnotateImage("Budor Beach", 15, Color.DarkGray);
+
                 _camera.ConfigureCameraSettings();
 
                 await _camera.TakePicture(imgCaptureHandler, MMALEncoding.JPEG, MMALEncoding.I420);
