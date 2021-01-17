@@ -1,5 +1,6 @@
 ﻿@page
 @using budorWeb.Helpers
+@using rpiDaemon.DateTimeHelpers
 @model BudorBeachModel
 @{
     ViewData["Title"] = "Budor Beach";
@@ -11,8 +12,8 @@
 
 <div class="text-center">
     <h1>Budor Beach</h1>
-    <h2>Alle temperaturmålinger:</h2>
-    @foreach (var reading in @Model.AllSensorReadings)
+    <h2>Siste 10 temperatur-målinger</h2>
+    @foreach (var reading in @Model.AllSensorReadings.OrderByDescending(m => m.MeasuredAtUtc).Take(10))
     {
         <p>Dato: @reading.MeasuredAtUtc, temperatur: @reading.TemperatureInDegreesC, trykk: @reading.PressureInKPa </p>
     }
@@ -21,8 +22,9 @@
 
     <h2>Gjennomsnitt siste måned</h2>
     <p>@SensorReadingModelHelper.GetAverageReadingFromRange(@Model.SensorReadingsFromLastMonth.Select(m => m.TemperatureInDegreesC))</p>
-
-    @foreach (var blob in @Model.AllImagesInBlob)
+    
+    <h1>De 5 siste bildene</h1>
+    @foreach (var blob in @Model.AllImagesInBlob.OrderByDescending(blob => DateTimeParser.GetDateTimeFromFolderAndFileName(blob.Name) ).Take(5))
     {
         <h3>@blob.Name</h3>
         <div class="image-container">
