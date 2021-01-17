@@ -19,7 +19,7 @@ namespace rpiDaemon.Jobs
             foreach (var fullPath in folderNames)
             {
                 var folderName = Path.GetDirectoryName(fullPath);
-                var folderDate = DateTimeParser.GetDateTimeFromFolderName(folderName);
+                var folderDate = DateTimeParser.GetDateTimeDateFromFolderName(folderName);
 
                 if (folderDate > cutOffDate)
                     continue;
