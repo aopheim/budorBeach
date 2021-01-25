@@ -10,13 +10,13 @@ using rpiDaemon.Models;
 namespace rpiDaemon.Jobs
 {
     [UsedImplicitly]
-    public class GetCurrentTemperatureJob : IJob
+    public class GetArduinoSensorReadingsJob : IJob
     {
         private const string PortName = "/dev/ttyUSB0";
         private readonly ApplicationDbContext _context;
-        private readonly ILogger<GetCurrentTemperatureJob> _logger;
+        private readonly ILogger<GetArduinoSensorReadingsJob> _logger;
 
-        public GetCurrentTemperatureJob(ApplicationDbContext context, ILogger<GetCurrentTemperatureJob> logger)
+        public GetArduinoSensorReadingsJob(ApplicationDbContext context, ILogger<GetArduinoSensorReadingsJob> logger)
         {
             _context = context;
             _logger = logger;
@@ -60,8 +60,9 @@ namespace rpiDaemon.Jobs
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
-                throw;
+                if (e is ArgumentException) _logger.LogError("Argument exception. Probably usb port not found");
+                else
+                    throw;
             }
 
             port.Close();
