@@ -30,14 +30,16 @@ namespace rpiDaemon
             services.AddQuartz(q =>
             {
                 var pictureJobKey = new JobKey(nameof(TakePictureJob), "secondJobs");
-                var temperatureJobKey = new JobKey(nameof(GetCurrentTemperatureJob), "secondJobs");
+                var arduinoJobKey = new JobKey(nameof(GetArduinoSensorReadingsJob), "secondJobs");
+                var bme280JobKey = new JobKey(nameof(GetBme280SensorReadingsJob), "secondJobs");
 
                 q.AddJob<TakePictureJob>(j => j.WithIdentity(pictureJobKey));
-                q.AddJob<GetCurrentTemperatureJob>(j => j.WithIdentity(temperatureJobKey));
+                q.AddJob<GetArduinoSensorReadingsJob>(j => j.WithIdentity(arduinoJobKey));
+                q.AddJob<GetBme280SensorReadingsJob>(j => j.WithIdentity(bme280JobKey));
 
                 q.AddTrigger(t => t
                     .WithIdentity("sensorTrigger")
-                    .ForJob(temperatureJobKey)
+                    .ForJob(arduinoJobKey)
                     .StartAt(DateTimeOffset.UtcNow.AddSeconds(10))
                     .WithSimpleSchedule(s => s.WithInterval(TimeSpan.FromSeconds(5)).RepeatForever()));
                 q.AddTrigger(t => t
@@ -45,6 +47,10 @@ namespace rpiDaemon
                     .ForJob(pictureJobKey)
                     .StartAt(DateTimeOffset.UtcNow.AddSeconds(10))
                     .WithSimpleSchedule(s => s.WithInterval(TimeSpan.FromMinutes(1)).RepeatForever()));
+                q.AddTrigger(t => t.WithIdentity("bme280Trigger")
+                    .ForJob(bme280JobKey)
+                    .StartAt(DateTimeOffset.UtcNow.AddSeconds(10))
+                    .WithSimpleSchedule(s => s.WithInterval(TimeSpan.FromSeconds(5)).RepeatForever()));
 
                 q.UseMicrosoftDependencyInjectionScopedJobFactory();
             });
