@@ -10,6 +10,12 @@
     <link href="@Url.Content("~/css/index.css")" rel="stylesheet" type="text/css" />
 }
 
+@section Scripts
+{
+    <script src="~/js/signalr/dist/browser/signalr.js"></script>
+    <script src="~/js/webclient.js"></script>
+}
+
 <div class="text-center">
     <h1>Budor Beach</h1>
     <h2>Siste 10 temperatur-målinger</h2>
@@ -22,9 +28,9 @@
 
     <h2>Gjennomsnitt siste måned</h2>
     <p>@SensorReadingModelHelper.GetAverageReadingFromRange(@Model.SensorReadingsFromLastMonth.Select(m => m.TemperatureInDegreesC))</p>
-    
+
     <h1>De 5 siste bildene</h1>
-    @foreach (var blob in @Model.AllImagesInBlob.OrderByDescending(blob => DateTimeParser.GetDateTimeFromFolderAndFileName(blob.Name) ).Take(5))
+    @foreach (var blob in @Model.AllImagesInBlob.OrderByDescending(blob => DateTimeParser.GetDateTimeFromFolderAndFileName(blob.Name)).Take(5))
     {
         <h3>@blob.Name</h3>
         <div class="image-container">
