@@ -7,7 +7,8 @@ namespace budorWeb.Helpers
     {
         public static double GetAverageReadingFromRange(IEnumerable<double> readings)
         {
-            return readings.Average();
+            var list = readings.ToList();
+            return list.Any() ? list.Average() : 0;
         }
     }
 }
