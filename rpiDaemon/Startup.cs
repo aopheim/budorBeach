@@ -30,18 +30,18 @@ namespace rpiDaemon
             services.AddQuartz(q =>
             {
                 var pictureJobKey = new JobKey(nameof(TakePictureJob), "secondJobs");
-                var arduinoJobKey = new JobKey(nameof(GetArduinoSensorReadingsJob), "secondJobs");
+                //var arduinoJobKey = new JobKey(nameof(GetArduinoSensorReadingsJob), "secondJobs");
                 var bme280JobKey = new JobKey(nameof(GetBme280SensorReadingsJob), "secondJobs");
 
                 q.AddJob<TakePictureJob>(j => j.WithIdentity(pictureJobKey));
-                q.AddJob<GetArduinoSensorReadingsJob>(j => j.WithIdentity(arduinoJobKey));
+                //q.AddJob<GetArduinoSensorReadingsJob>(j => j.WithIdentity(arduinoJobKey));
                 q.AddJob<GetBme280SensorReadingsJob>(j => j.WithIdentity(bme280JobKey));
 
-                q.AddTrigger(t => t
-                    .WithIdentity("sensorTrigger")
-                    .ForJob(arduinoJobKey)
-                    .StartAt(DateTimeOffset.UtcNow.AddSeconds(10))
-                    .WithSimpleSchedule(s => s.WithInterval(TimeSpan.FromSeconds(5)).RepeatForever()));
+                //q.AddTrigger(t => t
+                //    .WithIdentity("sensorTrigger")
+                //    .ForJob(arduinoJobKey)
+                //    .StartAt(DateTimeOffset.UtcNow.AddSeconds(10))
+                //    .WithSimpleSchedule(s => s.WithInterval(TimeSpan.FromSeconds(5)).RepeatForever()));
                 q.AddTrigger(t => t
                     .WithIdentity("pictureTrigger")
                     .ForJob(pictureJobKey)
