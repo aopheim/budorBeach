@@ -47,7 +47,7 @@ namespace rpiDaemon
             });
             services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
 
-            if (_environment.IsDevelopment())
+            if (_environment.IsProduction())
                 services.AddDbContext<ApplicationDbContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("ProductionDb")));
             else
