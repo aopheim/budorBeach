@@ -1,16 +1,40 @@
 ﻿using System;
 using System.Device.I2c;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Iot.Device.Bmxx80;
 using Iot.Device.Bmxx80.PowerMode;
+using JetBrains.Annotations;
+using Microsoft.Extensions.Logging;
 using Quartz;
+using rpiDaemon.Models;
 
 namespace rpiDaemon.Jobs
 {
+    [UsedImplicitly]
     public class GetBme280SensorReadingsJob : IJob
     {
-        public Task Execute(IJobExecutionContext context)
+        private readonly ApplicationDbContext _context;
+
+        public GetBme280SensorReadingsJob(ApplicationDbContext context, ILogger<GetBme280SensorReadingsJob> logger)
+        {
+            _context = context;
+            _logger = logger;
+        }
+
+        private ILogger<GetBme280SensorReadingsJob> _logger { get; }
+
+        public async Task Execute(IJobExecutionContext jobExecutionContext)
+        {
+            var sensorReadingModel = GetCurrentSensorReadings();
+
+            _logger.LogInformation($"{JsonSerializer.Serialize(sensorReadingModel)}");
+            _context.SensorReadings.Add(sensorReadingModel);
+            await _context.SaveChangesAsync(jobExecutionContext.CancellationToken);
+        }
+
+        private SensorReadingModel GetCurrentSensorReadings()
         {
             var i2CSettings = new I2cConnectionSettings(1, Bmx280Base.DefaultI2cAddress);
             using var i2CDevice = I2cDevice.Create(i2CSettings);
@@ -25,12 +49,14 @@ namespace rpiDaemon.Jobs
             bme280.TryReadHumidity(out var humValue);
             bme280.TryReadAltitude(out var altValue);
 
-            Console.WriteLine($"Temperature: {tempValue.DegreesCelsius:0.#}\u00B0C");
-            Console.WriteLine($"Pressure: {pressureValue.Hectopascals:#.##} hPa");
-            Console.WriteLine($"Relative humidity: {humValue.Percent:#.##}%");
-            Console.WriteLine($"Estimated altitude: {altValue.Meters:#} m");
-
-            return Task.CompletedTask;
+            return new SensorReadingModel
+            {
+                MeasuredAtUtc = DateTime.UtcNow,
+                PressureInhPa = pressureValue.Hectopascals,
+                TemperatureInDegreesC = tempValue.DegreesCelsius,
+                AltitudeInMeters = altValue.Meters,
+                RelativeHumidityInPercent = humValue.Percent
+            };
         }
     }
 }
