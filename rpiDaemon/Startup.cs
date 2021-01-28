@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Quartz;
 using rpiDaemon.Jobs;
 
@@ -14,10 +15,12 @@ namespace rpiDaemon
     public class Startup
     {
         private readonly IWebHostEnvironment _environment;
+        private readonly ILogger<Startup> _logger;
 
-        public Startup(IConfiguration config, IWebHostEnvironment environment)
+        public Startup(IConfiguration config, IWebHostEnvironment environment, ILogger<Startup> logger)
         {
             _environment = environment;
+            _logger = logger;
             Configuration = config;
         }
 
@@ -25,6 +28,7 @@ namespace rpiDaemon
 
         public void ConfigureServices(IServiceCollection services)
         {
+            _logger.LogDebug("Starting configureServices");
             services.AddQuartz(q =>
             {
                 var pictureJobKey = new JobKey(nameof(TakePictureJob), "secondJobs");
@@ -45,14 +49,23 @@ namespace rpiDaemon
 
                 q.UseMicrosoftDependencyInjectionScopedJobFactory();
             });
-            services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
+            services.AddQuartzHostedService(q => q.WaitForJobsToComplete = false);
+            _logger.LogDebug("Quartz service configured");
 
             if (_environment.IsProduction())
+            {
+                _logger.LogDebug("Setting up production db");
                 services.AddDbContext<ApplicationDbContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("ProductionDb")));
+            }
             else
+            {
+                _logger.LogDebug("Setting ut development db");
                 services.AddDbContext<ApplicationDbContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("DevelopmentDb")));
+            }
+
+            _logger.LogDebug("Finished configuring services");
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
