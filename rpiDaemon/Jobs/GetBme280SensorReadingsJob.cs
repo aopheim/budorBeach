@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Device.I2c;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Iot.Device.Bmxx80;
 using Iot.Device.Bmxx80.PowerMode;
 using JetBrains.Annotations;
+using Microsoft.Extensions.Logging;
 using Quartz;
 using rpiDaemon.Models;
 
@@ -14,15 +16,18 @@ namespace rpiDaemon.Jobs
     public class GetBme280SensorReadingsJob : IJob
     {
         private readonly ApplicationDbContext _context;
+        private readonly ILogger<GetBme280SensorReadingsJob> _logger;
 
-        public GetBme280SensorReadingsJob(ApplicationDbContext context)
+        public GetBme280SensorReadingsJob(ApplicationDbContext context, ILogger<GetBme280SensorReadingsJob> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         public async Task Execute(IJobExecutionContext jobExecutionContext)
         {
             var sensorReadingModel = GetCurrentSensorReadings();
+            _logger.LogInformation($"{JsonSerializer.Serialize(sensorReadingModel)}");
 
             _context.SensorReadings.Add(sensorReadingModel);
             await _context.SaveChangesAsync(jobExecutionContext.CancellationToken);
