@@ -25,7 +25,6 @@ namespace rpiDaemon
 
         public void ConfigureServices(IServiceCollection services)
         {
-            Console.WriteLine("Starting configureServices");
             services.AddQuartz(q =>
             {
                 var pictureJobKey = new JobKey(nameof(TakePictureJob), "secondJobs");
@@ -38,31 +37,22 @@ namespace rpiDaemon
                     .WithIdentity("pictureTrigger")
                     .ForJob(pictureJobKey)
                     .StartAt(DateTimeOffset.UtcNow.AddSeconds(10))
-                    .WithSimpleSchedule(s => s.WithInterval(TimeSpan.FromMinutes(1)).RepeatForever()));
+                    .WithSimpleSchedule(s => s.WithInterval(TimeSpan.FromMinutes(5)).RepeatForever()));
                 q.AddTrigger(t => t.WithIdentity("bme280Trigger")
                     .ForJob(bme280JobKey)
                     .StartAt(DateTimeOffset.UtcNow.AddSeconds(10))
-                    .WithSimpleSchedule(s => s.WithInterval(TimeSpan.FromSeconds(5)).RepeatForever()));
+                    .WithSimpleSchedule(s => s.WithInterval(TimeSpan.FromSeconds(20)).RepeatForever()));
 
                 q.UseMicrosoftDependencyInjectionScopedJobFactory();
             });
             services.AddQuartzHostedService(q => q.WaitForJobsToComplete = false);
-            Console.WriteLine("Quartz service configured");
 
             if (_environment.IsProduction())
-            {
-                Console.WriteLine("Setting up production db");
                 services.AddDbContext<ApplicationDbContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("ProductionDb")));
-            }
             else
-            {
-                Console.WriteLine("Setting ut development db");
                 services.AddDbContext<ApplicationDbContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("DevelopmentDb")));
-            }
-
-            Console.WriteLine("Finished configuring services");
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
