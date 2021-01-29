@@ -58,7 +58,7 @@ namespace rpiDaemon.Jobs
             _context.SensorReadings.Add(sensorReadingModel);
             await _context.SaveChangesAsync(jobExecutionContext.CancellationToken);
 
-            await SendReadingsToBudorHub(jobExecutionContext.CancellationToken);
+            //await SendReadingsToBudorHub(jobExecutionContext.CancellationToken);
         }
 
         private async Task SendReadingsToBudorHub(CancellationToken cancellationToken)
