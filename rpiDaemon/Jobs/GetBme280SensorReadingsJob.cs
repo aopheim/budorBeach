@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Device.I2c;
+using System.Diagnostics;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -25,12 +26,24 @@ namespace rpiDaemon.Jobs
             _context = context;
             _logger = logger;
             _connection = new HubConnectionBuilder()
-                .WithUrl("http://localhost:3001/budorhub")
+                .WithUrl("http://localhost:3000/budorhub")
+                .WithAutomaticReconnect()
                 .Build();
-            _connection.Closed += async error =>
+
+            _connection.Closed += async _ =>
             {
                 await Task.Delay(200);
                 await _connection.StartAsync();
+            };
+            _connection.Reconnecting += _ =>
+            {
+                Debug.Assert(_connection.State == HubConnectionState.Reconnecting);
+                return Task.CompletedTask;
+            };
+            _connection.Reconnected += _ =>
+            {
+                Debug.Assert(_connection.State == HubConnectionState.Connected);
+                return Task.CompletedTask;
             };
         }
 
@@ -47,8 +60,30 @@ namespace rpiDaemon.Jobs
 
         private async Task SendReadingsToBudorHub(CancellationToken cancellationToken)
         {
-            await _connection.StartAsync(cancellationToken);
+            await ConnectWithRetryAsync(_connection, cancellationToken);
             await _connection.InvokeAsync("SendMessageToAllClients", "New sensor readings from Pi!", cancellationToken);
+        }
+
+        private static async Task<bool> ConnectWithRetryAsync(HubConnection connection, CancellationToken token)
+        {
+            // Keep trying to until we can start or the token is canceled.
+            while (true)
+                try
+                {
+                    await connection.StartAsync(token);
+                    Debug.Assert(connection.State == HubConnectionState.Connected);
+                    return true;
+                }
+                catch when (token.IsCancellationRequested)
+                {
+                    return false;
+                }
+                catch
+                {
+                    // Failed to connect, trying again in 5000 ms.
+                    Debug.Assert(connection.State == HubConnectionState.Disconnected);
+                    await Task.Delay(5000, token);
+                }
         }
 
         private SensorReadingModel GetCurrentSensorReadings()
