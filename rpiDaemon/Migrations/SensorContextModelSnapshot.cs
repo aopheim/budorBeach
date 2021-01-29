@@ -17,7 +17,7 @@ namespace rpiDaemon.Migrations
             modelBuilder
                 .UseIdentityColumns()
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.1");
+                .HasAnnotation("ProductVersion", "5.0.2");
 
             modelBuilder.Entity("rpiDaemon.Models.SensorReadingModel", b =>
                 {
@@ -26,10 +26,16 @@ namespace rpiDaemon.Migrations
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
+                    b.Property<double>("AltitudeInMeters")
+                        .HasColumnType("float");
+
                     b.Property<DateTime>("MeasuredAtUtc")
                         .HasColumnType("datetime2");
 
-                    b.Property<double>("PressureInKPa")
+                    b.Property<double>("PressureInhPa")
+                        .HasColumnType("float");
+
+                    b.Property<double>("RelativeHumidityInPercent")
                         .HasColumnType("float");
 
                     b.Property<double>("TemperatureInDegreesC")
