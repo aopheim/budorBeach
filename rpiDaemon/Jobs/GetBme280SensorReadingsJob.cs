@@ -26,7 +26,7 @@ namespace rpiDaemon.Jobs
             _context = context;
             _logger = logger;
             _connection = new HubConnectionBuilder()
-                .WithUrl("http://127.0.0.1:3000/signalr")
+                .WithUrl("http://192.168.32.2:3000/budorhub")
                 .WithAutomaticReconnect()
                 .Build();
 
