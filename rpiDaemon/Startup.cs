@@ -23,32 +23,29 @@ namespace rpiDaemon
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddQuartz(q =>
             {
                 var pictureJobKey = new JobKey(nameof(TakePictureJob), "secondJobs");
-                var temperatureJobKey = new JobKey(nameof(GetCurrentTemperatureJob), "secondJobs");
+                var bme280JobKey = new JobKey(nameof(GetBme280SensorReadingsJob), "secondJobs");
 
                 q.AddJob<TakePictureJob>(j => j.WithIdentity(pictureJobKey));
-                q.AddJob<GetCurrentTemperatureJob>(j => j.WithIdentity(temperatureJobKey));
+                q.AddJob<GetBme280SensorReadingsJob>(j => j.WithIdentity(bme280JobKey));
 
-                q.AddTrigger(t => t
-                    .WithIdentity("sensorTrigger")
-                    .ForJob(temperatureJobKey)
-                    .StartAt(DateTimeOffset.UtcNow.AddSeconds(10))
-                    .WithSimpleSchedule(s => s.WithInterval(TimeSpan.FromSeconds(5)).RepeatForever()));
                 q.AddTrigger(t => t
                     .WithIdentity("pictureTrigger")
                     .ForJob(pictureJobKey)
                     .StartAt(DateTimeOffset.UtcNow.AddSeconds(10))
-                    .WithSimpleSchedule(s => s.WithInterval(TimeSpan.FromMinutes(1)).RepeatForever()));
+                    .WithSimpleSchedule(s => s.WithInterval(TimeSpan.FromMinutes(5)).RepeatForever()));
+                q.AddTrigger(t => t.WithIdentity("bme280Trigger")
+                    .ForJob(bme280JobKey)
+                    .StartAt(DateTimeOffset.UtcNow.AddSeconds(10))
+                    .WithSimpleSchedule(s => s.WithInterval(TimeSpan.FromSeconds(20)).RepeatForever()));
 
                 q.UseMicrosoftDependencyInjectionScopedJobFactory();
             });
-            services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
+            services.AddQuartzHostedService(q => q.WaitForJobsToComplete = false);
 
             if (_environment.IsProduction())
                 services.AddDbContext<ApplicationDbContext>(options =>
