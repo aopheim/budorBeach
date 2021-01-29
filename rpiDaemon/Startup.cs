@@ -29,9 +29,11 @@ namespace rpiDaemon
             {
                 var pictureJobKey = new JobKey(nameof(TakePictureJob), "secondJobs");
                 var bme280JobKey = new JobKey(nameof(GetBme280SensorReadingsJob), "secondJobs");
+                var signalRTestKey = new JobKey(nameof(TestSignalRJob), "secondJobs");
 
                 q.AddJob<TakePictureJob>(j => j.WithIdentity(pictureJobKey));
                 q.AddJob<GetBme280SensorReadingsJob>(j => j.WithIdentity(bme280JobKey));
+                q.AddJob<TestSignalRJob>(j => j.WithIdentity(signalRTestKey));
 
                 q.AddTrigger(t => t
                     .WithIdentity("pictureTrigger")
@@ -39,6 +41,10 @@ namespace rpiDaemon
                     .StartAt(DateTimeOffset.UtcNow.AddSeconds(10))
                     .WithSimpleSchedule(s => s.WithInterval(TimeSpan.FromMinutes(5)).RepeatForever()));
                 q.AddTrigger(t => t.WithIdentity("bme280Trigger")
+                    .ForJob(bme280JobKey)
+                    .StartAt(DateTimeOffset.UtcNow.AddSeconds(10))
+                    .WithSimpleSchedule(s => s.WithInterval(TimeSpan.FromSeconds(5)).RepeatForever()));
+                q.AddTrigger(t => t.WithIdentity("signalRTest")
                     .ForJob(bme280JobKey)
                     .StartAt(DateTimeOffset.UtcNow.AddSeconds(10))
                     .WithSimpleSchedule(s => s.WithInterval(TimeSpan.FromSeconds(5)).RepeatForever()));
