@@ -60,11 +60,14 @@ namespace rpiDaemon.Jobs
 
         private async Task SendReadingsToBudorHub(CancellationToken cancellationToken)
         {
+            _logger.LogDebug("Connecting to hub...");
             await ConnectWithRetryAsync(_connection, cancellationToken);
+            _logger.LogDebug("Sending message...");
             await _connection.InvokeAsync("SendMessageToAllClients", "New sensor readings from Pi!", cancellationToken);
+            _logger.LogDebug("Message sent");
         }
 
-        private static async Task<bool> ConnectWithRetryAsync(HubConnection connection, CancellationToken token)
+        private async Task<bool> ConnectWithRetryAsync(HubConnection connection, CancellationToken token)
         {
             // Keep trying to until we can start or the token is canceled.
             while (true)
@@ -72,15 +75,17 @@ namespace rpiDaemon.Jobs
                 {
                     await connection.StartAsync(token);
                     Debug.Assert(connection.State == HubConnectionState.Connected);
+                    _logger.LogDebug("Connection started");
                     return true;
                 }
                 catch when (token.IsCancellationRequested)
                 {
+                    _logger.LogDebug("Cancellation token received");
                     return false;
                 }
                 catch
                 {
-                    // Failed to connect, trying again in 5000 ms.
+                    _logger.LogDebug("Failed to start... Retrying");
                     Debug.Assert(connection.State == HubConnectionState.Disconnected);
                     await Task.Delay(5000, token);
                 }
