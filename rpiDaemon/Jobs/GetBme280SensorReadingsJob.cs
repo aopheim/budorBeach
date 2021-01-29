@@ -55,7 +55,6 @@ namespace rpiDaemon.Jobs
             _context.SensorReadings.Add(sensorReadingModel);
             await _context.SaveChangesAsync(jobExecutionContext.CancellationToken);
 
-            _logger.LogInformation("Uploaded sensor readings to db");
             await SendReadingsToBudorHub(jobExecutionContext.CancellationToken);
         }
 
@@ -84,9 +83,9 @@ namespace rpiDaemon.Jobs
                     _logger.LogInformation("Cancellation token received");
                     return false;
                 }
-                catch
+                catch (Exception e)
                 {
-                    _logger.LogInformation("Failed to start... Retrying");
+                    _logger.LogInformation(e, "Retrying to restart...");
                     Debug.Assert(connection.State == HubConnectionState.Disconnected);
                     await Task.Delay(5000, token);
                 }
