@@ -42,12 +42,13 @@ namespace rpiDaemon.Jobs
             _context.SensorReadings.Add(sensorReadingModel);
             await _context.SaveChangesAsync(jobExecutionContext.CancellationToken);
 
-            await SendReadingsToBudorHub();
+            await SendReadingsToBudorHub(jobExecutionContext.CancellationToken);
         }
 
-        private async Task SendReadingsToBudorHub()
+        private async Task SendReadingsToBudorHub(CancellationToken cancellationToken)
         {
-            await _connection.InvokeAsync("SendMessageToAllClients", "New sensor readings from Pi!");
+            await _connection.StartAsync(cancellationToken);
+            await _connection.InvokeAsync("SendMessageToAllClients", "New sensor readings from Pi!", cancellationToken);
         }
 
         private SensorReadingModel GetCurrentSensorReadings()
