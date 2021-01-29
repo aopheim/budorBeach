@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Iot.Device.Bmxx80;
 using Iot.Device.Bmxx80.PowerMode;
 using JetBrains.Annotations;
+using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Logging;
 using Quartz;
 using rpiDaemon.Models;
@@ -15,6 +16,7 @@ namespace rpiDaemon.Jobs
     [UsedImplicitly]
     public class GetBme280SensorReadingsJob : IJob
     {
+        private readonly HubConnection _connection;
         private readonly ApplicationDbContext _context;
         private readonly ILogger<GetBme280SensorReadingsJob> _logger;
 
@@ -22,6 +24,14 @@ namespace rpiDaemon.Jobs
         {
             _context = context;
             _logger = logger;
+            _connection = new HubConnectionBuilder()
+                .WithUrl("http://localhost:3001/budorhub")
+                .Build();
+            _connection.Closed += async error =>
+            {
+                await Task.Delay(200);
+                await _connection.StartAsync();
+            };
         }
 
         public async Task Execute(IJobExecutionContext jobExecutionContext)
@@ -31,6 +41,13 @@ namespace rpiDaemon.Jobs
 
             _context.SensorReadings.Add(sensorReadingModel);
             await _context.SaveChangesAsync(jobExecutionContext.CancellationToken);
+
+            await SendReadingsToBudorHub();
+        }
+
+        private async Task SendReadingsToBudorHub()
+        {
+            await _connection.InvokeAsync("SendMessageToAllClients", "New sensor readings from Pi!");
         }
 
         private SensorReadingModel GetCurrentSensorReadings()
