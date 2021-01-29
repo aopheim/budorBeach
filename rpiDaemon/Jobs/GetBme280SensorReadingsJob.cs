@@ -26,22 +26,25 @@ namespace rpiDaemon.Jobs
             _context = context;
             _logger = logger;
             _connection = new HubConnectionBuilder()
-                .WithUrl("http://127.0.0.1:3000/budorhub")
+                .WithUrl("http://127.0.0.1:3000/signalr")
                 .WithAutomaticReconnect()
                 .Build();
 
-            _connection.Closed += async _ =>
+            _connection.Closed += async e =>
             {
+                _logger.LogError(e, e.Message);
                 await Task.Delay(200);
                 await _connection.StartAsync();
             };
-            _connection.Reconnecting += _ =>
+            _connection.Reconnecting += e =>
             {
+                _logger.LogError(e, e.Message);
                 Debug.Assert(_connection.State == HubConnectionState.Reconnecting);
                 return Task.CompletedTask;
             };
-            _connection.Reconnected += _ =>
+            _connection.Reconnected += message =>
             {
+                _logger.LogInformation(message);
                 Debug.Assert(_connection.State == HubConnectionState.Connected);
                 return Task.CompletedTask;
             };
