@@ -55,16 +55,17 @@ namespace rpiDaemon.Jobs
             _context.SensorReadings.Add(sensorReadingModel);
             await _context.SaveChangesAsync(jobExecutionContext.CancellationToken);
 
+            _logger.LogInformation("Uploaded sensor readings to db");
             await SendReadingsToBudorHub(jobExecutionContext.CancellationToken);
         }
 
         private async Task SendReadingsToBudorHub(CancellationToken cancellationToken)
         {
-            _logger.LogDebug("Connecting to hub...");
+            _logger.LogInformation("Connecting to hub...");
             await ConnectWithRetryAsync(_connection, cancellationToken);
-            _logger.LogDebug("Sending message...");
+            _logger.LogInformation("Sending message...");
             await _connection.InvokeAsync("SendMessageToAllClients", "New sensor readings from Pi!", cancellationToken);
-            _logger.LogDebug("Message sent");
+            _logger.LogInformation("Message sent");
         }
 
         private async Task<bool> ConnectWithRetryAsync(HubConnection connection, CancellationToken token)
@@ -75,17 +76,17 @@ namespace rpiDaemon.Jobs
                 {
                     await connection.StartAsync(token);
                     Debug.Assert(connection.State == HubConnectionState.Connected);
-                    _logger.LogDebug("Connection started");
+                    _logger.LogInformation("Connection started");
                     return true;
                 }
                 catch when (token.IsCancellationRequested)
                 {
-                    _logger.LogDebug("Cancellation token received");
+                    _logger.LogInformation("Cancellation token received");
                     return false;
                 }
                 catch
                 {
-                    _logger.LogDebug("Failed to start... Retrying");
+                    _logger.LogInformation("Failed to start... Retrying");
                     Debug.Assert(connection.State == HubConnectionState.Disconnected);
                     await Task.Delay(5000, token);
                 }
