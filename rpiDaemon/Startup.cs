@@ -45,7 +45,7 @@ namespace rpiDaemon
                     .StartAt(DateTimeOffset.UtcNow.AddSeconds(10))
                     .WithSimpleSchedule(s => s.WithInterval(TimeSpan.FromSeconds(5)).RepeatForever()));
                 q.AddTrigger(t => t.WithIdentity("signalRTest")
-                    .ForJob(bme280JobKey)
+                    .ForJob(signalRTestKey)
                     .StartAt(DateTimeOffset.UtcNow.AddSeconds(10))
                     .WithSimpleSchedule(s => s.WithInterval(TimeSpan.FromSeconds(5)).RepeatForever()));
 
