@@ -7,7 +7,9 @@ using System.Threading.Tasks;
 using Iot.Device.Bmxx80;
 using Iot.Device.Bmxx80.PowerMode;
 using JetBrains.Annotations;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SignalR.Client;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Quartz;
 using rpiDaemon.Models;
@@ -19,14 +21,21 @@ namespace rpiDaemon.Jobs
     {
         private readonly HubConnection _connection;
         private readonly ApplicationDbContext _context;
+        private readonly IWebHostEnvironment _environment;
         private readonly ILogger<GetBme280SensorReadingsJob> _logger;
 
-        public GetBme280SensorReadingsJob(ApplicationDbContext context, ILogger<GetBme280SensorReadingsJob> logger)
+        public GetBme280SensorReadingsJob(ApplicationDbContext context, ILogger<GetBme280SensorReadingsJob> logger,
+            IWebHostEnvironment environment)
         {
             _context = context;
             _logger = logger;
+            _environment = environment;
+
+            var developmentUrl = "http://localhost:3000/budorhub";
+            // TODO: Change to production url
+            var productionUrl = "http://localhost:3000/budorhub";
             _connection = new HubConnectionBuilder()
-                .WithUrl("http://192.168.32.2:3000/budorhub")
+                .WithUrl(environment.IsDevelopment() ? developmentUrl : productionUrl)
                 .WithAutomaticReconnect()
                 .Build();
 
@@ -58,7 +67,7 @@ namespace rpiDaemon.Jobs
             _context.SensorReadings.Add(sensorReadingModel);
             await _context.SaveChangesAsync(jobExecutionContext.CancellationToken);
 
-            //await SendReadingsToBudorHub(jobExecutionContext.CancellationToken);
+            await SendReadingsToBudorHub(jobExecutionContext.CancellationToken);
         }
 
         private async Task SendReadingsToBudorHub(CancellationToken cancellationToken)
