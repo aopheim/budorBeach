@@ -21,7 +21,7 @@
     <h2>Siste 10 temperatur-målinger</h2>
     @foreach (var reading in @Model.AllSensorReadings.OrderByDescending(m => m.MeasuredAtUtc).Take(10))
     {
-        <p>Dato: @reading.MeasuredAtUtc, temperatur: @reading.TemperatureInDegreesC, trykk: @reading.PressureInKPa </p>
+        <p>Dato: @reading.MeasuredAtUtc, temperatur: @reading.TemperatureInDegreesC, trykk: @reading.PressureInhPa </p>
     }
     <h2>Gjennomsnitt siste uke</h2>
     <p>@SensorReadingModelHelper.GetAverageReadingFromRange(@Model.SensorReadingsFromLastSevenDays.Select(m => m.TemperatureInDegreesC))</p>
