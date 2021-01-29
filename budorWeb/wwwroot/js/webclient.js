@@ -3,35 +3,29 @@
     .withAutomaticReconnect()
     .configureLogging(signalR.LogLevel.Information)
     .build();
-var hubProxy = $.connection.budorHub.
 
-function start() {
+start();
+
+connection.on("ConsoleLogMessage",
+    (message) => {
+        console.log(message);
+    });
+
+async function start() {
     try {
-        connection.start().done(function () {
-            console.log("SignalR Connected.");
-
-            try {
-                console.log("Trying invoke");
-                connection.invoke("SendMessageToAllClients", "this is my sent message");
-            } catch (err) {
-                console.log(err);
-            }
-
-            connection.on("ReceiveMessage",
-                (message) => {
-                    console.log("Received message");
-                    console.log(message);
-                });
-        }
-        );
+        await connection.start();
+        console.assert(connection.state === signalR.HubConnectionState.Connected);
     } catch (err) {
+        console.assert(connection.state === signalR.HubConnectionState.Disconnected);
         console.log(err);
-        setTimeout(start, 5000);
+        setTimeout(() => start(), 5000);
     }
-};
+}
 
-
-connection.onclose(start);
-// Start the connection.
-start()
-
+async function sendMessageToClient() {
+    try {
+        await connection.invoke("SendMessageToAllClients", "Message from client");
+    } catch (err) {
+        console.error(err);
+    }
+}
