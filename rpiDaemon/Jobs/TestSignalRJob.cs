@@ -43,12 +43,9 @@ namespace rpiDaemon.Jobs
 
         public async Task Execute(IJobExecutionContext context)
         {
-            _logger.LogInformation("Connecting to hub...");
             await ConnectWithRetryAsync(_connection, context.CancellationToken);
-            _logger.LogInformation("Sending message...");
             await _connection.InvokeAsync("SendMessageToAllClients", "Hello from Pi!",
                 context.CancellationToken);
-            _logger.LogInformation("Message sent");
         }
 
         private async Task<bool> ConnectWithRetryAsync(HubConnection connection, CancellationToken token)
@@ -59,17 +56,14 @@ namespace rpiDaemon.Jobs
                 {
                     await connection.StartAsync(token);
                     Debug.Assert(connection.State == HubConnectionState.Connected);
-                    _logger.LogInformation("Connection started");
                     return true;
                 }
                 catch when (token.IsCancellationRequested)
                 {
-                    _logger.LogInformation("Cancellation token received");
                     return false;
                 }
                 catch (Exception e)
                 {
-                    _logger.LogInformation(e, "Retrying to restart...");
                     Debug.Assert(connection.State == HubConnectionState.Disconnected);
                     await Task.Delay(5000, token);
                 }
