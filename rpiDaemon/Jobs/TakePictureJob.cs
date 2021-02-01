@@ -4,7 +4,9 @@ using System.IO;
 using System.Threading.Tasks;
 using Azure.Storage.Blobs;
 using JetBrains.Annotations;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using MMALSharp;
 using MMALSharp.Common;
@@ -23,53 +25,62 @@ namespace rpiDaemon.Jobs
         private readonly MMALCamera _camera;
         private readonly IConfiguration _config;
         private readonly BlobContainerClient _containerClient;
+        private readonly IWebHostEnvironment _environment;
         private readonly ILogger<TakePictureJob> _logger;
 
         public TakePictureJob()
         {
         }
 
-        public TakePictureJob(ILogger<TakePictureJob> logger, IConfiguration config)
+        public TakePictureJob(ILogger<TakePictureJob> logger, IConfiguration config, IWebHostEnvironment environment)
         {
             _logger = logger;
             _config = config;
+            _environment = environment;
             _containerClient =
                 new BlobContainerClient(_config.GetConnectionString("AzureStorageConnectionString"), BlobContainerName);
 
-            _camera = MMALCamera.Instance;
+            _camera = _environment.IsProduction() ? MMALCamera.Instance : default;
             MMALCameraConfig.Debug = true;
         }
 
 
         public async Task Execute(IJobExecutionContext context)
         {
-            var now = DateTime.UtcNow;
-            var folderName = DateTimeParser.GetFolderName(now);
-            var fileName = DateTimeParser.GetFileName(now);
-            var fullPath = $"/home/pi/images/{folderName}/{fileName}.jpg";
-            try
+            if (_environment.IsDevelopment())
             {
-                using var imgCaptureHandler = new ImageStreamCaptureHandler(fullPath);
-
-                MMALCameraConfig.ISO = 800;
-                MMALCameraConfig.Annotate = new AnnotateImage("Budor Beach", 15, Color.DarkGray);
-
-                _camera.ConfigureCameraSettings();
-
-                await _camera.TakePicture(imgCaptureHandler, MMALEncoding.JPEG, MMALEncoding.I420);
+                _logger.LogInformation($"Mocked image taken at {DateTime.UtcNow}");
             }
-            catch (Exception e)
+            else
             {
-                if (e is DllNotFoundException) _logger.LogError("Raspberry Pi camera not found");
-                else
-                    throw;
-            }
+                var now = DateTime.UtcNow;
+                var folderName = DateTimeParser.GetFolderName(now);
+                var fileName = DateTimeParser.GetFileName(now);
+                var fullPath = $"/home/pi/images/{folderName}/{fileName}.jpg";
+                try
+                {
+                    using var imgCaptureHandler = new ImageStreamCaptureHandler(fullPath);
 
-            _logger.LogInformation($"Picture taken at {DateTime.UtcNow}");
-            var blobClient = _containerClient.GetBlobClient($"{folderName}/{fileName}.jpg");
-            await using var uploadFileStream = File.OpenRead(fullPath);
-            await blobClient.UploadAsync(uploadFileStream, true);
-            uploadFileStream.Close();
+                    MMALCameraConfig.ISO = 800;
+                    MMALCameraConfig.Annotate = new AnnotateImage("Budor Beach", 15, Color.DarkGray);
+
+                    _camera.ConfigureCameraSettings();
+
+                    await _camera.TakePicture(imgCaptureHandler, MMALEncoding.JPEG, MMALEncoding.I420);
+                }
+                catch (Exception e)
+                {
+                    if (e is DllNotFoundException) _logger.LogError("Raspberry Pi camera not found");
+                    else
+                        throw;
+                }
+
+                _logger.LogInformation($"Picture taken at {DateTime.UtcNow}");
+                var blobClient = _containerClient.GetBlobClient($"{folderName}/{fileName}.jpg");
+                await using var uploadFileStream = File.OpenRead(fullPath);
+                await blobClient.UploadAsync(uploadFileStream, true);
+                uploadFileStream.Close();
+            }
         }
     }
 }
