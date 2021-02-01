@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using AutoFixture;
 using Iot.Device.Bmxx80;
 using Iot.Device.Bmxx80.PowerMode;
 using JetBrains.Annotations;
@@ -22,6 +23,7 @@ namespace rpiDaemon.Jobs
         private readonly HubConnection _connection;
         private readonly ApplicationDbContext _context;
         private readonly IWebHostEnvironment _environment;
+        private readonly Fixture _fixture;
         private readonly ILogger<GetBme280SensorReadingsJob> _logger;
 
         public GetBme280SensorReadingsJob(ApplicationDbContext context, ILogger<GetBme280SensorReadingsJob> logger,
@@ -30,12 +32,13 @@ namespace rpiDaemon.Jobs
             _context = context;
             _logger = logger;
             _environment = environment;
+            _fixture = new Fixture();
 
             var developmentUrl = "http://localhost:3000/budorhub";
             // TODO: Change to production url
             var productionUrl = "http://localhost:3000/budorhub";
             _connection = new HubConnectionBuilder()
-                .WithUrl(environment.IsDevelopment() ? developmentUrl : productionUrl)
+                .WithUrl(environment.IsProduction() ? productionUrl : developmentUrl)
                 .WithAutomaticReconnect()
                 .Build();
 
@@ -67,16 +70,13 @@ namespace rpiDaemon.Jobs
             _context.SensorReadings.Add(sensorReadingModel);
             await _context.SaveChangesAsync(jobExecutionContext.CancellationToken);
 
-            await SendReadingsToBudorHub(jobExecutionContext.CancellationToken);
+            await PushReadingsToBudorHub(jobExecutionContext.CancellationToken);
         }
 
-        private async Task SendReadingsToBudorHub(CancellationToken cancellationToken)
+        private async Task PushReadingsToBudorHub(CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Connecting to hub...");
             await ConnectWithRetryAsync(_connection, cancellationToken);
-            _logger.LogInformation("Sending message...");
             await _connection.InvokeAsync("SendMessageToAllClients", "New sensor readings from Pi!", cancellationToken);
-            _logger.LogInformation("Message sent");
         }
 
         private async Task<bool> ConnectWithRetryAsync(HubConnection connection, CancellationToken token)
@@ -87,17 +87,14 @@ namespace rpiDaemon.Jobs
                 {
                     await connection.StartAsync(token);
                     Debug.Assert(connection.State == HubConnectionState.Connected);
-                    _logger.LogInformation("Connection started");
                     return true;
                 }
                 catch when (token.IsCancellationRequested)
                 {
-                    _logger.LogInformation("Cancellation token received");
                     return false;
                 }
                 catch (Exception e)
                 {
-                    _logger.LogInformation(e, "Retrying to restart...");
                     Debug.Assert(connection.State == HubConnectionState.Disconnected);
                     await Task.Delay(5000, token);
                 }
@@ -105,6 +102,13 @@ namespace rpiDaemon.Jobs
 
         private SensorReadingModel GetCurrentSensorReadings()
         {
+            if (_environment.IsDevelopment())
+            {
+                var model = _fixture.Create<SensorReadingModel>();
+                model.Id = default;
+                return model;
+            }
+
             var i2CSettings = new I2cConnectionSettings(1, Bmx280Base.DefaultI2cAddress);
             using var i2CDevice = I2cDevice.Create(i2CSettings);
             using var bme280 = new Bme280(i2CDevice);
