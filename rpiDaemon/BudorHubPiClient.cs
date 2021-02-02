@@ -1,8 +1,13 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using Azure.Storage.Blobs;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SignalR.Client;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using MMALSharp;
+using rpiDaemon.Jobs;
 using Shared.Interfaces;
 using Shared.Models;
 using Shared.PiCameraSettings;
@@ -12,14 +17,23 @@ namespace rpiDaemon
 {
     public class BudorHubPiClient : IBudorHubClient, IHostedService
     {
-        private readonly HubConnection _connection;
-        private readonly ILogger<BudorHubPiClient> _logger;
+        private const string BlobContainerName = "images";
 
-        public BudorHubPiClient(ILogger<BudorHubPiClient> logger)
+        private readonly HubConnection _connection;
+        private readonly BlobContainerClient _containerClient;
+        private readonly IWebHostEnvironment _environment;
+        private readonly ILogger<BudorHubPiClient> _logger;
+        private MMALCamera _camera;
+
+        public BudorHubPiClient(ILogger<BudorHubPiClient> logger, IWebHostEnvironment environment,
+            IConfiguration config)
         {
             _logger = logger;
+            _environment = environment;
             _connection = new HubConnectionBuilder().WithUrl("http://localhost:3000/budorhub").WithAutomaticReconnect()
                 .Build();
+            _containerClient =
+                new BlobContainerClient(config.GetConnectionString("AzureStorageConnectionString"), BlobContainerName);
         }
 
         public Task ConsoleLogMessage(string message)
@@ -35,16 +49,16 @@ namespace rpiDaemon
             return Task.CompletedTask;
         }
 
-        public Task TakeImage(PiCameraSettings settings)
+        public async Task TakeImage(PiCameraSettings settings)
         {
-            _logger.LogInformation("Taking image from BudorHubPiClient");
-
-            return Task.CompletedTask;
+            await TakePictureJobHelper.TakeImageAndUploadAsync(_environment, _camera, _logger, _containerClient,
+                settings);
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
-            _connection.On<PiCameraSettings>(nameof(IBudorHubClient.TakeImage), settings => { TakeImage(settings); });
+            _connection.On<PiCameraSettings>(nameof(IBudorHubClient.TakeImage),
+                async settings => { await TakeImage(settings); });
             await SignalRHelper.ConnectWithRetryAsync(_connection, cancellationToken);
         }
 
