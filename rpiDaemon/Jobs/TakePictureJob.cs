@@ -14,6 +14,7 @@ using MMALSharp.Config;
 using MMALSharp.Handlers;
 using Quartz;
 using rpiDaemon.DateTimeHelpers;
+using Shared.PiCameraSettings;
 
 namespace rpiDaemon.Jobs
 {
@@ -61,7 +62,8 @@ namespace rpiDaemon.Jobs
                 {
                     using var imgCaptureHandler = new ImageStreamCaptureHandler(fullPath);
 
-                    MMALCameraConfig.ISO = 800;
+                    MMALCameraConfig.ISO = PiCameraSettings.Iso;
+                    MMALCameraConfig.ShutterSpeed = PiCameraSettings.ShutterTime;
                     MMALCameraConfig.Annotate = new AnnotateImage("Budor Beach", 15, Color.DarkGray);
 
                     _camera.ConfigureCameraSettings();
