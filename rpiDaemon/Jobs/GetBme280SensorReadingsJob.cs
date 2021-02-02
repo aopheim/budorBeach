@@ -14,6 +14,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Quartz;
 using rpiDaemon.Models;
+using Shared.SignalR;
 
 namespace rpiDaemon.Jobs
 {
@@ -42,15 +43,15 @@ namespace rpiDaemon.Jobs
                 .WithAutomaticReconnect()
                 .Build();
 
-            _connection.Closed += async e =>
+            _connection.Closed += async _ =>
             {
-                _logger.LogError(e, e.Message);
+                _logger.LogError(_, _.Message);
                 await Task.Delay(200);
                 await _connection.StartAsync();
             };
-            _connection.Reconnecting += e =>
+            _connection.Reconnecting += _ =>
             {
-                _logger.LogError(e, e.Message);
+                _logger.LogError(_, _.Message);
                 Debug.Assert(_connection.State == HubConnectionState.Reconnecting);
                 return Task.CompletedTask;
             };
@@ -70,34 +71,14 @@ namespace rpiDaemon.Jobs
             _context.SensorReadings.Add(sensorReadingModel);
             await _context.SaveChangesAsync(jobExecutionContext.CancellationToken);
 
-            await PushReadingsToBudorHub(jobExecutionContext.CancellationToken);
+            await PushReadingsToBudorHub(sensorReadingModel, jobExecutionContext.CancellationToken);
         }
 
-        private async Task PushReadingsToBudorHub(CancellationToken cancellationToken)
+        private async Task PushReadingsToBudorHub(SensorReadingModel model, CancellationToken cancellationToken)
         {
-            await ConnectWithRetryAsync(_connection, cancellationToken);
-            await _connection.InvokeAsync("SendMessageToAllClients", "New sensor readings from Pi!", cancellationToken);
-        }
-
-        private async Task<bool> ConnectWithRetryAsync(HubConnection connection, CancellationToken token)
-        {
-            // Keep trying to until we can start or the token is canceled.
-            while (true)
-                try
-                {
-                    await connection.StartAsync(token);
-                    Debug.Assert(connection.State == HubConnectionState.Connected);
-                    return true;
-                }
-                catch when (token.IsCancellationRequested)
-                {
-                    return false;
-                }
-                catch (Exception e)
-                {
-                    Debug.Assert(connection.State == HubConnectionState.Disconnected);
-                    await Task.Delay(5000, token);
-                }
+            await SignalRHelper.ConnectWithRetryAsync(_connection, cancellationToken);
+            await _connection.InvokeAsync("SendSensorReadingModelToWebClient", model,
+                cancellationToken);
         }
 
         private SensorReadingModel GetCurrentSensorReadings()
