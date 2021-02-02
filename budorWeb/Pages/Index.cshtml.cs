@@ -15,7 +15,9 @@ using Microsoft.Extensions.Logging;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using rpiDaemon;
-using rpiDaemon.Models;
+using Shared;
+using Shared.Models;
+using Shared.PiCameraSettings;
 using Shared.SignalR;
 
 namespace budorWeb.Pages
@@ -83,6 +85,7 @@ namespace budorWeb.Pages
                 });
             await SignalRHelper.ConnectWithRetryAsync(_connection, cancellationToken);
             await _connection.InvokeAsync("SendMessageToAllClients", ".NET Client connected!", cancellationToken);
+            await _connection.InvokeAsync(nameof(BudorHub.TakeImage), new PiCameraSettings(), cancellationToken);
 
             var now = DateTime.UtcNow;
             var sevenDaysAgo = now.AddDays(-7);
