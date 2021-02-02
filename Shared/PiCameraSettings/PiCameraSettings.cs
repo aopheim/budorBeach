@@ -2,8 +2,8 @@
 {
     public class PiCameraSettings
     {
-        public static int Iso { get; set; }
+        public int Iso { get; set; }
 
-        public static int ShutterTime { get; set; }
+        public int ShutterTime { get; set; }
     }
 }
