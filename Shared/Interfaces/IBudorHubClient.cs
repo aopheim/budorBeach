@@ -1,11 +1,12 @@
 ﻿using System.Threading.Tasks;
-using rpiDaemon.Models;
+using Shared.Models;
 
-namespace budorWeb.Interfaces
+namespace Shared.Interfaces
 {
-    public interface IBudorWebClient
+    public interface IBudorHubClient
     {
         Task ConsoleLogMessage(string message);
         Task ReceiveCurrentSensorReading(SensorReadingModel model);
+        Task TakeImage(PiCameraSettings.PiCameraSettings settings);
     }
 }
