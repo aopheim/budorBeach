@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using rpiDaemon.Models;
+using Shared.Models;
 
 namespace rpiDaemon.Init
 {
