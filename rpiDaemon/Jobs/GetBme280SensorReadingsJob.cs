@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Quartz;
-using rpiDaemon.Models;
+using Shared.Models;
 using Shared.SignalR;
 
 namespace rpiDaemon.Jobs

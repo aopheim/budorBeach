@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using rpiDaemon.Models;
+using Shared.Models;
 
 namespace rpiDaemon
 {
