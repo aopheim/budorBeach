@@ -2,6 +2,7 @@
 using budorWeb.Interfaces;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.SignalR;
+using rpiDaemon.Models;
 
 namespace budorWeb.Hubs
 {
@@ -11,6 +12,11 @@ namespace budorWeb.Hubs
         public async Task SendMessageToAllClients(string message)
         {
             await Clients.All.ConsoleLogMessage(message);
+        }
+
+        public async Task SendSensorReadingModelToWebClient(SensorReadingModel model)
+        {
+            await Clients.All.ReceiveCurrentSensorReading(model);
         }
 
         public override async Task OnConnectedAsync()
