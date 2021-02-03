@@ -16,6 +16,7 @@ using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using rpiDaemon;
 using Shared;
+using Shared.Interfaces;
 using Shared.Models;
 using Shared.PiCameraSettings;
 using Shared.SignalR;
@@ -41,6 +42,7 @@ namespace budorWeb.Pages
             _logger = logger;
             _cloudBlobClient = CloudStorageAccount.Parse(_config.GetConnectionString("AzureStorageConnectionString"))
                 .CreateCloudBlobClient();
+            _currentCameraSettings = PiCameraSettingsHelper.GetCurrentCameraSettingsFromFile();
             var developmentUrl = "http://localhost:3000/budorhub";
             // TODO: Change to production url
             var productionUrl = "http://localhost:3000/budorhub";
@@ -68,6 +70,9 @@ namespace budorWeb.Pages
             };
         }
 
+        private PiCameraSettings _currentCameraSettings { get; }
+
+
         public List<CloudBlockBlob> AllImagesInBlob { get; set; }
         public SensorReadingModel LatestSensorReadingModel { get; set; }
         public List<SensorReadingModel> AllSensorReadings { get; set; }
@@ -76,16 +81,14 @@ namespace budorWeb.Pages
 
         public async Task OnGetAsync(CancellationToken cancellationToken)
         {
-            _connection.On<string>("ConsoleLogMessage", message => { _logger.LogInformation(message); });
-            _connection.On<SensorReadingModel>("ReceiveCurrentSensorReading",
-                model =>
-                {
-                    _logger.LogInformation(JsonSerializer.Serialize(model));
-                    LatestSensorReadingModel = model;
-                });
+            SetupWebClientMethods();
             await SignalRHelper.ConnectWithRetryAsync(_connection, cancellationToken);
-            await _connection.InvokeAsync("SendMessageToAllClients", ".NET Client connected!", cancellationToken);
-            await _connection.InvokeAsync(nameof(BudorHub.TakeImage), new PiCameraSettings(), cancellationToken);
+            await _connection.InvokeAsync(nameof(BudorHub.SendMessageToAllClients), ".NET Client connected!",
+                cancellationToken);
+
+            // TODO: Set camera settings from UI
+            PiCameraSettingsHelper.SetCameraSettingsToFile(_currentCameraSettings);
+            await _connection.InvokeAsync(nameof(BudorHub.TakeImage), _currentCameraSettings, cancellationToken);
 
             var now = DateTime.UtcNow;
             var sevenDaysAgo = now.AddDays(-7);
@@ -104,12 +107,23 @@ namespace budorWeb.Pages
             do
             {
                 var response = await blobContainer.ListBlobsSegmentedAsync(default, true, default,
-                    default, continuationToken, default, default);
+                    default, continuationToken, default, default, cancellationToken);
                 continuationToken = response.ContinuationToken;
                 allImages.AddRange(response.Results.Cast<CloudBlockBlob>());
             } while (continuationToken != null);
 
             AllImagesInBlob = allImages;
+        }
+
+        private void SetupWebClientMethods()
+        {
+            _connection.On<string>(nameof(IBudorHubClient.TakeImage), message => { _logger.LogInformation(message); });
+            _connection.On<SensorReadingModel>(nameof(IBudorHubClient.ReceiveCurrentSensorReading),
+                model =>
+                {
+                    _logger.LogInformation(JsonSerializer.Serialize(model));
+                    LatestSensorReadingModel = model;
+                });
         }
     }
 }
