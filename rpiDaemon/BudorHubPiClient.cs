@@ -23,7 +23,7 @@ namespace rpiDaemon
         private readonly BlobContainerClient _containerClient;
         private readonly IWebHostEnvironment _environment;
         private readonly ILogger<BudorHubPiClient> _logger;
-        private MMALCamera _camera;
+        private readonly MMALCamera _camera;
 
         public BudorHubPiClient(ILogger<BudorHubPiClient> logger, IWebHostEnvironment environment,
             IConfiguration config)
@@ -34,6 +34,7 @@ namespace rpiDaemon
                 .Build();
             _containerClient =
                 new BlobContainerClient(config.GetConnectionString("AzureStorageConnectionString"), BlobContainerName);
+            _camera = MMALCamera.Instance;
         }
 
         public Task ConsoleLogMessage(string message)

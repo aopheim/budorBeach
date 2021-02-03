@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.IO;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Azure.Storage.Blobs;
 using Microsoft.AspNetCore.Hosting;
@@ -22,7 +23,8 @@ namespace rpiDaemon.Jobs
         {
             if (environment.IsDevelopment())
             {
-                logger.LogInformation($"Mocked image taken at {DateTime.UtcNow}");
+                logger.LogInformation(
+                    $"Mocked image taken at {DateTime.UtcNow}. Camera settings: {JsonSerializer.Serialize(settings)}");
             }
             else
             {
