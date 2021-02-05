@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
 using Quartz;
-using rpiDaemon.Models;
+using Shared.Models;
 
 namespace rpiDaemon.Jobs
 {
