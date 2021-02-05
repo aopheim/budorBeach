@@ -1,7 +1,4 @@
-﻿using System;
-using System.Drawing;
-using System.IO;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Azure.Storage.Blobs;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Hosting;
@@ -9,11 +6,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using MMALSharp;
-using MMALSharp.Common;
-using MMALSharp.Config;
-using MMALSharp.Handlers;
 using Quartz;
-using rpiDaemon.DateTimeHelpers;
+using Shared.PiCameraSettings;
 
 namespace rpiDaemon.Jobs
 {
@@ -47,40 +41,8 @@ namespace rpiDaemon.Jobs
 
         public async Task Execute(IJobExecutionContext context)
         {
-            if (_environment.IsDevelopment())
-            {
-                _logger.LogInformation($"Mocked image taken at {DateTime.UtcNow}");
-            }
-            else
-            {
-                var now = DateTime.UtcNow;
-                var folderName = DateTimeParser.GetFolderName(now);
-                var fileName = DateTimeParser.GetFileName(now);
-                var fullPath = $"/home/pi/images/{folderName}/{fileName}.jpg";
-                try
-                {
-                    using var imgCaptureHandler = new ImageStreamCaptureHandler(fullPath);
-
-                    MMALCameraConfig.ISO = 800;
-                    MMALCameraConfig.Annotate = new AnnotateImage("Budor Beach", 15, Color.DarkGray);
-
-                    _camera.ConfigureCameraSettings();
-
-                    await _camera.TakePicture(imgCaptureHandler, MMALEncoding.JPEG, MMALEncoding.I420);
-                }
-                catch (Exception e)
-                {
-                    if (e is DllNotFoundException) _logger.LogError("Raspberry Pi camera not found");
-                    else
-                        throw;
-                }
-
-                _logger.LogInformation($"Picture taken at {DateTime.UtcNow}");
-                var blobClient = _containerClient.GetBlobClient($"{folderName}/{fileName}.jpg");
-                await using var uploadFileStream = File.OpenRead(fullPath);
-                await blobClient.UploadAsync(uploadFileStream, true);
-                uploadFileStream.Close();
-            }
+            await TakePictureJobHelper.TakeImageAndUploadAsync(_environment, _camera, _logger, _containerClient,
+                new PiCameraSettings());
         }
     }
 }
