@@ -1,6 +1,7 @@
 ﻿@page
 @using budorWeb.Helpers
 @using rpiDaemon.DateTimeHelpers
+@using System.Text.Json
 @model BudorBeachModel
 @{
     ViewData["Title"] = "Budor Beach";
@@ -10,14 +11,11 @@
     <link href="@Url.Content("~/css/index.css")" rel="stylesheet" type="text/css" />
 }
 
-@section Scripts
-{
-    <script src="~/js/signalr/dist/browser/signalr.js"></script>
-    <script src="~/js/webclient.js"></script>
-}
-
 <div class="text-center">
     <h1>Budor Beach</h1>
+    <h2>Nyeste sensormåling:</h2>
+    <p>@JsonSerializer.Serialize(Model.LatestSensorReadingModel)</p>
+
     <h2>Siste 10 temperatur-målinger</h2>
     @foreach (var reading in @Model.AllSensorReadings.OrderByDescending(m => m.MeasuredAtUtc).Take(10))
     {
