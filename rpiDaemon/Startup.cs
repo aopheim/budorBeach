@@ -1,13 +1,13 @@
 using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Quartz;
 using rpiDaemon.Jobs;
+using Shared;
 
 namespace rpiDaemon
 {
@@ -21,7 +21,7 @@ namespace rpiDaemon
             Configuration = config;
         }
 
-        public IConfiguration Configuration { get; }
+        private IConfiguration Configuration { get; }
 
         public void ConfigureServices(IServiceCollection services)
         {
@@ -29,11 +29,9 @@ namespace rpiDaemon
             {
                 var pictureJobKey = new JobKey(nameof(TakePictureJob), "secondJobs");
                 var bme280JobKey = new JobKey(nameof(GetBme280SensorReadingsJob), "secondJobs");
-                var signalRTestKey = new JobKey(nameof(TestSignalRJob), "secondJobs");
 
                 q.AddJob<TakePictureJob>(j => j.WithIdentity(pictureJobKey));
                 q.AddJob<GetBme280SensorReadingsJob>(j => j.WithIdentity(bme280JobKey));
-                q.AddJob<TestSignalRJob>(j => j.WithIdentity(signalRTestKey));
 
                 q.AddTrigger(t => t
                     .WithIdentity("pictureTrigger")
@@ -44,14 +42,13 @@ namespace rpiDaemon
                     .ForJob(bme280JobKey)
                     .StartAt(DateTimeOffset.UtcNow.AddSeconds(10))
                     .WithSimpleSchedule(s => s.WithInterval(TimeSpan.FromSeconds(5)).RepeatForever()));
-                q.AddTrigger(t => t.WithIdentity("signalRTest")
-                    .ForJob(signalRTestKey)
-                    .StartAt(DateTimeOffset.UtcNow.AddSeconds(10))
-                    .WithSimpleSchedule(s => s.WithInterval(TimeSpan.FromSeconds(5)).RepeatForever()));
 
                 q.UseMicrosoftDependencyInjectionScopedJobFactory();
             });
             services.AddQuartzHostedService(q => q.WaitForJobsToComplete = false);
+
+            services.AddSignalR();
+            services.AddHostedService<BudorHubPiClient>();
 
             if (_environment.IsProduction())
                 services.AddDbContext<ApplicationDbContext>(options =>
@@ -68,10 +65,7 @@ namespace rpiDaemon
 
             app.UseRouting();
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapGet("/", async context => { await context.Response.WriteAsync("Hello World!"); });
-            });
+            app.UseEndpoints(endpoints => { endpoints.MapHub<BudorHub>("/budorhub"); });
         }
     }
 }

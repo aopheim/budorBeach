@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace rpiDaemon.Models
+namespace Shared.Models
 {
     public class SensorReadingModel
     {
