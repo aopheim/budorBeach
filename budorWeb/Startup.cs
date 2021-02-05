@@ -1,6 +1,11 @@
+using System;
+using Azure.Core.Extensions;
+using Azure.Storage.Blobs;
+using Azure.Storage.Queues;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -39,6 +44,13 @@ namespace budorWeb
                     options.UseSqlServer("DevelopmentDb");
                     options.EnableSensitiveDataLogging();
                 });
+            services.AddAzureClients(builder =>
+            {
+                builder.AddBlobServiceClient(Configuration["ConnectionStrings:AzureStorageConnectionString:blob"],
+                    true);
+                builder.AddQueueServiceClient(Configuration["ConnectionStrings:AzureStorageConnectionString:queue"],
+                    true);
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -64,6 +76,25 @@ namespace budorWeb
                 endpoints.MapRazorPages();
                 endpoints.MapHub<BudorHub>("/budorhub");
             });
+        }
+    }
+
+    internal static class StartupExtensions
+    {
+        public static IAzureClientBuilder<BlobServiceClient, BlobClientOptions> AddBlobServiceClient(
+            this AzureClientFactoryBuilder builder, string serviceUriOrConnectionString, bool preferMsi)
+        {
+            if (preferMsi && Uri.TryCreate(serviceUriOrConnectionString, UriKind.Absolute, out var serviceUri))
+                return builder.AddBlobServiceClient(serviceUri);
+            return builder.AddBlobServiceClient(serviceUriOrConnectionString);
+        }
+
+        public static IAzureClientBuilder<QueueServiceClient, QueueClientOptions> AddQueueServiceClient(
+            this AzureClientFactoryBuilder builder, string serviceUriOrConnectionString, bool preferMsi)
+        {
+            if (preferMsi && Uri.TryCreate(serviceUriOrConnectionString, UriKind.Absolute, out var serviceUri))
+                return builder.AddQueueServiceClient(serviceUri);
+            return builder.AddQueueServiceClient(serviceUriOrConnectionString);
         }
     }
 }
