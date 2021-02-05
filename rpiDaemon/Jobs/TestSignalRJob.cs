@@ -64,6 +64,7 @@ namespace rpiDaemon.Jobs
                 }
                 catch (Exception e)
                 {
+                    _logger.LogError(e, e.Message);
                     Debug.Assert(connection.State == HubConnectionState.Disconnected);
                     await Task.Delay(5000, token);
                 }
