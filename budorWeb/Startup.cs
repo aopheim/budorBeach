@@ -32,7 +32,7 @@ namespace budorWeb
             services.AddRazorPages();
             services.AddSignalR();
 
-            if (_hostingEnvironment.IsDevelopment())
+            if (_hostingEnvironment.IsProduction())
                 services.AddDbContext<ApplicationDbContext>(options =>
                 {
                     options.UseSqlServer(Configuration.GetConnectionString("ProductionDb"));
