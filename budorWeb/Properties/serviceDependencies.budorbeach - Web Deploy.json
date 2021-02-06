@@ -6,16 +6,16 @@
       "connectionId": "AzureStorageConnectionString",
       "secretStore": "AzureAppSettings"
     },
-    "mssql1": {
-      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/budordb/databases/budor-db-prod",
-      "type": "mssql.azure",
-      "connectionId": "ProductionDb",
-      "secretStore": "AzureAppSettings"
-    },
     "mssql2": {
       "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/budordb/databases/budor-db-prod",
       "type": "mssql.azure",
       "connectionId": "DevelopmentDb",
+      "secretStore": "AzureAppSettings"
+    },
+    "mssql1": {
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/budordb/databases/budor-db-prod",
+      "type": "mssql.azure",
+      "connectionId": "ProductionDb",
       "secretStore": "AzureAppSettings"
     }
   }
