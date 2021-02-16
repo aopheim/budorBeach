@@ -3,12 +3,6 @@
     "secrets1": {
       "type": "secrets.user"
     },
-    "mssql1": {
-      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/budordb/databases/budor-db-prod",
-      "type": "mssql.azure",
-      "connectionId": "ProductionDb",
-      "secretStore": "LocalSecretsFile"
-    },
     "storage1": {
       "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Storage/storageAccounts/budorbeach",
       "type": "storage.azure",
@@ -18,6 +12,12 @@
     "mssql2": {
       "type": "mssql.local",
       "connectionId": "DevelopmentDb",
+      "secretStore": "LocalSecretsFile"
+    },
+    "mssql1": {
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/budordb/databases/budor-db-prod",
+      "type": "mssql.azure",
+      "connectionId": "ProductionDb",
       "secretStore": "LocalSecretsFile"
     }
   }
