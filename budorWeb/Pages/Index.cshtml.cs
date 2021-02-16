@@ -1,18 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using rpiDaemon;
+using Shared;
+using Shared.Interfaces;
 using Shared.Models;
 using Shared.PiCameraSettings;
+using Shared.SignalR;
 
 namespace budorWeb.Pages
 {
@@ -22,7 +29,7 @@ namespace budorWeb.Pages
 
         private readonly IConfiguration _config;
 
-        //private readonly HubConnection _connection;
+        private readonly HubConnection _connection;
         private readonly ApplicationDbContext _context;
         private readonly IWebHostEnvironment _environment;
         private readonly ILogger<BudorBeachModel> _logger;
@@ -38,31 +45,31 @@ namespace budorWeb.Pages
             _cloudBlobClient = CloudStorageAccount.Parse(_config.GetConnectionString("AzureStorageConnectionString"))
                 .CreateCloudBlobClient();
             _currentCameraSettings = PiCameraSettingsHelper.GetCurrentCameraSettingsFromFile();
+
             var developmentUrl = "http://localhost:3000/budorhub";
-            // TODO: Change to production url
-            var productionUrl = "http://localhost:3000/budorhub";
-            //_connection = new HubConnectionBuilder()
-            //    .WithUrl(environment.IsProduction() ? productionUrl : developmentUrl)
-            //    .WithAutomaticReconnect()
-            //    .Build();
-            //_connection.Closed += async e =>
-            //{
-            //    _logger.LogError(e, e.Message);
-            //    await Task.Delay(200);
-            //    await _connection.StartAsync();
-            //};
-            //_connection.Reconnecting += e =>
-            //{
-            //    _logger.LogError(e, e.Message);
-            //    Debug.Assert(_connection.State == HubConnectionState.Reconnecting);
-            //    return Task.CompletedTask;
-            //};
-            //_connection.Reconnected += message =>
-            //{
-            //    _logger.LogInformation(message);
-            //    Debug.Assert(_connection.State == HubConnectionState.Connected);
-            //    return Task.CompletedTask;
-            //};
+            var productionUrl = "https://budorbeach.azurewebsites.net/budorhub";
+            _connection = new HubConnectionBuilder()
+                .WithUrl(environment.IsProduction() ? productionUrl : developmentUrl)
+                .WithAutomaticReconnect()
+                .Build();
+            _connection.Closed += async e =>
+            {
+                _logger.LogError(e, e.Message);
+                await Task.Delay(200);
+                await _connection.StartAsync();
+            };
+            _connection.Reconnecting += e =>
+            {
+                _logger.LogError(e, e.Message);
+                Debug.Assert(_connection.State == HubConnectionState.Reconnecting);
+                return Task.CompletedTask;
+            };
+            _connection.Reconnected += message =>
+            {
+                _logger.LogInformation(message);
+                Debug.Assert(_connection.State == HubConnectionState.Connected);
+                return Task.CompletedTask;
+            };
         }
 
         private PiCameraSettings _currentCameraSettings { get; }
@@ -76,14 +83,14 @@ namespace budorWeb.Pages
 
         public async Task OnGetAsync(CancellationToken cancellationToken)
         {
-            //SetupWebClientMethods();
-            //await SignalRHelper.ConnectWithRetryAsync(_connection, cancellationToken);
-            //await _connection.InvokeAsync(nameof(BudorHub.SendMessageToAllClients), ".NET Client connected!",
-            //    cancellationToken);
+            SetupWebClientMethods();
+            await SignalRHelper.ConnectWithRetryAsync(_connection, cancellationToken);
+            await _connection.InvokeAsync(nameof(BudorHub.SendMessageToAllClients), ".NET Client connected!",
+                cancellationToken);
 
             // TODO: Set camera settings from UI
             PiCameraSettingsHelper.SetCameraSettingsToFile(_currentCameraSettings);
-            //await _connection.InvokeAsync(nameof(BudorHub.TakeImage), _currentCameraSettings, cancellationToken);
+            await _connection.InvokeAsync(nameof(BudorHub.TakeImage), _currentCameraSettings, cancellationToken);
 
             var now = DateTime.UtcNow;
             var sevenDaysAgo = now.AddDays(-7);
@@ -112,13 +119,13 @@ namespace budorWeb.Pages
 
         private void SetupWebClientMethods()
         {
-            //_connection.On<string>(nameof(IBudorHubClient.TakeImage), message => { _logger.LogInformation(message); });
-            //_connection.On<SensorReadingModel>(nameof(IBudorHubClient.ReceiveCurrentSensorReading),
-            //    model =>
-            //    {
-            //        _logger.LogInformation(JsonSerializer.Serialize(model));
-            //        LatestSensorReadingModel = model;
-            //    });
+            _connection.On<string>(nameof(IBudorHubClient.TakeImage), message => { _logger.LogInformation(message); });
+            _connection.On<SensorReadingModel>(nameof(IBudorHubClient.ReceiveCurrentSensorReading),
+                model =>
+                {
+                    _logger.LogInformation(JsonSerializer.Serialize(model));
+                    LatestSensorReadingModel = model;
+                });
         }
     }
 }
