@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Device.I2c;
-using System.Diagnostics;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -35,33 +34,12 @@ namespace rpiDaemon.Jobs
             _environment = environment;
             _fixture = new Fixture();
 
-            var developmentUrl = "http://localhost:3000/budorhub";
-            // TODO: Change to production url
-            var productionUrl = "http://localhost:3000/budorhub";
-            _connection = new HubConnectionBuilder()
-                .WithUrl(environment.IsProduction() ? productionUrl : developmentUrl)
-                .WithAutomaticReconnect()
-                .Build();
-
-            _connection.Closed += async _ =>
-            {
-                _logger.LogError(_, _.Message);
-                await Task.Delay(200);
-                await _connection.StartAsync();
-            };
-            _connection.Reconnecting += _ =>
-            {
-                _logger.LogError(_, _.Message);
-                Debug.Assert(_connection.State == HubConnectionState.Reconnecting);
-                return Task.CompletedTask;
-            };
-            _connection.Reconnected += message =>
-            {
-                _logger.LogInformation(message);
-                Debug.Assert(_connection.State == HubConnectionState.Connected);
-                return Task.CompletedTask;
-            };
+            const string developmentUrl = "http://localhost:3000/budorhub";
+            const string productionUrl = "https://budorbeach.azurewebsites.net/budorhub";
+            _connection = SignalRHelper.GetHubConnection(environment.IsProduction() ? productionUrl : developmentUrl);
+            SignalRHelper.SetupEventsForDebuggingConnection(logger, _connection);
         }
+
 
         public async Task Execute(IJobExecutionContext jobExecutionContext)
         {
