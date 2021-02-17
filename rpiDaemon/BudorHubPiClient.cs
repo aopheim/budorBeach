@@ -18,23 +18,26 @@ namespace rpiDaemon
     public class BudorHubPiClient : IBudorHubClient, IHostedService
     {
         private const string BlobContainerName = "images";
+        private readonly MMALCamera _camera;
 
         private readonly HubConnection _connection;
         private readonly BlobContainerClient _containerClient;
         private readonly IWebHostEnvironment _environment;
         private readonly ILogger<BudorHubPiClient> _logger;
-        private readonly MMALCamera _camera;
 
         public BudorHubPiClient(ILogger<BudorHubPiClient> logger, IWebHostEnvironment environment,
             IConfiguration config)
         {
             _logger = logger;
             _environment = environment;
-            _connection = new HubConnectionBuilder().WithUrl("http://localhost:3000/budorhub").WithAutomaticReconnect()
+            var developmentUrl = "http://localhost:3000/budorhub";
+            var productionUrl = "https://budorbeach.azurewebsites.net/budorhub";
+            _connection = new HubConnectionBuilder()
+                .WithUrl(environment.IsProduction() ? productionUrl : developmentUrl).WithAutomaticReconnect()
                 .Build();
             _containerClient =
                 new BlobContainerClient(config.GetConnectionString("AzureStorageConnectionString"), BlobContainerName);
-            _camera = MMALCamera.Instance;
+            _camera = environment.IsProduction() ? MMALCamera.Instance : default;
         }
 
         public Task ConsoleLogMessage(string message)

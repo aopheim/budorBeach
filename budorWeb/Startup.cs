@@ -32,18 +32,15 @@ namespace budorWeb
             services.AddRazorPages();
             services.AddSignalR();
 
-            if (_hostingEnvironment.IsProduction())
-                services.AddDbContext<ApplicationDbContext>(options =>
-                {
-                    options.UseSqlServer(Configuration.GetConnectionString("ProductionDb"));
-                    options.EnableSensitiveDataLogging();
-                });
-            else
-                services.AddDbContext<ApplicationDbContext>(options =>
-                {
-                    options.UseSqlServer("DevelopmentDb");
-                    options.EnableSensitiveDataLogging();
-                });
+            var connectionString = _hostingEnvironment.IsProduction()
+                ? Configuration.GetConnectionString("ProductionDb")
+                : Configuration.GetConnectionString("DevelopmentDb");
+            services.AddDbContext<ApplicationDbContext>(options =>
+            {
+                options.UseSqlServer(connectionString);
+                options.EnableSensitiveDataLogging();
+            });
+
             services.AddAzureClients(builder =>
             {
                 builder.AddBlobServiceClient(Configuration["ConnectionStrings:AzureStorageConnectionString:blob"],
