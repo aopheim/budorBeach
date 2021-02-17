@@ -13,9 +13,9 @@ connection.on("ConsoleLogMessage",
 
 connection.on("ReceiveCurrentSensorReading",
     (model) => {
-        console.log('Received model: ', model);
-        console.log(model.MeasuredAtUtc);
-        document.getElementById("latestSensorReading").innerHTML = model["measuredAtUtc"];
+        document.getElementById("temperatureInDegreesC").innerHTML = model["temperatureInDegreesC"];
+        document.getElementById("relativeHumidityInPercent").innerHTML = model["relativeHumidityInPercent"];
+        document.getElementById("pressureInhPa").innerHTML = model["pressureInhPa"];
     });
 
 async function start() {
