@@ -14,12 +14,12 @@
 <div class="text-center">
     <h1>Budor Beach</h1>
     <h2>Nyeste sensormåling:</h2>
-    <p>@JsonSerializer.Serialize(Model.AllSensorReadings.OrderByDescending(m => m.MeasuredAtUtc).FirstOrDefault())</p>
+    <p id="latestSensorReading"></p>
 
     <h2>Siste 10 temperatur-målinger</h2>
-    @foreach (var reading in @Model.AllSensorReadings.OrderByDescending(m => m.MeasuredAtUtc).Take(10))
+    @foreach (var reading in @Model.SensorReadingsFromLastSevenDays.OrderByDescending(m => m.MeasuredAtUtc).Take(10))
     {
-        <p>Dato: @reading.MeasuredAtUtc, temperatur: @reading.TemperatureInDegreesC, trykk: @reading.PressureInhPa </p>
+        <p>@JsonSerializer.Serialize(reading)</p>
     }
     <h2>Gjennomsnitt siste uke</h2>
     <p>@SensorReadingModelHelper.GetAverageReadingFromRange(@Model.SensorReadingsFromLastSevenDays.Select(m => m.TemperatureInDegreesC))</p>
@@ -36,3 +36,6 @@
         </div>
     }
 </div>
+
+<script src="~/js/signalr/dist/browser/signalr.min.js"></script>
+<script src="~/js/webclient.js"></script>

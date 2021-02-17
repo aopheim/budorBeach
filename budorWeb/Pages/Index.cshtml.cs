@@ -56,14 +56,13 @@ namespace budorWeb.Pages
 
         public List<CloudBlockBlob> AllImagesInBlob { get; set; }
         public SensorReadingModel LatestSensorReadingModel { get; set; }
-        public List<SensorReadingModel> AllSensorReadings { get; set; }
         public List<SensorReadingModel> SensorReadingsFromLastSevenDays { get; set; }
         public List<SensorReadingModel> SensorReadingsFromLastMonth { get; set; }
 
         public async Task OnGetAsync(CancellationToken cancellationToken)
         {
             SetupWebClientMethods();
-            await SignalRHelper.ConnectWithRetryAsync(_connection, cancellationToken);
+            await SignalRHelper.StartWithRetryAsync(_connection, cancellationToken);
             await _connection.InvokeAsync(nameof(BudorHub.SendMessageToAllClients), ".NET Client connected!",
                 cancellationToken);
 
@@ -74,7 +73,6 @@ namespace budorWeb.Pages
             var now = DateTime.UtcNow;
             var sevenDaysAgo = now.AddDays(-7);
             var oneMonthAgo = now.AddMonths(-1);
-            AllSensorReadings = await _context.SensorReadings.Where(model => true).ToListAsync(cancellationToken);
             SensorReadingsFromLastSevenDays =
                 await _context.SensorReadings.Where(model => model.MeasuredAtUtc > sevenDaysAgo)
                     .ToListAsync(cancellationToken);
