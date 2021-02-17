@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text.Json;
 using System.Threading;
@@ -46,30 +45,10 @@ namespace budorWeb.Pages
                 .CreateCloudBlobClient();
             _currentCameraSettings = PiCameraSettingsHelper.GetCurrentCameraSettingsFromFile();
 
-            var developmentUrl = "http://localhost:3000/budorhub";
-            var productionUrl = "https://budorbeach.azurewebsites.net/budorhub";
-            _connection = new HubConnectionBuilder()
-                .WithUrl(environment.IsProduction() ? productionUrl : developmentUrl)
-                .WithAutomaticReconnect()
-                .Build();
-            _connection.Closed += async e =>
-            {
-                _logger.LogError(e, e.Message);
-                await Task.Delay(200);
-                await _connection.StartAsync();
-            };
-            _connection.Reconnecting += e =>
-            {
-                _logger.LogError(e, e.Message);
-                Debug.Assert(_connection.State == HubConnectionState.Reconnecting);
-                return Task.CompletedTask;
-            };
-            _connection.Reconnected += message =>
-            {
-                _logger.LogInformation(message);
-                Debug.Assert(_connection.State == HubConnectionState.Connected);
-                return Task.CompletedTask;
-            };
+            const string developmentUrl = "http://localhost:3000/budorhub";
+            const string productionUrl = "https://budorbeach.azurewebsites.net/budorhub";
+            _connection = SignalRHelper.GetHubConnection(environment.IsProduction() ? productionUrl : developmentUrl);
+            SignalRHelper.SetupEventsForDebuggingConnection(logger, _connection);
         }
 
         private PiCameraSettings _currentCameraSettings { get; }
