@@ -11,6 +11,13 @@ connection.on("ConsoleLogMessage",
         console.log(message);
     });
 
+connection.on("ReceiveCurrentSensorReading",
+    (model) => {
+        console.log('Received model: ', model);
+        console.log(model.MeasuredAtUtc);
+        document.getElementById("latestSensorReading").innerHTML = model["measuredAtUtc"];
+    });
+
 async function start() {
     try {
         await connection.start();
@@ -19,13 +26,5 @@ async function start() {
         console.assert(connection.state === signalR.HubConnectionState.Disconnected);
         console.log(err);
         setTimeout(() => start(), 5000);
-    }
-}
-
-async function sendMessageToClient() {
-    try {
-        await connection.invoke("SendMessageToAllClients", "Message from client");
-    } catch (err) {
-        console.error(err);
     }
 }
