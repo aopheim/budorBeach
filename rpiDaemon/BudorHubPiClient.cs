@@ -63,7 +63,7 @@ namespace rpiDaemon
         {
             _connection.On<PiCameraSettings>(nameof(IBudorHubClient.TakeImage),
                 async settings => { await TakeImage(settings); });
-            await SignalRHelper.ConnectWithRetryAsync(_connection, cancellationToken);
+            await SignalRHelper.StartWithRetryAsync(_connection, cancellationToken);
         }
 
         public async Task StopAsync(CancellationToken cancellationToken)
