@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.SignalR.Client;
@@ -24,24 +25,18 @@ namespace budorWeb.Pages
 {
     public class BudorBeachModel : PageModel
     {
+        private const string BlobContainerName = "images";
         private readonly CloudBlobClient _cloudBlobClient;
-
-        private readonly IConfiguration _config;
-
         private readonly HubConnection _connection;
         private readonly ApplicationDbContext _context;
-        private readonly IWebHostEnvironment _environment;
         private readonly ILogger<BudorBeachModel> _logger;
-        private readonly string BlobContainerName = "images";
 
         public BudorBeachModel(ILogger<BudorBeachModel> logger, IConfiguration config, ApplicationDbContext context,
             IWebHostEnvironment environment)
         {
             _context = context;
-            _environment = environment;
-            _config = config;
             _logger = logger;
-            _cloudBlobClient = CloudStorageAccount.Parse(_config.GetConnectionString("AzureStorageConnectionString"))
+            _cloudBlobClient = CloudStorageAccount.Parse(config.GetConnectionString("AzureStorageConnectionString"))
                 .CreateCloudBlobClient();
             _currentCameraSettings = PiCameraSettingsHelper.GetCurrentCameraSettingsFromFile();
 
@@ -55,7 +50,7 @@ namespace budorWeb.Pages
 
 
         public List<CloudBlockBlob> AllImagesInBlob { get; set; }
-        public SensorReadingModel LatestSensorReadingModel { get; set; }
+        [CanBeNull] public SensorReadingModel LatestSensorReadingModel { get; set; }
         public List<SensorReadingModel> SensorReadingsFromLastSevenDays { get; set; }
         public List<SensorReadingModel> SensorReadingsFromLastMonth { get; set; }
 
@@ -63,7 +58,7 @@ namespace budorWeb.Pages
         {
             SetupWebClientMethods();
             await SignalRHelper.StartWithRetryAsync(_connection, cancellationToken);
-            await _connection.InvokeAsync(nameof(BudorHub.SendMessageToAllClients), ".NET Client connected!",
+            await _connection.InvokeAsync(nameof(BudorHub.SendMessageToAllClients), ".NET Web Client connected!",
                 cancellationToken);
 
             // TODO: Set camera settings from UI
@@ -78,6 +73,7 @@ namespace budorWeb.Pages
                     .ToListAsync(cancellationToken);
             SensorReadingsFromLastMonth = await _context.SensorReadings
                 .Where(model => model.MeasuredAtUtc > oneMonthAgo).ToListAsync(cancellationToken);
+            LatestSensorReadingModel = _context.SensorReadings.OrderByDescending(m => m.MeasuredAtUtc).FirstOrDefault();
 
             var blobContainer = _cloudBlobClient.GetContainerReference(BlobContainerName);
             BlobContinuationToken continuationToken = null;
@@ -98,11 +94,7 @@ namespace budorWeb.Pages
         {
             _connection.On<string>(nameof(IBudorHubClient.TakeImage), message => { _logger.LogInformation(message); });
             _connection.On<SensorReadingModel>(nameof(IBudorHubClient.ReceiveCurrentSensorReading),
-                model =>
-                {
-                    _logger.LogInformation(JsonSerializer.Serialize(model));
-                    LatestSensorReadingModel = model;
-                });
+                model => { _logger.LogInformation(JsonSerializer.Serialize(model)); });
         }
     }
 }
