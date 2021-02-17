@@ -2,13 +2,16 @@
 {
     public class PiCameraSettings
     {
-        public PiCameraSettings(int iso = 200, int shutterTime = 10)
+        private const int DefaultIso = 200;
+        private const int DefaultShutterTime = 10;
+
+        public PiCameraSettings(int iso = DefaultIso, int shutterTime = DefaultShutterTime)
         {
             Iso = iso;
             ShutterTime = shutterTime;
         }
 
-        public PiCameraSettings() : this(default, default)
+        public PiCameraSettings() : this(DefaultIso)
         {
         }
 
