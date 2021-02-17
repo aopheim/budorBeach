@@ -9,7 +9,7 @@ namespace Shared.SignalR
 {
     public static class SignalRHelper
     {
-        public static async Task<bool> ConnectWithRetryAsync(HubConnection connection, CancellationToken token)
+        public static async Task<bool> StartWithRetryAsync(HubConnection connection, CancellationToken token)
         {
             // Keep trying to until we can start or the token is canceled.
             while (true)

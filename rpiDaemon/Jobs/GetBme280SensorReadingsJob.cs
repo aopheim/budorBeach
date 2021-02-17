@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Quartz;
+using Shared;
 using Shared.Models;
 using Shared.SignalR;
 
@@ -54,9 +55,11 @@ namespace rpiDaemon.Jobs
 
         private async Task PushReadingsToBudorHub(SensorReadingModel model, CancellationToken cancellationToken)
         {
-            await SignalRHelper.ConnectWithRetryAsync(_connection, cancellationToken);
-            await _connection.InvokeAsync("SendSensorReadingModelToWebClient", model,
+            await SignalRHelper.StartWithRetryAsync(_connection, cancellationToken);
+            await _connection.InvokeAsync(nameof(BudorHub.SendSensorReadingModelToWebClient), model,
                 cancellationToken);
+            await _connection.InvokeAsync(nameof(BudorHub.SendMessageToAllClients),
+                $"{JsonSerializer.Serialize(model)}", cancellationToken);
         }
 
         private SensorReadingModel GetCurrentSensorReadings()
