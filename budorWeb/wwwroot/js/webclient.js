@@ -13,9 +13,9 @@ connection.on("ConsoleLogMessage",
 
 connection.on("ReceiveCurrentSensorReading",
     (model) => {
-        document.getElementById("temperatureInDegreesC").innerHTML = model["temperatureInDegreesC"];
-        document.getElementById("relativeHumidityInPercent").innerHTML = model["relativeHumidityInPercent"];
-        document.getElementById("pressureInhPa").innerHTML = model["pressureInhPa"];
+        document.getElementById("temperatureInDegreesC").innerHTML = round(model["temperatureInDegreesC"], 1) + '°C';
+        document.getElementById("relativeHumidityInPercent").innerHTML = round(model["relativeHumidityInPercent"], 1) + '%';
+        document.getElementById("pressureInhPa").innerHTML = round(model["pressureInhPa"], 1) + 'hPa';
     });
 
 async function start() {
@@ -27,4 +27,9 @@ async function start() {
         console.log(err);
         setTimeout(() => start(), 5000);
     }
+}
+
+function round(value, precision) {
+    var multiplier = Math.pow(10, precision || 0);
+    return Math.round(value * multiplier) / multiplier;
 }
