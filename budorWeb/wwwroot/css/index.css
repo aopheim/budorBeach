@@ -1,21 +1,11 @@
-﻿
-
-.center-fit {
+﻿.center-fit {
     width: 67vh;
     height: auto;
     max-width: 100%;
-}
-
-.green { 
-    color: green;
 }
 
 .no-bullets {
     list-style-type: none;
     margin: 0;
     padding: 0;
-}
-
-.camera-settings {
-    background-color: blue;
 }
