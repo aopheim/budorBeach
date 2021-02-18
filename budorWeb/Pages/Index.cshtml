@@ -2,6 +2,8 @@
 @using budorWeb.Helpers
 @using rpiDaemon.DateTimeHelpers
 @using System.Text.Json
+@using global::Shared.Models
+@using global::Shared.PiCameraSettings
 @model BudorBeachModel
 @{
     ViewData["Title"] = "Budor Beach";
@@ -12,26 +14,35 @@
 }
 
 <div class="text-center">
-    <ul>
+    <ul class="no-bullets">
         <li><i class="fa fa-thermometer-three-quarters"></i>
             <p id="temperatureInDegreesC">@Math.Round(Model.LatestSensorReadingModel?.TemperatureInDegreesC ?? default, 1)</p>
         </li>
-    </ul>
-    <ul>
-        
         <li><i class="fa fa-humidity"></i>
             <p id="relativeHumidityInPercent">@Math.Round(Model.LatestSensorReadingModel?.RelativeHumidityInPercent ?? default, 1)</p>
         </li>
-    </ul>
-    <ul>
         <li>
             <i class="fa fa-humidity"></i>
             <p id="pressureInhPa">@Math.Round(Model.LatestSensorReadingModel?.PressureInhPa ?? default, 1)</p>
         </li>
     </ul>
+    
+    <div class="camera-settings">
+        <h2>Kamera-innstillinger</h2>
+        <form method="post">
+            <h2>ISO</h2>
+            <input type="range" asp-for="IsoSetting" id="iso-slider" value="@Model.IsoSetting" min="0" max="800" step="100" onclick="showValue('iso-slider', 'iso-slider-val')">
+            <h4 id="iso-slider-val">@Model.IsoSetting</h4>
+            <h2>Shutter speed</h2>
+            <input type="range" asp-for="ShutterTimeSetting" id="shutterspeed-slider" value="@Model.ShutterTimeSetting" min="0" max="6000" step="10" onclick="showValue('shutterspeed-slider', 'shutterspeed-slider-val')">
+            <h4 id="shutterspeed-slider-val">@Model.ShutterTimeSetting</h4>
+            <input type="submit" value="Ta bilde"/>
+        </form>
+        
+    </div>
 
     <h2>Siste 10 temperatur-målinger</h2>
-    @foreach (var reading in @Model.SensorReadingsFromLastSevenDays.OrderByDescending(m => m.MeasuredAtUtc).Take(10))
+    @foreach (var reading in @Model.SensorReadingsFromLastSevenDays?.OrderByDescending(m => m.MeasuredAtUtc).Take(10))
     {
         <p>@JsonSerializer.Serialize(reading)</p>
     }
@@ -53,3 +64,10 @@
 
 <script src="~/js/signalr/dist/browser/signalr.min.js"></script>
 <script src="~/js/webclient.js"></script>
+<script type="text/javascript">  
+    function showValue(elementId, valueElementId)  
+    {  
+        var val =document.getElementById(elementId).value;  
+        document.getElementById(valueElementId).innerHTML = val;  
+    }  
+</script>

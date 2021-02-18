@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.EntityFrameworkCore;
@@ -30,6 +31,8 @@ namespace budorWeb.Pages
         private readonly HubConnection _connection;
         private readonly ApplicationDbContext _context;
         private readonly ILogger<BudorBeachModel> _logger;
+        private List<SensorReadingModel> _sensorReadingsFromLastMonth;
+        private List<SensorReadingModel> _sensorReadingsFromLastSevenDays;
 
         public BudorBeachModel(ILogger<BudorBeachModel> logger, IConfiguration config, ApplicationDbContext context,
             IWebHostEnvironment environment)
@@ -39,6 +42,8 @@ namespace budorWeb.Pages
             _cloudBlobClient = CloudStorageAccount.Parse(config.GetConnectionString("AzureStorageConnectionString"))
                 .CreateCloudBlobClient();
             _currentCameraSettings = PiCameraSettingsHelper.GetCurrentCameraSettingsFromFile();
+            IsoSetting = _currentCameraSettings.Iso;
+            ShutterTimeSetting = _currentCameraSettings.ShutterTime;
 
             const string developmentUrl = "http://localhost:3000/budorhub";
             const string productionUrl = "https://budorbeach.azurewebsites.net/budorhub";
@@ -51,8 +56,23 @@ namespace budorWeb.Pages
 
         public List<CloudBlockBlob> AllImagesInBlob { get; set; }
         [CanBeNull] public SensorReadingModel LatestSensorReadingModel { get; set; }
-        public List<SensorReadingModel> SensorReadingsFromLastSevenDays { get; set; }
-        public List<SensorReadingModel> SensorReadingsFromLastMonth { get; set; }
+
+        [NotNull]
+        public List<SensorReadingModel> SensorReadingsFromLastSevenDays
+        {
+            get => _sensorReadingsFromLastSevenDays ??= new List<SensorReadingModel>();
+            set => _sensorReadingsFromLastSevenDays = value;
+        }
+
+        [NotNull]
+        public List<SensorReadingModel> SensorReadingsFromLastMonth
+        {
+            get => _sensorReadingsFromLastMonth ??= new List<SensorReadingModel>();
+            set => _sensorReadingsFromLastMonth = value;
+        }
+
+        [BindProperty] public int IsoSetting { get; set; }
+        [BindProperty] public int ShutterTimeSetting { get; set; }
 
         public async Task OnGetAsync(CancellationToken cancellationToken)
         {
@@ -61,9 +81,6 @@ namespace budorWeb.Pages
             await _connection.InvokeAsync(nameof(BudorHub.SendMessageToAllClients), ".NET Web Client connected!",
                 cancellationToken);
 
-            // TODO: Set camera settings from UI
-            PiCameraSettingsHelper.SetCameraSettingsToFile(_currentCameraSettings);
-            await _connection.InvokeAsync(nameof(BudorHub.TakeImage), _currentCameraSettings, cancellationToken);
 
             var now = DateTime.UtcNow;
             var sevenDaysAgo = now.AddDays(-7);
@@ -88,6 +105,18 @@ namespace budorWeb.Pages
             } while (continuationToken != null);
 
             AllImagesInBlob = allImages;
+        }
+
+        public async Task<IActionResult> OnPostAsync(CancellationToken cancellationToken)
+        {
+            await SignalRHelper.StartWithRetryAsync(_connection, cancellationToken);
+
+            _currentCameraSettings.Iso = IsoSetting;
+            _currentCameraSettings.ShutterTime = ShutterTimeSetting;
+            PiCameraSettingsHelper.SetCameraSettingsToFile(_currentCameraSettings);
+            await _connection.InvokeAsync(nameof(BudorHub.TakeImage), _currentCameraSettings, cancellationToken);
+
+            return RedirectToPage("Index");
         }
 
         private void SetupWebClientMethods()
