@@ -51,7 +51,8 @@ namespace rpiDaemon.Jobs
                         throw;
                 }
 
-                logger.LogInformation($"Picture taken at {DateTime.UtcNow}");
+                logger.LogInformation(
+                    $"Picture taken at {DateTime.UtcNow}. Camera settings: {JsonSerializer.Serialize(settings)}");
                 var blobClient = containerClient.GetBlobClient($"{folderName}/{fileName}.jpg");
                 await using var uploadFileStream = File.OpenRead(fullPath);
                 await blobClient.UploadAsync(uploadFileStream, true);
