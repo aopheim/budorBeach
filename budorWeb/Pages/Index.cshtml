@@ -14,19 +14,22 @@
 }
 
 <div class="text-center">
-    <ul class="no-bullets">
-        <li><i class="fa fa-thermometer-three-quarters"></i>
-            <p id="temperatureInDegreesC">@Math.Round(Model.LatestSensorReadingModel?.TemperatureInDegreesC ?? default, 1)</p>
-        </li>
-        <li><i class="fa fa-humidity"></i>
-            <p id="relativeHumidityInPercent">@Math.Round(Model.LatestSensorReadingModel?.RelativeHumidityInPercent ?? default, 1)</p>
-        </li>
-        <li>
-            <i class="fa fa-humidity"></i>
-            <p id="pressureInhPa">@Math.Round(Model.LatestSensorReadingModel?.PressureInhPa ?? default, 1)</p>
-        </li>
-    </ul>
-    
+    <div class="sensor-block">
+        <ul class="no-bullets">
+            <li class="sensor-block">
+                <i class="fa fa-thermometer-three-quarters"></i>
+                <p id="temperatureInDegreesC">@Math.Round(Model.LatestSensorReadingModel?.TemperatureInDegreesC ?? default, 1)°C</p>
+            </li>
+            <li><i class="fa fa-humidity"></i>
+                <p id="relativeHumidityInPercent">@Math.Round(Model.LatestSensorReadingModel?.RelativeHumidityInPercent ?? default, 1)%</p>
+            </li>
+            <li>
+                <i class="fa fa-humidity"></i>
+                <p id="pressureInhPa">@Math.Round(Model.LatestSensorReadingModel?.PressureInhPa ?? default, 1)hPa</p>
+            </li>
+        </ul>
+    </div>
+
     <div class="camera-settings">
         <h2>Kamera-innstillinger</h2>
         <form method="post">
@@ -38,7 +41,7 @@
             <h4 id="shutterspeed-slider-val">@Model.ShutterTimeSetting</h4>
             <input type="submit" value="Ta bilde"/>
         </form>
-        
+
     </div>
     <h2>Gjennomsnitt siste uke</h2>
     <p>@SensorReadingModelHelper.GetAverageReadingFromRange(@Model.SensorReadingsFromLastSevenDays.Select(m => m.TemperatureInDegreesC))</p>
