@@ -17,7 +17,7 @@ connection.on("ReceiveCurrentSensorReading",
         document.getElementById("relativeHumidityInPercent").innerHTML = round(model["relativeHumidityInPercent"], 1) + "%";
         document.getElementById("pressureInhPa").innerHTML = round(model["pressureInhPa"], 1) + "hPa";
 
-        var unixTimeInUtc = Date.parse(model["measuredAtUtc"] + "Z");
+        var unixTimeInUtc = Date.parse(model["measuredAtUtc"]);
         var date = new Date(unixTimeInUtc);
         document.getElementById("lastUpdatedAt").innerHTML = date.toLocaleString("no-NO");
     });
