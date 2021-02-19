@@ -13,9 +13,13 @@ connection.on("ConsoleLogMessage",
 
 connection.on("ReceiveCurrentSensorReading",
     (model) => {
-        document.getElementById("temperatureInDegreesC").innerHTML = round(model["temperatureInDegreesC"], 1) + '°C';
-        document.getElementById("relativeHumidityInPercent").innerHTML = round(model["relativeHumidityInPercent"], 1) + '%';
-        document.getElementById("pressureInhPa").innerHTML = round(model["pressureInhPa"], 1) + 'hPa';
+        document.getElementById("temperatureInDegreesC").innerHTML = round(model["temperatureInDegreesC"], 1) + "°C";
+        document.getElementById("relativeHumidityInPercent").innerHTML = round(model["relativeHumidityInPercent"], 1) + "%";
+        document.getElementById("pressureInhPa").innerHTML = round(model["pressureInhPa"], 1) + "hPa";
+
+        var unixTimeInUtc = Date.parse(model["measuredAtUtc"] + "Z");
+        var date = new Date(unixTimeInUtc);
+        document.getElementById("lastUpdatedAt").innerHTML = date.toLocaleString("no-NO");
     });
 
 async function start() {
