@@ -125,5 +125,14 @@ namespace budorWeb.Pages
             _connection.On<SensorReadingModel>(nameof(IBudorHubClient.ReceiveCurrentSensorReading),
                 model => { _logger.LogInformation(JsonSerializer.Serialize(model)); });
         }
+
+        public string GetLocalDateTimeAsString(DateTime? dateTimeInUtc)
+        {
+            if (dateTimeInUtc == null)
+                return "";
+            var timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById("Central Europe Standard Time");
+            var localTime = TimeZoneInfo.ConvertTimeFromUtc(dateTimeInUtc.Value, timeZoneInfo);
+            return localTime.ToLongTimeString();
+        }
     }
 }
