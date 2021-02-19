@@ -16,7 +16,7 @@
 <div class="text-center">
     <div class="sensor-block">
         <h5>Sist oppdatert</h5>
-        <h5 id="lastUpdatedAt">@Model.LatestSensorReadingModel?.MeasuredAtUtc.ToLocalTime()</h5>
+        <h5 id="lastUpdatedAt">@Model.GetLocalDateTimeAsString(Model.LatestSensorReadingModel?.MeasuredAtUtc)</h5>
         <ul class="no-bullets">
             <li class="sensor-block">
                 <i class="fa fa-thermometer-three-quarters"></i>
