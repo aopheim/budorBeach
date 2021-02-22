@@ -132,7 +132,8 @@ namespace budorWeb.Pages
                 return "";
             var timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById("Central Europe Standard Time");
             var localTime = TimeZoneInfo.ConvertTimeFromUtc(dateTimeInUtc.Value, timeZoneInfo);
-            return localTime.ToLongTimeString();
+            return
+                $"{localTime.Date}.{localTime.Month}.{localTime.Year}, {localTime.Hour}:{localTime.Minute}:{localTime.Second}";
         }
     }
 }
