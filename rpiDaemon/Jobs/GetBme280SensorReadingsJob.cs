@@ -37,7 +37,8 @@ namespace rpiDaemon.Jobs
 
             const string developmentUrl = "http://localhost:3000/budorhub";
             const string productionUrl = "https://budorbeach.azurewebsites.net/budorhub";
-            _connection = SignalRHelper.GetHubConnection(environment.IsProduction() ? productionUrl : developmentUrl);
+            var urlToUse = environment.IsProduction() ? productionUrl : developmentUrl;
+            _connection = SignalRHelper.GetHubConnection(urlToUse);
             SignalRHelper.SetupEventsForDebuggingConnection(logger, _connection);
         }
 
@@ -51,6 +52,7 @@ namespace rpiDaemon.Jobs
             await _context.SaveChangesAsync(jobExecutionContext.CancellationToken);
 
             await PushReadingsToBudorHub(sensorReadingModel, jobExecutionContext.CancellationToken);
+            await _connection.StopAsync(jobExecutionContext.CancellationToken);
         }
 
         private async Task PushReadingsToBudorHub(SensorReadingModel model, CancellationToken cancellationToken)
