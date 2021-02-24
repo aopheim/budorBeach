@@ -40,22 +40,18 @@ namespace Shared.SignalR
 
         public static void SetupEventsForDebuggingConnection(ILogger logger, HubConnection connection)
         {
-            connection.Closed += async e =>
-            {
-                logger.LogError(e, e.Message);
-                await Task.Delay(200);
-                await connection.StartAsync();
-            };
             connection.Reconnecting += e =>
             {
-                logger.LogError(e, e.Message);
                 Debug.Assert(connection.State == HubConnectionState.Reconnecting);
+                logger.LogError("Reconnecting connection...");
+                logger.LogError(e, e.Message);
                 return Task.CompletedTask;
             };
             connection.Reconnected += message =>
             {
-                logger.LogInformation(message);
                 Debug.Assert(connection.State == HubConnectionState.Connected);
+                logger.LogInformation("Connection successfully reconnected");
+                logger.LogInformation(message);
                 return Task.CompletedTask;
             };
         }
