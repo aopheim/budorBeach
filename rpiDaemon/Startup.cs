@@ -36,11 +36,11 @@ namespace rpiDaemon
                 q.AddTrigger(t => t
                     .WithIdentity("pictureTrigger")
                     .ForJob(pictureJobKey)
-                    .StartAt(DateTimeOffset.UtcNow.AddSeconds(10))
+                    .StartAt(DateTime.UtcNow.AddSeconds(10))
                     .WithSimpleSchedule(s => s.WithInterval(TimeSpan.FromSeconds(60 * 60)).RepeatForever()));
                 q.AddTrigger(t => t.WithIdentity("bme280Trigger")
                     .ForJob(bme280JobKey)
-                    .StartAt(DateTimeOffset.UtcNow.AddSeconds(10))
+                    .StartAt(DateTime.UtcNow.AddSeconds(10))
                     .WithSimpleSchedule(s => s.WithInterval(TimeSpan.FromSeconds(20)).RepeatForever()));
 
                 q.UseMicrosoftDependencyInjectionScopedJobFactory();
