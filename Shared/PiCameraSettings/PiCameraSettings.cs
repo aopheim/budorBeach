@@ -2,7 +2,7 @@
 {
     public class PiCameraSettings
     {
-        public const int DefaultIso = 200;
+        public const int DefaultIso = 800;
         public const int DefaultShutterTimeInMs = 0;
 
         public PiCameraSettings(int iso = DefaultIso, int shutterTime = DefaultShutterTimeInMs)
