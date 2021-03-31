@@ -43,5 +43,15 @@ namespace rpiDaemon.DateTimeHelpers
 
             return toReturn;
         }
+
+        public static string GetLocalDateTimeAsString(DateTime? dateTimeInUtc)
+        {
+            if (dateTimeInUtc == null)
+                return "";
+            var timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById("Central Europe Standard Time");
+            var localTime = TimeZoneInfo.ConvertTimeFromUtc(dateTimeInUtc.Value, timeZoneInfo);
+            return
+                $"{localTime.Day:D2}.{localTime.Month:D2}.{localTime.Year:D4}, {localTime.Hour:D2}:{localTime.Minute:D2}:{localTime.Second:D2}";
+        }
     }
 }
