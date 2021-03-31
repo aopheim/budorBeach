@@ -16,6 +16,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using rpiDaemon;
+using rpiDaemon.DateTimeHelpers;
 using Shared;
 using Shared.Interfaces;
 using Shared.Models;
@@ -54,7 +55,7 @@ namespace budorWeb.Pages
         private PiCameraSettings _currentCameraSettings { get; }
 
 
-        public List<CloudBlockBlob> AllImagesInBlob { get; set; }
+        public List<CloudBlockBlob> LatestImages { get; set; }
         [CanBeNull] public SensorReadingModel LatestSensorReadingModel { get; set; }
 
         [NotNull]
@@ -94,17 +95,18 @@ namespace budorWeb.Pages
 
             var blobContainer = _cloudBlobClient.GetContainerReference(BlobContainerName);
             BlobContinuationToken continuationToken = null;
-            var allImages = new List<CloudBlockBlob>();
+            var latestImages = new List<CloudBlockBlob>();
 
             do
             {
                 var response = await blobContainer.ListBlobsSegmentedAsync(default, true, default,
                     default, continuationToken, default, default, cancellationToken);
                 continuationToken = response.ContinuationToken;
-                allImages.AddRange(response.Results.Cast<CloudBlockBlob>());
+                latestImages.AddRange(response.Results.Cast<CloudBlockBlob>()
+                    .OrderByDescending(blob => DateTimeParser.GetDateTimeFromFolderAndFileName(blob.Name)).Take(5));
             } while (continuationToken != null);
 
-            AllImagesInBlob = allImages;
+            LatestImages = latestImages;
         }
 
         public async Task<IActionResult> OnPostAsync(CancellationToken cancellationToken)
