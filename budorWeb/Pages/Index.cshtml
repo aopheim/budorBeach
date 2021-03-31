@@ -65,7 +65,7 @@
             </div>
         </form>
     <h2>De 5 siste bildene</h2>
-    @foreach (var blob in @Model.AllImagesInBlob.OrderByDescending(blob => DateTimeParser.GetDateTimeFromFolderAndFileName(blob.Name)).Take(5))
+    @foreach (var blob in @Model.LatestImages)
     {
         <div class="card my-3">
             <a href="@blob.Uri">
