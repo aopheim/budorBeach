@@ -12,11 +12,11 @@
 @section Styles {
     <link href="@Url.Content("~/css/index.css")" rel="stylesheet" type="text/css" />
 }
-<div class="container">
+<div class="container my-3">
   <div class="row">
       <div class="col">
         <p>Sist oppdatert</p>
-        <p id="lastUpdatedAt">@Model.GetLocalDateTimeAsString(Model.LatestSensorReadingModel?.MeasuredAtUtc)</p>
+        <p id="lastUpdatedAt">@DateTimeParser.GetLocalDateTimeAsString(Model.LatestSensorReadingModel?.MeasuredAtUtc)</p>
       </div>
   </div>
 </div>
@@ -64,12 +64,14 @@
                 </div>
             </div>
         </form>
-    <h1>De 5 siste bildene</h1>
+    <h2>De 5 siste bildene</h2>
     @foreach (var blob in @Model.AllImagesInBlob.OrderByDescending(blob => DateTimeParser.GetDateTimeFromFolderAndFileName(blob.Name)).Take(5))
     {
-        <h3>@blob.Name</h3>
-        <div class="image-container">
-            <img class="center-fit" src="@blob.Uri" alt="@blob.Name">
+        <div class="card my-3">
+            <img class="card-img-top" src="@blob.Uri" alt="@blob.Name">
+            <div class="card-body">
+                <h4 class="card-text">@DateTimeParser.GetLocalDateTimeAsString(DateTimeParser.GetDateTimeFromFolderAndFileName(blob.Name))</h4>
+            </div>
         </div>
     }
 </div>
