@@ -43,27 +43,23 @@
   </div>
 </div>
 
-<div class="text-center">
-        <h4>Kamera-innstillinger</h4>
-        <form method="post">
-            <div class="text-center">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <h5>ISO</h5>
-                            <input type="range" asp-for="IsoSetting" id="iso-slider" value="@Model.IsoSetting" min="0" max="800" step="100" onclick="showValue('iso-slider', 'iso-slider-val')">
-                            <h4 id="iso-slider-val">@Model.IsoSetting</h4>
-                        </div>
-                        <div class="col-sm-6">
-                            <h5>Shutter speed</h5>
-                            <input type="range" asp-for="ShutterTimeSetting" id="shutterspeed-slider" value="@Model.ShutterTimeSetting" min="0" max="6000" step="10" onclick="showValue('shutterspeed-slider', 'shutterspeed-slider-val')">
-                            <h4 id="shutterspeed-slider-val">@Model.ShutterTimeSetting</h4>
-                        </div>
-                        <input type="submit" value="Ta bilde"/>
-                    </div>
-                </div>
+<div class="container">
+    <h4>Kamera-innstillinger</h4>
+    <form method="post">
+        <div class="row">
+            <div class="col-sm-6">
+                <h5>ISO</h5>
+                <input type="range" asp-for="IsoSetting" id="iso-slider" value="@Model.IsoSetting" min="0" max="800" step="100" onclick="showValue('iso-slider', 'iso-slider-val')">
+                <h4 id="iso-slider-val">@Model.IsoSetting</h4>
             </div>
-        </form>
+            <div class="col-sm-6">
+                <h5>Shutter speed</h5>
+                <input type="range" asp-for="ShutterTimeSetting" id="shutterspeed-slider" value="@Model.ShutterTimeSetting" min="0" max="6000" step="10" onclick="showValue('shutterspeed-slider', 'shutterspeed-slider-val')">
+                <h4 id="shutterspeed-slider-val">@Model.ShutterTimeSetting</h4>
+            </div>
+            <input type="submit" value="Ta bilde"/>
+        </div>
+    </form>
     <h2>De 5 siste bildene</h2>
     @foreach (var blob in @Model.LatestImages)
     {
@@ -77,9 +73,13 @@
         </div>
     }
 </div>
+<div class="container-fluid">
+    <canvas id="sensorChart"></canvas>
+</div>
 
 <script src="~/js/signalr/dist/browser/signalr.min.js"></script>
 <script src="~/js/webclient.js"></script>
+<script src="~/js/sensorChart.js"></script>
 <script type="text/javascript">  
     function showValue(elementId, valueElementId)  
     {  
