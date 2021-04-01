@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.SignalR.Client;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -82,21 +81,11 @@ namespace budorWeb.Pages
             await _connection.InvokeAsync(nameof(BudorHub.SendMessageToAllClients), ".NET Web Client connected!",
                 cancellationToken);
 
-
-            var now = DateTime.UtcNow;
-            var sevenDaysAgo = now.AddDays(-7);
-            var oneMonthAgo = now.AddMonths(-1);
-            SensorReadingsFromLastSevenDays =
-                await _context.SensorReadings.Where(model => model.MeasuredAtUtc > sevenDaysAgo)
-                    .ToListAsync(cancellationToken);
-            SensorReadingsFromLastMonth = await _context.SensorReadings
-                .Where(model => model.MeasuredAtUtc > oneMonthAgo).ToListAsync(cancellationToken);
             LatestSensorReadingModel = _context.SensorReadings.OrderByDescending(m => m.MeasuredAtUtc).FirstOrDefault();
 
             var blobContainer = _cloudBlobClient.GetContainerReference(BlobContainerName);
             BlobContinuationToken continuationToken = null;
             var latestImages = new List<CloudBlockBlob>();
-
             do
             {
                 var response = await blobContainer.ListBlobsSegmentedAsync(default, true, default,
@@ -121,11 +110,35 @@ namespace budorWeb.Pages
             return RedirectToPage("Index");
         }
 
+        public JsonResult OnGetSensorReadings()
+        {
+            var sensorReadingCutOff = DateTime.UtcNow.AddHours(-12);
+            var sensorReadings = _context.SensorReadings.OrderByDescending(m => m.MeasuredAtUtc)
+                .Where(m => m.MeasuredAtUtc >= sensorReadingCutOff).ToList();
+            var chartModel = new SensorReadingsChartModel
+            {
+                HumidityReadings = sensorReadings.Select(m => m.RelativeHumidityInPercent).ToList(),
+                TemperatureReadings = sensorReadings.Select(m => m.TemperatureInDegreesC).ToList(),
+                PressureReadings = sensorReadings.Select(m => m.PressureInhPa).ToList(),
+                MeasuredAt = sensorReadings.Select(m => DateTimeParser.GetLocalDateTimeAsString(m.MeasuredAtUtc))
+                    .ToList()
+            };
+            return new JsonResult(chartModel);
+        }
+
         private void SetupWebClientMethods()
         {
             _connection.On<string>(nameof(IBudorHubClient.TakeImage), message => { _logger.LogInformation(message); });
             _connection.On<SensorReadingModel>(nameof(IBudorHubClient.ReceiveCurrentSensorReading),
                 model => { _logger.LogInformation(JsonSerializer.Serialize(model)); });
         }
+    }
+
+    public class SensorReadingsChartModel
+    {
+        public List<double> TemperatureReadings { get; set; }
+        public List<double> PressureReadings { get; set; }
+        public List<double> HumidityReadings { get; set; }
+        public List<string> MeasuredAt { get; set; }
     }
 }
