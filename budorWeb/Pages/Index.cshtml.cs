@@ -113,13 +113,14 @@ namespace budorWeb.Pages
         public JsonResult OnGetSensorReadings()
         {
             var sensorReadingCutOff = DateTime.UtcNow.AddHours(-12);
-            var sensorReadings = _context.SensorReadings.OrderByDescending(m => m.MeasuredAtUtc)
-                .Where(m => m.MeasuredAtUtc >= sensorReadingCutOff).ToList();
-            var chartModel = new SensorReadingsChartModel
+            var sensorReadings = _context.SensorReadings.Where(m => m.MeasuredAtUtc >= sensorReadingCutOff).ToList()
+                .OrderBy(m => m.MeasuredAtUtc).ToList();
+            var chartModel = new SensorReadingsChartDto
             {
-                HumidityReadings = sensorReadings.Select(m => m.RelativeHumidityInPercent).ToList(),
-                TemperatureReadings = sensorReadings.Select(m => m.TemperatureInDegreesC).ToList(),
-                PressureReadings = sensorReadings.Select(m => m.PressureInhPa).ToList(),
+                HumidityReadings = sensorReadings.Select(m => Math.Round(m.RelativeHumidityInPercent, 2))
+                    .ToList(),
+                TemperatureReadings = sensorReadings.Select(m => Math.Round(m.TemperatureInDegreesC, 2)).ToList(),
+                PressureReadings = sensorReadings.Select(m => Math.Round(m.PressureInhPa, 2)).ToList(),
                 MeasuredAt = sensorReadings.Select(m => DateTimeParser.GetLocalDateTimeAsString(m.MeasuredAtUtc))
                     .ToList()
             };
@@ -134,7 +135,7 @@ namespace budorWeb.Pages
         }
     }
 
-    public class SensorReadingsChartModel
+    public class SensorReadingsChartDto
     {
         public List<double> TemperatureReadings { get; set; }
         public List<double> PressureReadings { get; set; }
