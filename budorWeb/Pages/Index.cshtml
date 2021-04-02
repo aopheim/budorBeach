@@ -13,21 +13,21 @@
     <link href="@Url.Content("~/css/index.css")" rel="stylesheet" type="text/css" />
 }
 <div class="container my-3">
-  <div class="row">
-      <div class="col">
-        <p>Sist oppdatert</p>
-        <p id="lastUpdatedAt">@DateTimeParser.GetLocalDateTimeAsString(Model.LatestSensorReadingModel?.MeasuredAtUtc)</p>
-      </div>
-  </div>
+    <div class="row">
+        <div class="col">
+            <p>Sist oppdatert</p>
+            <p id="lastUpdatedAt">@DateTimeParser.GetLocalDateTimeAsString(Model.LatestSensorReadingModel?.MeasuredAtUtc)</p>
+        </div>
+    </div>
 </div>
 <div class="container">
-  <div class="row">
-      <div class="col-sm-4">
-          <div class="text-center">
-              <i class="fa fa-thermometer-three-quarters"></i>
-              <p id="temperatureInDegreesC">@Math.Round(Model.LatestSensorReadingModel?.TemperatureInDegreesC ?? default, 1)°C</p>
-          </div>
-      </div>
+    <div class="row">
+        <div class="col-sm-4">
+            <div class="text-center">
+                <i class="fa fa-thermometer-three-quarters"></i>
+                <p id="temperatureInDegreesC">@Math.Round(Model.LatestSensorReadingModel?.TemperatureInDegreesC ?? default, 1)°C</p>
+            </div>
+        </div>
         <div class="col-sm-4">
             <div class="text-center">
                 <i class="fa fa-humidity"></i>
@@ -40,39 +40,23 @@
                 <p id="pressureInhPa">@Math.Round(Model.LatestSensorReadingModel?.PressureInhPa ?? default, 1)hPa</p>
             </div>
         </div>
-      <div class="col-sm-12">
-          <div class="card-body">
-              <canvas id="tempChart"></canvas>
-          </div>
-      </div>
-      <div class="col-sm-6">
-          <div class="card-body">
-              <canvas id="humidityChart"></canvas>
-          </div>
-      </div><div class="col-sm-6">
-          <div class="card-body">
-              <canvas id="pressureChart"></canvas>
-          </div>
-      </div>
-  </div>
+        <div class="col-sm-12">
+            <div class="card-body">
+                <canvas id="tempChart"></canvas>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="card-body">
+                <canvas id="humidityChart"></canvas>
+            </div>
+        </div><div class="col-sm-6">
+            <div class="card-body">
+                <canvas id="pressureChart"></canvas>
+            </div>
+        </div>
+    </div>
 </div>
 <div class="container">
-    <h4>Kamera-innstillinger</h4>
-    <form method="post">
-        <div class="row">
-            <div class="col-sm-6">
-                <h5>ISO</h5>
-                <input type="range" asp-for="IsoSetting" id="iso-slider" value="@Model.IsoSetting" min="0" max="800" step="100" onclick="showValue('iso-slider', 'iso-slider-val')">
-                <h4 id="iso-slider-val">@Model.IsoSetting</h4>
-            </div>
-            <div class="col-sm-6">
-                <h5>Shutter speed</h5>
-                <input type="range" asp-for="ShutterTimeSetting" id="shutterspeed-slider" value="@Model.ShutterTimeSetting" min="0" max="6000" step="10" onclick="showValue('shutterspeed-slider', 'shutterspeed-slider-val')">
-                <h4 id="shutterspeed-slider-val">@Model.ShutterTimeSetting</h4>
-            </div>
-            <input type="submit" value="Ta bilde"/>
-        </div>
-    </form>
     <h2>De 5 siste bildene</h2>
     @foreach (var blob in @Model.LatestImages)
     {
@@ -86,14 +70,33 @@
         </div>
     }
 </div>
+<h4>Kamera-innstillinger</h4>
+<form method="post">
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="text-center">
+                <h5>ISO</h5>
+                <input type="range" asp-for="IsoSetting" id="iso-slider" value="@Model.IsoSetting" min="0" max="800" step="100" onclick="showValue('iso-slider', 'iso-slider-val')">
+                <h4 id="iso-slider-val">@Model.IsoSetting</h4>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="text-center">
+                <h5>Shutter speed</h5>
+                <input type="range" asp-for="ShutterTimeSetting" id="shutterspeed-slider" value="@Model.ShutterTimeSetting" min="0" max="6000" step="10" onclick="showValue('shutterspeed-slider', 'shutterspeed-slider-val')">
+                <h4 id="shutterspeed-slider-val">@Model.ShutterTimeSetting</h4>
+            </div>
+        </div>
+        <input type="submit" value="Ta bilde" />
+    </div>
+</form>
 
 <script src="~/js/signalr/dist/browser/signalr.min.js"></script>
 <script src="~/js/webclient.js"></script>
 <script src="~/js/sensorChart.js"></script>
-<script type="text/javascript">  
-    function showValue(elementId, valueElementId)  
-    {  
-        var val =document.getElementById(elementId).value;  
-        document.getElementById(valueElementId).innerHTML = val;  
-    }  
+<script type="text/javascript">
+    function showValue(elementId, valueElementId) {
+        var val = document.getElementById(elementId).value;
+        document.getElementById(valueElementId).innerHTML = val;
+    }
 </script>
