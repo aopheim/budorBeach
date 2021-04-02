@@ -121,7 +121,7 @@ namespace budorWeb.Pages
                     .ToList(),
                 TemperatureReadings = sensorReadings.Select(m => Math.Round(m.TemperatureInDegreesC, 2)).ToList(),
                 PressureReadings = sensorReadings.Select(m => Math.Round(m.PressureInhPa, 2)).ToList(),
-                MeasuredAt = sensorReadings.Select(m => DateTimeParser.GetLocalDateTimeAsString(m.MeasuredAtUtc))
+                MeasuredAt = sensorReadings.Select(m => m.MeasuredAtUtc.ToLocalTime())
                     .ToList()
             };
             return new JsonResult(chartModel);
@@ -140,6 +140,6 @@ namespace budorWeb.Pages
         public List<double> TemperatureReadings { get; set; }
         public List<double> PressureReadings { get; set; }
         public List<double> HumidityReadings { get; set; }
-        public List<string> MeasuredAt { get; set; }
+        public List<DateTime> MeasuredAt { get; set; }
     }
 }
