@@ -42,14 +42,22 @@ namespace rpiDaemon.Jobs
             SignalRHelper.SetupEventsForDebuggingConnection(logger, _connection);
         }
 
+        private TimeSpan DbPushInterval => TimeSpan.FromMinutes(2);
+
+        public static DateTime? LastDbPushInUtc { get; set; }
+
 
         public async Task Execute(IJobExecutionContext jobExecutionContext)
         {
             var sensorReadingModel = GetCurrentSensorReadings();
             _logger.LogInformation($"{JsonSerializer.Serialize(sensorReadingModel)}");
 
-            _context.SensorReadings.Add(sensorReadingModel);
-            await _context.SaveChangesAsync(jobExecutionContext.CancellationToken);
+            if (LastDbPushInUtc.HasValue &&
+                sensorReadingModel.MeasuredAtUtc.Subtract(LastDbPushInUtc.Value) > DbPushInterval)
+            {
+                _context.SensorReadings.Add(sensorReadingModel);
+                await _context.SaveChangesAsync(jobExecutionContext.CancellationToken);
+            }
 
             await PushReadingsToBudorHub(sensorReadingModel, jobExecutionContext.CancellationToken);
             await _connection.StopAsync(jobExecutionContext.CancellationToken);
