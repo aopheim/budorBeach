@@ -48,12 +48,12 @@ namespace rpiDaemon.DateTimeHelpers
         {
             if (dateTimeInUtc == null)
                 return "";
-            var localTime = dateTimeInUtc.Value.ToLocalTime();
+            var localTime = dateTimeInUtc.Value.ToEuropeanStandardTime();
             return
                 $"{localTime.Day:D2}.{localTime.Month:D2}.{localTime.Year:D4}, {localTime.Hour:D2}:{localTime.Minute:D2}:{localTime.Second:D2}";
         }
 
-        public static DateTime ToLocalTime(this DateTime dateTimeInUtc)
+        public static DateTime ToEuropeanStandardTime(this DateTime dateTimeInUtc)
         {
             var timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById("Central Europe Standard Time");
             return TimeZoneInfo.ConvertTimeFromUtc(dateTimeInUtc, timeZoneInfo);
