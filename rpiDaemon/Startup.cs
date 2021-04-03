@@ -41,7 +41,7 @@ namespace rpiDaemon
                 q.AddTrigger(t => t.WithIdentity("bme280Trigger")
                     .ForJob(bme280JobKey)
                     .StartAt(DateTime.UtcNow.AddSeconds(10))
-                    .WithSimpleSchedule(s => s.WithInterval(TimeSpan.FromSeconds(20)).RepeatForever()));
+                    .WithSimpleSchedule(s => s.WithInterval(TimeSpan.FromSeconds(5)).RepeatForever()));
 
                 q.UseMicrosoftDependencyInjectionScopedJobFactory();
             });
