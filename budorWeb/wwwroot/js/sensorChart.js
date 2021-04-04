@@ -113,18 +113,23 @@ function showChart() {
         ]
     };
 
-    
     var tempCtx = document.getElementById('tempChart').getContext('2d');
     var humidityCtx = document.getElementById('humidityChart').getContext('2d');
     var pressureCtx = document.getElementById('pressureChart').getContext('2d');
 
-    window.myLine = new Chart(tempCtx, generateGlobalConfig(tempData, 'Temperatur [°C]'));
-    window.myLine = new Chart(humidityCtx, generateGlobalConfig(humidityData, 'Relativ luftfuktighet [%]'));
-    window.myLine = new Chart(pressureCtx, generateGlobalConfig(pressureData, 'Trykk [hPa]'));
+    if (window.tempLine || window.humLine || window.pressureLine) {
+        window.tempLine.destroy();
+        window.humLine.destroy();
+        window.pressureLine.destroy();
+    }
+
+    window.tempLine = new Chart(tempCtx, generateGlobalConfig(tempData, 'Temperatur [°C]'));
+    window.humLine = new Chart(humidityCtx, generateGlobalConfig(humidityData, 'Relativ luftfuktighet [%]'));
+    window.pressureLine = new Chart(pressureCtx, generateGlobalConfig(pressureData, 'Trykk [hPa]'));
 }
     
-function getChartData() {
-    return fetch('./Index?handler=SensorReadings',
+function getChartData(hours) {
+    return fetch('./Index?handler=SensorReadings&cutOffHours=' + hours,
             {
                 method: 'get',
                 headers: {
@@ -151,4 +156,10 @@ function getChartData() {
         });
 }
 
-getChartData();
+$("#chartDropDown").change(function() {
+    var dropDown = document.getElementById("chartDropDown");
+    var hours = dropDown.options[dropDown.selectedIndex].value;
+    getChartData(hours);
+});
+
+getChartData(12);
