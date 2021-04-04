@@ -34,14 +34,17 @@ function generateGlobalConfig(data, title){
                                 var unixTime = Date.parse(label);
                                 var date = new Date(unixTime);
 
+                                var day = date.getDate();
+
+                                var month = date.getMonth() + 1;
+
                                 var hours = date.getHours();
                                 hours = ("0" + hours).slice(-2);
 
                                 var minutes = date.getMinutes();
                                 minutes = ("0" + minutes).slice(-2);
 
-
-                                return hours + ':' + minutes;
+                                return day + '.' + month + ', ' + hours + ':' + minutes;
                             }
                         }
                     }],
