@@ -52,11 +52,12 @@ namespace rpiDaemon.Jobs
             var sensorReadingModel = GetCurrentSensorReadings();
             _logger.LogInformation($"{JsonSerializer.Serialize(sensorReadingModel)}");
 
-            if (LastDbPushInUtc.HasValue &&
+            if (LastDbPushInUtc == null ||
                 sensorReadingModel.MeasuredAtUtc.Subtract(LastDbPushInUtc.Value) > DbPushInterval)
             {
                 _context.SensorReadings.Add(sensorReadingModel);
                 await _context.SaveChangesAsync(jobExecutionContext.CancellationToken);
+                LastDbPushInUtc = sensorReadingModel.MeasuredAtUtc;
             }
 
             await PushReadingsToBudorHub(sensorReadingModel, jobExecutionContext.CancellationToken);
