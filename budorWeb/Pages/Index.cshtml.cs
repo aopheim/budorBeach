@@ -110,9 +110,9 @@ namespace budorWeb.Pages
             return RedirectToPage("Index");
         }
 
-        public JsonResult OnGetSensorReadings()
+        public JsonResult OnGetSensorReadings(int cutOffHours)
         {
-            var sensorReadingCutOff = DateTime.UtcNow.AddHours(-12);
+            var sensorReadingCutOff = DateTime.UtcNow.AddHours(-cutOffHours);
             var sensorReadings = _context.SensorReadings.Where(m => m.MeasuredAtUtc >= sensorReadingCutOff).ToList()
                 .OrderBy(m => m.MeasuredAtUtc).ToList();
             var chartModel = new SensorReadingsChartDto
