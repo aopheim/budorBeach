@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Device.I2c;
+using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -44,19 +45,18 @@ namespace rpiDaemon.Jobs
 
         private static TimeSpan DbPushInterval => TimeSpan.FromMinutes(2);
 
-        public static DateTime? LastDbPushInUtc { get; set; }
-
         public async Task Execute(IJobExecutionContext jobExecutionContext)
         {
             var sensorReadingModel = GetCurrentSensorReadings();
             _logger.LogInformation($"{JsonSerializer.Serialize(sensorReadingModel)}");
 
-            if (LastDbPushInUtc == null ||
-                sensorReadingModel.MeasuredAtUtc.Subtract(LastDbPushInUtc.Value) > DbPushInterval)
+            var lastDbPushInUtc = _context.SensorReadings.OrderByDescending(m => m.MeasuredAtUtc).FirstOrDefault()
+                ?.MeasuredAtUtc;
+            if (lastDbPushInUtc == null ||
+                sensorReadingModel.MeasuredAtUtc.Subtract(lastDbPushInUtc.Value) > DbPushInterval)
             {
                 _context.SensorReadings.Add(sensorReadingModel);
                 await _context.SaveChangesAsync(jobExecutionContext.CancellationToken);
-                LastDbPushInUtc = sensorReadingModel.MeasuredAtUtc;
             }
 
             await PushReadingsToBudorHub(sensorReadingModel, jobExecutionContext.CancellationToken);
