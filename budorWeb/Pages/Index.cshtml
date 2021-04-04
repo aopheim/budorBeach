@@ -40,6 +40,26 @@
                 <p id="pressureInhPa">@Math.Round(Model.LatestSensorReadingModel?.PressureInhPa ?? default, 1)hPa</p>
             </div>
         </div>
+        @{
+            const int last12 = 12;
+            const int lastThreeDays = 24 * 3;
+            const int lastSevenDays = 24 * 7;
+            const int lastMonth = 24 * 30;
+            const int lastThreeMonths = 24 * 30 * 3;
+            const int lastSixMonths = 24 * 30 * 6;
+            const int lastYear = 24 * 30 * 12;
+        }
+        <div class="col-sm-6 col-lg-2">
+            <select class="form-select" id="chartDropDown" aria-label="Se data fra siste...">
+                <option value="@last12" selected="selected">Siste 12 timer</option>
+                <option value="@lastThreeDays">Siste tre dager</option>
+                <option value="@lastSevenDays">Siste uke</option>
+                <option value="@lastMonth">Siste måned</option>
+                <option value="@lastThreeMonths">Siste 3 måneder</option>
+                <option value="@lastSixMonths">Siste 6 måneder</option>
+                <option value="@lastYear">Siste år</option>
+            </select>
+        </div>
         <div class="col-sm-12">
             <div class="card-body">
                 <canvas id="tempChart"></canvas>
