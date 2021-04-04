@@ -115,13 +115,28 @@ namespace budorWeb.Pages
             var sensorReadingCutOff = DateTime.UtcNow.AddHours(-cutOffHours);
             var sensorReadings = _context.SensorReadings.Where(m => m.MeasuredAtUtc >= sensorReadingCutOff).ToList()
                 .OrderBy(m => m.MeasuredAtUtc).ToList();
+
+            // Show at least one point every hour if showing data for a full year
+            var filteredSensorReadings = new List<SensorReadingModel>();
+            const int maxElementsToShow = 24 * 365;
+            if (sensorReadings.Count > maxElementsToShow)
+            {
+                var keepEveryNth = sensorReadings.Count / maxElementsToShow;
+                for (var i = 0; i < sensorReadings.Count; i++)
+                    if (i % keepEveryNth == 0)
+                        filteredSensorReadings.Add(sensorReadings[i]);
+            }
+
+            if (!filteredSensorReadings.Any()) filteredSensorReadings = sensorReadings;
+
             var chartModel = new SensorReadingsChartDto
             {
-                HumidityReadings = sensorReadings.Select(m => Math.Round(m.RelativeHumidityInPercent, 2))
+                HumidityReadings = filteredSensorReadings.Select(m => Math.Round(m.RelativeHumidityInPercent, 2))
                     .ToList(),
-                TemperatureReadings = sensorReadings.Select(m => Math.Round(m.TemperatureInDegreesC, 2)).ToList(),
-                PressureReadings = sensorReadings.Select(m => Math.Round(m.PressureInhPa, 2)).ToList(),
-                MeasuredAt = sensorReadings.Select(m => m.MeasuredAtUtc.ToLocalTime())
+                TemperatureReadings =
+                    filteredSensorReadings.Select(m => Math.Round(m.TemperatureInDegreesC, 2)).ToList(),
+                PressureReadings = filteredSensorReadings.Select(m => Math.Round(m.PressureInhPa, 2)).ToList(),
+                MeasuredAt = filteredSensorReadings.Select(m => m.MeasuredAtUtc.ToLocalTime())
                     .ToList()
             };
             return new JsonResult(chartModel);

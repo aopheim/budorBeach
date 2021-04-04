@@ -42,10 +42,9 @@ namespace rpiDaemon.Jobs
             SignalRHelper.SetupEventsForDebuggingConnection(logger, _connection);
         }
 
-        private TimeSpan DbPushInterval => TimeSpan.FromMinutes(2);
+        private static TimeSpan DbPushInterval => TimeSpan.FromMinutes(2);
 
         public static DateTime? LastDbPushInUtc { get; set; }
-
 
         public async Task Execute(IJobExecutionContext jobExecutionContext)
         {
