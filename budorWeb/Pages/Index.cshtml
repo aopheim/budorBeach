@@ -42,6 +42,7 @@
         </div>
         @{
             const int last12 = 12;
+            const int lastDay = 24;
             const int lastThreeDays = 24 * 3;
             const int lastSevenDays = 24 * 7;
             const int lastMonth = 24 * 30;
@@ -52,6 +53,7 @@
         <div class="col-sm-6 col-lg-2">
             <select class="form-select" id="chartDropDown" aria-label="Se data fra siste...">
                 <option value="@last12" selected="selected">Siste 12 timer</option>
+                <option value="@lastDay" selected="selected">Siste døgn</option>
                 <option value="@lastThreeDays">Siste tre dager</option>
                 <option value="@lastSevenDays">Siste uke</option>
                 <option value="@lastMonth">Siste måned</option>
