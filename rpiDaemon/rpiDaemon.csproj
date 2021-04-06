@@ -22,6 +22,7 @@
     <PackageReference Include="Quartz" Version="3.2.4" />
     <PackageReference Include="Quartz.AspNetCore" Version="3.2.4" />
     <PackageReference Include="Quartz.Extensions.Hosting" Version="3.2.4" />
+    <PackageReference Include="SolarCalculator" Version="3.0.6" />
     <PackageReference Include="System.IO.Ports" Version="5.0.0" />
   </ItemGroup>
 
