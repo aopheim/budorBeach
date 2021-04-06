@@ -1,5 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Azure.Storage.Blobs;
+using Innovative.SolarCalculator;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -41,8 +43,14 @@ namespace rpiDaemon.Jobs
 
         public async Task Execute(IJobExecutionContext context)
         {
-            await TakePictureJobHelper.TakeImageAndUploadAsync(_environment, _camera, _logger, _containerClient,
-                new PiCameraSettings());
+            var now = DateTime.UtcNow;
+            var solarTimes = new SolarTimes(now, 60.974951, 11.285140);
+            var sunrise = solarTimes.Sunrise;
+            var sunset = solarTimes.Sunset;
+
+            if (now > sunrise.AddHours(-1) && now < sunset.AddHours(1))
+                await TakePictureJobHelper.TakeImageAndUploadAsync(_environment, _camera, _logger, _containerClient,
+                    new PiCameraSettings());
         }
     }
 }
