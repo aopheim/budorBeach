@@ -40,6 +40,7 @@
           "Quartz.AspNetCore": "3.2.4",
           "Quartz.Extensions.Hosting": "3.2.4",
           "Shared": "1.0.0",
+          "SolarCalculator": "3.0.6",
           "System.IO.Ports": "5.0.0",
           "Microsoft.Windows.SDK.NET": "10.0.17763.10",
           "WinRT.Runtime": "1.1.0.0",
@@ -337,6 +338,17 @@
             "assemblyVersion": "1.1.0.0",
             "fileVersion": "1.1.0.33641"
           }
+        }
+      },
+      "Angle/3.0.4": {
+        "runtime": {
+          "lib/netcoreapp3.1/Innovative.Geometry.Angle.dll": {
+            "assemblyVersion": "3.0.4.0",
+            "fileVersion": "3.0.4.0"
+          }
+        },
+        "compile": {
+          "lib/netcoreapp3.1/Innovative.Geometry.Angle.dll": {}
         }
       },
       "AutoFixture/4.15.0": {
@@ -1473,6 +1485,20 @@
       "runtime.ubuntu.14.04-x64.runtime.native.System.Security.Cryptography.OpenSsl/4.3.0": {},
       "runtime.ubuntu.16.04-x64.runtime.native.System.Security.Cryptography.OpenSsl/4.3.0": {},
       "runtime.ubuntu.16.10-x64.runtime.native.System.Security.Cryptography.OpenSsl/4.3.0": {},
+      "SolarCalculator/3.0.6": {
+        "dependencies": {
+          "Angle": "3.0.4"
+        },
+        "runtime": {
+          "lib/netcoreapp3.1/Innovative.SolarCalculator.dll": {
+            "assemblyVersion": "3.0.6.0",
+            "fileVersion": "3.0.6.0"
+          }
+        },
+        "compile": {
+          "lib/netcoreapp3.1/Innovative.SolarCalculator.dll": {}
+        }
+      },
       "System.AppContext/4.3.0": {
         "dependencies": {
           "System.Runtime": "4.3.0"
@@ -4105,6 +4131,13 @@
       "serviceable": false,
       "sha512": ""
     },
+    "Angle/3.0.4": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-iDFW4YC0rZCLGTG4ANu2IXXHc5lL/T16++A7CBTLmn5Gd6qb4VzZGIu1lN5NuxHZbW3+LwtrXi2d7tilw/QQVA==",
+      "path": "angle/3.0.4",
+      "hashPath": "angle.3.0.4.nupkg.sha512"
+    },
     "AutoFixture/4.15.0": {
       "type": "package",
       "serviceable": true,
@@ -4916,6 +4949,13 @@
       "sha512": "sha512-VB5cn/7OzUfzdnC8tqAIMQciVLiq2epm2NrAm1E9OjNRyG4lVhfR61SMcLizejzQP8R8Uf/0l5qOIbUEi+RdEg==",
       "path": "runtime.ubuntu.16.10-x64.runtime.native.system.security.cryptography.openssl/4.3.0",
       "hashPath": "runtime.ubuntu.16.10-x64.runtime.native.system.security.cryptography.openssl.4.3.0.nupkg.sha512"
+    },
+    "SolarCalculator/3.0.6": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ZL2yiawGB0sSJY1jgcs6gimz9M8/M+J2nlqYZl4SY5RqIGHpFrO2YzSA4nZN645jrqKsNG/OpYawwQCj2v/9Gg==",
+      "path": "solarcalculator/3.0.6",
+      "hashPath": "solarcalculator.3.0.6.nupkg.sha512"
     },
     "System.AppContext/4.3.0": {
       "type": "package",
