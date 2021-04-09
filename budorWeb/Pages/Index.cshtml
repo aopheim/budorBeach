@@ -80,17 +80,21 @@
 </div>
 <div class="container">
     <h2>De 5 siste bildene</h2>
-    @foreach (var blob in @Model.LatestImages)
-    {
-        <div class="card my-3">
-            <a href="@blob.Uri">
-                <img class="card-img-top" src="@blob.Uri" alt="@blob.Name">
-            </a>
-            <div class="card-body">
-                <h4 class="card-text">@DateTimeParser.GetLocalDateTimeAsString(DateTimeParser.GetDateTimeFromFolderAndFileName(blob.Name))</h4>
+    <div class="row">
+        @foreach (var blob in @Model.LatestImages)
+        {
+            <div class="col-md-6">
+                <div class="card my-3">
+                    <a href="@blob.Uri">
+                        <img class="card-img-top" src="@blob.Uri" alt="@blob.Name">
+                    </a>
+                    <div class="card-body">
+                        <h4 class="card-text">@DateTimeParser.GetLocalDateTimeAsString(DateTimeParser.GetDateTimeFromFolderAndFileName(blob.Name))</h4>
+                    </div>
+                </div>
             </div>
-        </div>
-    }
+        }
+    </div>
 </div>
 <h4>Kamera-innstillinger</h4>
 <form method="post">
