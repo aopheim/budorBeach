@@ -48,7 +48,7 @@ namespace rpiDaemon.Jobs
             var sunrise = solarTimes.Sunrise;
             var sunset = solarTimes.Sunset;
 
-            if (now > sunrise.AddHours(-1) && now < sunset.AddHours(1))
+            if (now > sunrise.AddMinutes(-15) && now < sunset.AddMinutes(30))
                 await TakePictureJobHelper.TakeImageAndUploadAsync(_environment, _camera, _logger, _containerClient,
                     new PiCameraSettings());
         }
