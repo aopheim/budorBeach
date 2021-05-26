@@ -31,7 +31,8 @@ namespace rpiDaemon.Jobs
                 var now = DateTime.UtcNow;
                 var folderName = DateTimeParser.GetFolderName(now);
                 var fileName = DateTimeParser.GetFileName(now);
-                var fullPath = $"/home/pi/images/{folderName}/{fileName}.jpg";
+                var folderPath = $"/home/pi/images/{folderName}";
+                var fullPath = folderPath + $"/{fileName}.jpg";
                 try
                 {
                     using var imgCaptureHandler = new ImageStreamCaptureHandler(fullPath);
@@ -58,7 +59,7 @@ namespace rpiDaemon.Jobs
                 await blobClient.UploadAsync(uploadFileStream, true);
                 uploadFileStream.Close();
 
-                File.Delete(fullPath);
+                Directory.Delete(folderPath);
             }
         }
     }
