@@ -59,7 +59,7 @@ namespace rpiDaemon.Jobs
                 await blobClient.UploadAsync(uploadFileStream, true);
                 uploadFileStream.Close();
 
-                Directory.Delete(folderPath);
+                Directory.Delete(folderPath, true);
             }
         }
     }
