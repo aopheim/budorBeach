@@ -57,6 +57,8 @@ namespace rpiDaemon.Jobs
                 await using var uploadFileStream = File.OpenRead(fullPath);
                 await blobClient.UploadAsync(uploadFileStream, true);
                 uploadFileStream.Close();
+
+                File.Delete(fullPath);
             }
         }
     }
