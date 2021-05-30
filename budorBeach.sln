@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "rpiDaemon.Test", "rpiDaemon
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "budorWeb", "budorWeb\budorWeb.csproj", "{1F162345-C688-46D0-B707-DB4500579855}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shared", "Shared\Shared.csproj", "{1D9A0ADA-1614-47D5-B57F-98DAAA35687D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csproj", "{1D9A0ADA-1614-47D5-B57F-98DAAA35687D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
