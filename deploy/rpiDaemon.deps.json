@@ -32,6 +32,7 @@
           "JetBrains.Annotations": "2020.3.0",
           "MMALSharp": "0.6.0",
           "Magick.NET-Q8-AnyCPU": "7.24.0",
+          "Magick.NET.Core": "7.0.0",
           "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore": "5.0.3",
           "Microsoft.AspNetCore.SignalR.Client": "5.0.3",
           "Microsoft.EntityFrameworkCore.Design": "5.0.3",
