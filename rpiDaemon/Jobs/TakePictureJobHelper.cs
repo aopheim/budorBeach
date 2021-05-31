@@ -4,7 +4,6 @@ using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Azure.Storage.Blobs;
-using ImageMagick;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -63,16 +62,16 @@ namespace rpiDaemon.Jobs
                 uploadFileStream.Close();
                 await AzureStorageHelper.SetBlobPropertiesAsync(blobClient);
 
-                using var compressedImage = new MagickImage(fullPath);
-                compressedImage.Resize(new Percentage(30));
-                compressedImage.Strip();
-                compressedImage.Write(fullPath);
+                //using var compressedImage = new MagickImage(fullPath);
+                //compressedImage.Resize(new Percentage(30));
+                //compressedImage.Strip();
+                //compressedImage.Write(fullPath);
 
-                blobClient = thumbnailContainerClient.GetBlobClient($"{folderName}/{fileName}.jpg");
-                await using var uploadThumbnailFileStream = File.OpenRead(fullPath);
-                await blobClient.UploadAsync(uploadFileStream, true);
-                uploadFileStream.Close();
-                await AzureStorageHelper.SetBlobPropertiesAsync(blobClient);
+                //blobClient = thumbnailContainerClient.GetBlobClient($"{folderName}/{fileName}.jpg");
+                //await using var uploadThumbnailFileStream = File.OpenRead(fullPath);
+                //await blobClient.UploadAsync(uploadFileStream, true);
+                //uploadFileStream.Close();
+                //await AzureStorageHelper.SetBlobPropertiesAsync(blobClient);
 
                 Directory.Delete(folderPath, true);
             }
