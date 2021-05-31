@@ -58,10 +58,10 @@ namespace rpiDaemon.Jobs
                 logger.LogInformation(
                     $"Picture taken at {DateTime.UtcNow}. Camera settings: {JsonSerializer.Serialize(settings)}");
                 var blobClient = containerClient.GetBlobClient($"{folderName}/{fileName}.jpg");
-                await AzureStorageHelper.SetBlobPropertiesAsync(blobClient);
                 await using var uploadFileStream = File.OpenRead(fullPath);
                 await blobClient.UploadAsync(uploadFileStream, true);
                 uploadFileStream.Close();
+                await AzureStorageHelper.SetBlobPropertiesAsync(blobClient);
 
                 using var compressedImage = new MagickImage(fullPath);
                 compressedImage.Resize(new Percentage(30));
@@ -69,10 +69,10 @@ namespace rpiDaemon.Jobs
                 compressedImage.Write(fullPath);
 
                 blobClient = thumbnailContainerClient.GetBlobClient($"{folderName}/{fileName}.jpg");
-                await AzureStorageHelper.SetBlobPropertiesAsync(blobClient);
                 await using var uploadThumbnailFileStream = File.OpenRead(fullPath);
                 await blobClient.UploadAsync(uploadFileStream, true);
                 uploadFileStream.Close();
+                await AzureStorageHelper.SetBlobPropertiesAsync(blobClient);
 
                 Directory.Delete(folderPath, true);
             }
