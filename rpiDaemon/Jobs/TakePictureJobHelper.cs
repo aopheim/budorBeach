@@ -4,6 +4,7 @@ using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Azure.Storage.Blobs;
+using ImageMagick;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -12,6 +13,7 @@ using MMALSharp.Common;
 using MMALSharp.Config;
 using MMALSharp.Handlers;
 using rpiDaemon.DateTimeHelpers;
+using Shared.Azure;
 using Shared.PiCameraSettings;
 
 namespace rpiDaemon.Jobs
@@ -19,7 +21,8 @@ namespace rpiDaemon.Jobs
     public static class TakePictureJobHelper
     {
         public static async Task TakeImageAndUploadAsync(IWebHostEnvironment environment, MMALCamera camera,
-            ILogger logger, BlobContainerClient containerClient, PiCameraSettings settings)
+            ILogger logger, BlobContainerClient containerClient, BlobContainerClient thumbnailContainerClient,
+            PiCameraSettings settings)
         {
             if (environment.IsDevelopment())
             {
@@ -55,7 +58,19 @@ namespace rpiDaemon.Jobs
                 logger.LogInformation(
                     $"Picture taken at {DateTime.UtcNow}. Camera settings: {JsonSerializer.Serialize(settings)}");
                 var blobClient = containerClient.GetBlobClient($"{folderName}/{fileName}.jpg");
+                await AzureStorageHelper.SetBlobPropertiesAsync(blobClient);
                 await using var uploadFileStream = File.OpenRead(fullPath);
+                await blobClient.UploadAsync(uploadFileStream, true);
+                uploadFileStream.Close();
+
+                using var compressedImage = new MagickImage(fullPath);
+                compressedImage.Resize(new Percentage(30));
+                compressedImage.Strip();
+                compressedImage.Write(fullPath);
+
+                blobClient = thumbnailContainerClient.GetBlobClient($"{folderName}/{fileName}.jpg");
+                await AzureStorageHelper.SetBlobPropertiesAsync(blobClient);
+                await using var uploadThumbnailFileStream = File.OpenRead(fullPath);
                 await blobClient.UploadAsync(uploadFileStream, true);
                 uploadFileStream.Close();
 

@@ -8,6 +8,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using MMALSharp;
 using rpiDaemon.Jobs;
+using Shared;
+using Shared.Azure;
 using Shared.Interfaces;
 using Shared.Models;
 using Shared.PiCameraSettings;
@@ -17,13 +19,13 @@ namespace rpiDaemon
 {
     public class BudorHubPiClient : IBudorHubClient, IHostedService
     {
-        private const string BlobContainerName = "images";
         private readonly MMALCamera _camera;
 
         private readonly HubConnection _connection;
-        private readonly BlobContainerClient _containerClient;
         private readonly IWebHostEnvironment _environment;
+        private readonly BlobContainerClient _imagesContainerClient;
         private readonly ILogger<BudorHubPiClient> _logger;
+        private readonly BlobContainerClient _thumbnailsContainerClient;
 
         public BudorHubPiClient(ILogger<BudorHubPiClient> logger, IWebHostEnvironment environment,
             IConfiguration config)
@@ -35,8 +37,10 @@ namespace rpiDaemon
             _connection = new HubConnectionBuilder()
                 .WithUrl(environment.IsProduction() ? productionUrl : developmentUrl).WithAutomaticReconnect()
                 .Build();
-            _containerClient =
-                new BlobContainerClient(config.GetConnectionString("AzureStorageConnectionString"), BlobContainerName);
+            _imagesContainerClient =
+                AzureStorageHelper.GetBlobContainerClient(config, GlobalConstants.ImagesContainerName);
+            _thumbnailsContainerClient =
+                AzureStorageHelper.GetBlobContainerClient(config, GlobalConstants.ThumbnailImagesContainerName);
             _camera = environment.IsProduction() ? MMALCamera.Instance : default;
         }
 
@@ -55,8 +59,8 @@ namespace rpiDaemon
 
         public async Task TakeImage(PiCameraSettings settings)
         {
-            await TakePictureJobHelper.TakeImageAndUploadAsync(_environment, _camera, _logger, _containerClient,
-                settings);
+            await TakePictureJobHelper.TakeImageAndUploadAsync(_environment, _camera, _logger, _imagesContainerClient,
+                _thumbnailsContainerClient, settings);
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)
