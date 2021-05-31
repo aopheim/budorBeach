@@ -9,6 +9,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using MMALSharp;
 using Quartz;
+using Shared;
+using Shared.Azure;
 using Shared.PiCameraSettings;
 
 namespace rpiDaemon.Jobs
@@ -23,6 +25,7 @@ namespace rpiDaemon.Jobs
         private readonly BlobContainerClient _containerClient;
         private readonly IWebHostEnvironment _environment;
         private readonly ILogger<TakePictureJob> _logger;
+        private readonly BlobContainerClient _thumbnailsContainerClient;
 
         public TakePictureJob()
         {
@@ -33,8 +36,9 @@ namespace rpiDaemon.Jobs
             _logger = logger;
             _config = config;
             _environment = environment;
-            _containerClient =
-                new BlobContainerClient(_config.GetConnectionString("AzureStorageConnectionString"), BlobContainerName);
+            _containerClient = AzureStorageHelper.GetBlobContainerClient(_config, GlobalConstants.ImagesContainerName);
+            _thumbnailsContainerClient =
+                AzureStorageHelper.GetBlobContainerClient(_config, GlobalConstants.ThumbnailImagesContainerName);
 
             _camera = _environment.IsProduction() ? MMALCamera.Instance : default;
             MMALCameraConfig.Debug = true;
@@ -50,6 +54,7 @@ namespace rpiDaemon.Jobs
 
             if (now > sunrise && now < sunset)
                 await TakePictureJobHelper.TakeImageAndUploadAsync(_environment, _camera, _logger, _containerClient,
+                    _thumbnailsContainerClient,
                     new PiCameraSettings());
         }
     }
