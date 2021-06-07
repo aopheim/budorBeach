@@ -4,6 +4,7 @@
 @using System.Text.Json
 @using global::Shared.Models
 @using global::Shared.PiCameraSettings
+@using Microsoft.WindowsAzure.Storage.Blob
 @model BudorBeachModel
 @{
     ViewData["Title"] = "Budor Beach";
@@ -87,7 +88,7 @@
 <div class="container">
     <h2>De 5 siste bildene</h2>
     <div class="row">
-        @foreach (var blob in @Model.LatestImages)
+        @foreach (var blob in @Model?.LatestImages ?? new List<CloudBlockBlob>())
         {
             <div class="col-md-6">
                 <div class="card my-3">
