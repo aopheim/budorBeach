@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,8 +11,10 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using rpiDaemon;
+using rpiDaemon.DateTimeHelpers;
 using Shared.Interfaces;
 using Shared.Models;
 using Shared.PiCameraSettings;
@@ -33,8 +36,8 @@ namespace budorWeb.Pages
         {
             _context = context;
             _logger = logger;
-            //_cloudBlobClient = CloudStorageAccount.Parse(config.GetConnectionString("AzureStorageConnectionString"))
-            //    .CreateCloudBlobClient();
+            _cloudBlobClient = CloudStorageAccount.Parse(config.GetConnectionString("AzureStorageConnectionString"))
+                .CreateCloudBlobClient();
             _currentCameraSettings = PiCameraSettingsHelper.GetCurrentCameraSettingsFromFile();
             IsoSetting = _currentCameraSettings.Iso;
             ShutterTimeSetting = _currentCameraSettings.ShutterTime;
@@ -75,21 +78,21 @@ namespace budorWeb.Pages
             //await _connection.InvokeAsync(nameof(BudorHub.SendMessageToAllClients), ".NET Web Client connected!",
             //    cancellationToken);
 
-            //LatestSensorReadingModel = _context.SensorReadings.OrderByDescending(m => m.MeasuredAtUtc).FirstOrDefault();
+            LatestSensorReadingModel = _context.SensorReadings.OrderByDescending(m => m.MeasuredAtUtc).FirstOrDefault();
 
-            //var blobContainer = _cloudBlobClient.GetContainerReference(BlobContainerName);
-            //BlobContinuationToken continuationToken = null;
-            //var latestImages = new List<CloudBlockBlob>();
-            //do
-            //{
-            //    var response = await blobContainer.ListBlobsSegmentedAsync(default, true, default,
-            //        default, continuationToken, default, default, cancellationToken);
-            //    continuationToken = response.ContinuationToken;
-            //    latestImages.AddRange(response.Results.Cast<CloudBlockBlob>()
-            //        .OrderByDescending(blob => DateTimeParser.GetDateTimeFromFolderAndFileName(blob.Name)).Take(5));
-            //} while (continuationToken != null);
+            var blobContainer = _cloudBlobClient.GetContainerReference(BlobContainerName);
+            BlobContinuationToken continuationToken = null;
+            var latestImages = new List<CloudBlockBlob>();
+            do
+            {
+                var response = await blobContainer.ListBlobsSegmentedAsync(default, true, default,
+                    default, continuationToken, default, default, cancellationToken);
+                continuationToken = response.ContinuationToken;
+                latestImages.AddRange(response.Results.Cast<CloudBlockBlob>()
+                    .OrderByDescending(blob => DateTimeParser.GetDateTimeFromFolderAndFileName(blob.Name)).Take(5));
+            } while (continuationToken != null);
 
-            //LatestImages = latestImages;
+            LatestImages = latestImages;
         }
 
         public async Task<IActionResult> OnPostAsync(CancellationToken cancellationToken)
@@ -104,37 +107,37 @@ namespace budorWeb.Pages
             return RedirectToPage("Index");
         }
 
-        //public JsonResult OnGetSensorReadings(int cutOffHours)
-        //{
-        //var sensorReadingCutOff = DateTime.UtcNow.AddHours(-cutOffHours);
-        //var sensorReadings = _context.SensorReadings.Where(m => m.MeasuredAtUtc >= sensorReadingCutOff).ToList()
-        //    .OrderBy(m => m.MeasuredAtUtc).ToList();
+        public JsonResult OnGetSensorReadings(int cutOffHours)
+        {
+            var sensorReadingCutOff = DateTime.UtcNow.AddHours(-cutOffHours);
+            var sensorReadings = _context.SensorReadings.Where(m => m.MeasuredAtUtc >= sensorReadingCutOff).ToList()
+                .OrderBy(m => m.MeasuredAtUtc).ToList();
 
-        //// Show at least one point every hour if showing data for a full year
-        //var filteredSensorReadings = new List<SensorReadingModel>();
-        //const int maxElementsToShow = 24 * 365;
-        //if (sensorReadings.Count > maxElementsToShow)
-        //{
-        //    var keepEveryNth = sensorReadings.Count / maxElementsToShow;
-        //    for (var i = 0; i < sensorReadings.Count; i++)
-        //        if (i % keepEveryNth == 0)
-        //            filteredSensorReadings.Add(sensorReadings[i]);
-        //}
+            // Show at least one point every hour if showing data for a full year
+            var filteredSensorReadings = new List<SensorReadingModel>();
+            const int maxElementsToShow = 24 * 365;
+            if (sensorReadings.Count > maxElementsToShow)
+            {
+                var keepEveryNth = sensorReadings.Count / maxElementsToShow;
+                for (var i = 0; i < sensorReadings.Count; i++)
+                    if (i % keepEveryNth == 0)
+                        filteredSensorReadings.Add(sensorReadings[i]);
+            }
 
-        //if (!filteredSensorReadings.Any()) filteredSensorReadings = sensorReadings;
+            if (!filteredSensorReadings.Any()) filteredSensorReadings = sensorReadings;
 
-        //var chartModel = new SensorReadingsChartDto
-        //{
-        //    HumidityReadings = filteredSensorReadings.Select(m => Math.Round(m.RelativeHumidityInPercent, 2))
-        //        .ToList(),
-        //    TemperatureReadings =
-        //        filteredSensorReadings.Select(m => Math.Round(m.TemperatureInDegreesC, 2)).ToList(),
-        //    PressureReadings = filteredSensorReadings.Select(m => Math.Round(m.PressureInhPa, 2)).ToList(),
-        //    MeasuredAt = filteredSensorReadings.Select(m => m.MeasuredAtUtc.ToLocalTime())
-        //        .ToList()
-        //};
-        //return new JsonResult(chartModel);
-        //}
+            var chartModel = new SensorReadingsChartDto
+            {
+                HumidityReadings = filteredSensorReadings.Select(m => Math.Round(m.RelativeHumidityInPercent, 2))
+                    .ToList(),
+                TemperatureReadings =
+                    filteredSensorReadings.Select(m => Math.Round(m.TemperatureInDegreesC, 2)).ToList(),
+                PressureReadings = filteredSensorReadings.Select(m => Math.Round(m.PressureInhPa, 2)).ToList(),
+                MeasuredAt = filteredSensorReadings.Select(m => m.MeasuredAtUtc.ToLocalTime())
+                    .ToList()
+            };
+            return new JsonResult(chartModel);
+        }
 
         private void SetupWebClientMethods()
         {
