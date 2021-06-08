@@ -84,8 +84,8 @@ namespace budorWeb.Pages
 
             //LatestSensorReadingModel = _context.SensorReadings.OrderByDescending(m => m.MeasuredAtUtc).FirstOrDefault();
 
-            var containerClient = AzureStorageHelper.GetBlobContainerClient(_config, BlobContainerName);
-            var blobs = containerClient.GetBlobs()
+            ContainerClient = AzureStorageHelper.GetBlobContainerClient(_config, BlobContainerName);
+            var blobs = ContainerClient.GetBlobs()
                 .OrderByDescending(blob => DateTimeParser.GetDateTimeFromFolderAndFileName(blob.Name)).Take(5).ToList();
 
             LatestImages = blobs;
