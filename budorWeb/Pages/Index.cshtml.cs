@@ -82,7 +82,7 @@ namespace budorWeb.Pages
             await _connection.InvokeAsync(nameof(BudorHub.SendMessageToAllClients), ".NET Web Client connected!",
                 cancellationToken);
 
-            //LatestSensorReadingModel = _context.SensorReadings.OrderByDescending(m => m.MeasuredAtUtc).FirstOrDefault();
+            LatestSensorReadingModel = _context.SensorReadings.OrderByDescending(m => m.MeasuredAtUtc).FirstOrDefault();
 
             ContainerClient = AzureStorageHelper.GetBlobContainerClient(_config, BlobContainerName);
             var blobs = ContainerClient.GetBlobs()
