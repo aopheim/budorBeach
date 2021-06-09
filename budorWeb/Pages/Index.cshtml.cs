@@ -54,21 +54,6 @@ namespace budorWeb.Pages
         public List<BlobItem> LatestImages { get; set; }
         public BlobContainerClient ContainerClient { get; set; }
         [CanBeNull] public SensorReadingModel LatestSensorReadingModel { get; set; }
-
-        [NotNull]
-        public List<SensorReadingModel> SensorReadingsFromLastSevenDays
-        {
-            get => _sensorReadingsFromLastSevenDays ??= new List<SensorReadingModel>();
-            set => _sensorReadingsFromLastSevenDays = value;
-        }
-
-        [NotNull]
-        public List<SensorReadingModel> SensorReadingsFromLastMonth
-        {
-            get => _sensorReadingsFromLastMonth ??= new List<SensorReadingModel>();
-            set => _sensorReadingsFromLastMonth = value;
-        }
-
         [BindProperty] public int IsoSetting { get; set; }
         [BindProperty] public int ShutterTimeSetting { get; set; }
 
