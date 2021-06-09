@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -11,10 +13,9 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Blob;
 using rpiDaemon;
 using rpiDaemon.DateTimeHelpers;
+using Shared.Azure;
 using Shared.Interfaces;
 using Shared.Models;
 using Shared.PiCameraSettings;
@@ -24,7 +25,7 @@ namespace budorWeb.Pages
     public class BudorBeachModel : PageModel
     {
         private const string BlobContainerName = "images";
-        private readonly CloudBlobClient _cloudBlobClient;
+        private readonly IConfiguration _config;
         private readonly HubConnection _connection;
         private readonly ApplicationDbContext _context;
         private readonly ILogger<BudorBeachModel> _logger;
@@ -36,8 +37,7 @@ namespace budorWeb.Pages
         {
             _context = context;
             _logger = logger;
-            _cloudBlobClient = CloudStorageAccount.Parse(config.GetConnectionString("AzureStorageConnectionString"))
-                .CreateCloudBlobClient();
+            _config = config;
             _currentCameraSettings = PiCameraSettingsHelper.GetCurrentCameraSettingsFromFile();
             IsoSetting = _currentCameraSettings.Iso;
             ShutterTimeSetting = _currentCameraSettings.ShutterTime;
@@ -51,7 +51,8 @@ namespace budorWeb.Pages
         private PiCameraSettings _currentCameraSettings { get; }
 
 
-        public List<CloudBlockBlob> LatestImages { get; set; }
+        public List<BlobItem> LatestImages { get; set; }
+        public BlobContainerClient ContainerClient { get; set; }
         [CanBeNull] public SensorReadingModel LatestSensorReadingModel { get; set; }
 
         [NotNull]
@@ -80,19 +81,11 @@ namespace budorWeb.Pages
 
             LatestSensorReadingModel = _context.SensorReadings.OrderByDescending(m => m.MeasuredAtUtc).FirstOrDefault();
 
-            var blobContainer = _cloudBlobClient.GetContainerReference(BlobContainerName);
-            BlobContinuationToken continuationToken = null;
-            var latestImages = new List<CloudBlockBlob>();
-            do
-            {
-                var response = await blobContainer.ListBlobsSegmentedAsync(default, true, default,
-                    default, continuationToken, default, default, cancellationToken);
-                continuationToken = response.ContinuationToken;
-                latestImages.AddRange(response.Results.Cast<CloudBlockBlob>()
-                    .OrderByDescending(blob => DateTimeParser.GetDateTimeFromFolderAndFileName(blob.Name)).Take(5));
-            } while (continuationToken != null);
+            ContainerClient = AzureStorageHelper.GetBlobContainerClient(_config, BlobContainerName);
+            var blobs = ContainerClient.GetBlobs()
+                .OrderByDescending(blob => DateTimeParser.GetDateTimeFromFolderAndFileName(blob.Name)).Take(5).ToList();
 
-            LatestImages = latestImages;
+            LatestImages = blobs;
         }
 
         public async Task<IActionResult> OnPostAsync(CancellationToken cancellationToken)
