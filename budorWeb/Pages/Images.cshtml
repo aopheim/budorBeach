@@ -16,8 +16,8 @@
     {
         <div class="col-md-6">
             <div class="card my-3">
-                <a href="@blob.GetUrlForBlob(Model.ContainerClient)">
-                    <img class="card-img-top" src="@blob.GetUrlForBlob(Model.ContainerClient)" alt="@blob.Name">
+                <a href="@blob.GetUrlForBlob(Model.FullSizeImageContainerClient)">
+                    <img class="card-img-top" src="@blob.GetUrlForBlob(Model.ThumbnailContainerClient)" alt="@blob.Name">
                 </a>
                 <div class="card-body">
                     <h4 class="card-text">@DateTimeParser.GetLocalDateTimeAsString(DateTimeParser.GetDateTimeFromFolderAndFileName(blob.Name))</h4>

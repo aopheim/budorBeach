@@ -21,18 +21,21 @@ namespace budorWeb.Pages
         }
 
         public List<BlobItem> ImageBlobsForDay { get; set; }
-        public BlobContainerClient ContainerClient { get; set; }
+        public BlobContainerClient ThumbnailContainerClient { get; set; }
+        public BlobContainerClient FullSizeImageContainerClient { get; set; }
 
         public void OnGet()
         {
             var today = DateTime.UtcNow;
             var folderName = DateTimeParser.GetFolderName(today);
 
-            var containerClient =
-                AzureStorageHelper.GetBlobContainerClient(_config, GlobalConstants.ImagesContainerName);
-            ImageBlobsForDay = containerClient.GetBlobs().Where(blob => blob.Name.Contains(folderName))
+            var thumbnailContainerClient =
+                AzureStorageHelper.GetBlobContainerClient(_config, GlobalConstants.ThumbnailImagesContainerName);
+            ImageBlobsForDay = thumbnailContainerClient.GetBlobs().Where(blob => blob.Name.Contains(folderName))
                 .OrderBy(blob => DateTimeParser.GetDateTimeFromFolderAndFileName(blob.Name)).ToList();
-            ContainerClient = containerClient;
+            ThumbnailContainerClient = thumbnailContainerClient;
+            FullSizeImageContainerClient =
+                AzureStorageHelper.GetBlobContainerClient(_config, GlobalConstants.ImagesContainerName);
         }
 
         public void OnGetImagesForDay(string selectedDateAsString)
