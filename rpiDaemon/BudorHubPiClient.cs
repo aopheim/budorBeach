@@ -32,10 +32,10 @@ namespace rpiDaemon
         {
             _logger = logger;
             _environment = environment;
-            var developmentUrl = "http://localhost:3000/budorhub";
-            var productionUrl = "https://budorbeach.azurewebsites.net/budorhub";
             _connection = new HubConnectionBuilder()
-                .WithUrl(environment.IsProduction() ? productionUrl : developmentUrl).WithAutomaticReconnect()
+                .WithUrl(environment.IsProduction()
+                    ? GlobalConstants.ProductionHubUrl
+                    : GlobalConstants.DevelopmentHubUrl).WithAutomaticReconnect()
                 .Build();
             _imagesContainerClient =
                 AzureStorageHelper.GetBlobContainerClient(config, GlobalConstants.ImagesContainerName);

@@ -36,9 +36,9 @@ namespace rpiDaemon.Jobs
             _environment = environment;
             _fixture = new Fixture();
 
-            const string developmentUrl = "http://localhost:3000/budorhub";
-            const string productionUrl = "https://budorbeach.azurewebsites.net/budorhub";
-            var urlToUse = environment.IsProduction() ? productionUrl : developmentUrl;
+            var urlToUse = environment.IsProduction()
+                ? GlobalConstants.ProductionHubUrl
+                : GlobalConstants.DevelopmentHubUrl;
             _connection = SignalRHelper.GetHubConnection(urlToUse);
             SignalRHelper.SetupEventsForDebuggingConnection(logger, _connection);
         }
