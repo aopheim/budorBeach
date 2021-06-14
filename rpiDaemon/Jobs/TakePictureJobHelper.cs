@@ -56,25 +56,20 @@ namespace rpiDaemon.Jobs
 
                 logger.LogInformation(
                     $"Picture taken at {DateTime.UtcNow}. Camera settings: {JsonSerializer.Serialize(settings)}");
-                var blobClient = containerClient.GetBlobClient($"{folderName}/{fileName}.jpg");
-                await using var uploadFileStream = File.OpenRead(fullPath);
-                await blobClient.UploadAsync(uploadFileStream, true);
-                uploadFileStream.Close();
-                await AzureStorageHelper.SetBlobPropertiesAsync(blobClient);
-
-                //using var compressedImage = new MagickImage(fullPath);
-                //compressedImage.Resize(new Percentage(30));
-                //compressedImage.Strip();
-                //compressedImage.Write(fullPath);
-
-                //blobClient = thumbnailContainerClient.GetBlobClient($"{folderName}/{fileName}.jpg");
-                //await using var uploadThumbnailFileStream = File.OpenRead(fullPath);
-                //await blobClient.UploadAsync(uploadFileStream, true);
-                //uploadFileStream.Close();
-                //await AzureStorageHelper.SetBlobPropertiesAsync(blobClient);
+                await UploadImageToContainerClient(containerClient, folderName, fileName, fullPath);
 
                 Directory.Delete(folderPath, true);
             }
+        }
+
+        public static async Task UploadImageToContainerClient(BlobContainerClient containerClient, string folderName,
+            string fileName, string fullPath)
+        {
+            var blobClient = containerClient.GetBlobClient($"{folderName}/{fileName}.jpg");
+            await using var uploadFileStream = File.OpenRead(fullPath);
+            await blobClient.UploadAsync(uploadFileStream, true);
+            uploadFileStream.Close();
+            await AzureStorageHelper.SetBlobPropertiesAsync(blobClient);
         }
     }
 }

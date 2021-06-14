@@ -65,7 +65,7 @@ namespace rpiDaemon
 
             app.UseRouting();
 
-            app.UseEndpoints(endpoints => { endpoints.MapHub<BudorHub>("/budorhub"); });
+            app.UseEndpoints(endpoints => { endpoints.MapHub<BudorHub>(GlobalConstants.HubEndpoint); });
         }
     }
 }
