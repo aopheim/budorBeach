@@ -27,10 +27,6 @@ namespace rpiDaemon.Jobs
         private readonly ILogger<TakePictureJob> _logger;
         private readonly BlobContainerClient _thumbnailsContainerClient;
 
-        public TakePictureJob()
-        {
-        }
-
         public TakePictureJob(ILogger<TakePictureJob> logger, IConfiguration config, IWebHostEnvironment environment)
         {
             _logger = logger;
