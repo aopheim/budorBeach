@@ -32,8 +32,6 @@ namespace budorWeb.Pages
         private readonly HubConnection _connection;
         private readonly ApplicationDbContext _context;
         private readonly ILogger<BudorBeachModel> _logger;
-        private List<SensorReadingModel> _sensorReadingsFromLastMonth;
-        private List<SensorReadingModel> _sensorReadingsFromLastSevenDays;
 
         public BudorBeachModel(ILogger<BudorBeachModel> logger, IConfiguration config, ApplicationDbContext context,
             IWebHostEnvironment environment)
@@ -45,9 +43,9 @@ namespace budorWeb.Pages
             IsoSetting = _currentCameraSettings.Iso;
             ShutterTimeSetting = _currentCameraSettings.ShutterTime;
 
-            const string developmentUrl = "http://localhost:3000/budorhub";
-            const string productionUrl = "https://budorbeach.azurewebsites.net/budorhub";
-            _connection = SignalRHelper.GetHubConnection(environment.IsProduction() ? productionUrl : developmentUrl);
+            _connection = SignalRHelper.GetHubConnection(environment.IsProduction()
+                ? GlobalConstants.ProductionHubUrl
+                : GlobalConstants.DevelopmentHubUrl);
             SignalRHelper.SetupEventsForDebuggingConnection(logger, _connection);
         }
 
@@ -57,21 +55,6 @@ namespace budorWeb.Pages
         public List<BlobItem> LatestImages { get; set; }
         public BlobContainerClient ContainerClient { get; set; }
         [CanBeNull] public SensorReadingModel LatestSensorReadingModel { get; set; }
-
-        [NotNull]
-        public List<SensorReadingModel> SensorReadingsFromLastSevenDays
-        {
-            get => _sensorReadingsFromLastSevenDays ??= new List<SensorReadingModel>();
-            set => _sensorReadingsFromLastSevenDays = value;
-        }
-
-        [NotNull]
-        public List<SensorReadingModel> SensorReadingsFromLastMonth
-        {
-            get => _sensorReadingsFromLastMonth ??= new List<SensorReadingModel>();
-            set => _sensorReadingsFromLastMonth = value;
-        }
-
         [BindProperty] public int IsoSetting { get; set; }
         [BindProperty] public int ShutterTimeSetting { get; set; }
 

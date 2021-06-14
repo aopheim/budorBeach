@@ -71,7 +71,7 @@ namespace budorWeb
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRazorPages();
-                endpoints.MapHub<BudorHub>("/budorhub");
+                endpoints.MapHub<BudorHub>(GlobalConstants.HubEndpoint);
             });
         }
     }
