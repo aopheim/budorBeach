@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Drawing;
 using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -9,11 +8,12 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using MMALSharp;
 using MMALSharp.Common;
-using MMALSharp.Config;
 using MMALSharp.Handlers;
 using rpiDaemon.DateTimeHelpers;
 using Shared.Azure;
 using Shared.PiCameraSettings;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
 
 namespace rpiDaemon.Jobs
 {
@@ -41,7 +41,6 @@ namespace rpiDaemon.Jobs
 
                     MMALCameraConfig.ISO = settings.Iso;
                     MMALCameraConfig.ShutterSpeed = settings.ShutterTime;
-                    MMALCameraConfig.Annotate = new AnnotateImage("Budor Beach", 15, Color.DarkGray);
 
                     camera.ConfigureCameraSettings();
 
@@ -57,12 +56,28 @@ namespace rpiDaemon.Jobs
                 logger.LogInformation(
                     $"Picture taken at {DateTime.UtcNow}. Camera settings: {JsonSerializer.Serialize(settings)}");
                 await UploadImageToContainerClient(containerClient, folderName, fileName, fullPath);
+                var compressedImagePath = await CompressJpgImage(fullPath);
+                await UploadImageToContainerClient(thumbnailContainerClient, folderName, fileName, compressedImagePath);
 
                 Directory.Delete(folderPath, true);
             }
         }
 
-        public static async Task UploadImageToContainerClient(BlobContainerClient containerClient, string folderName,
+        private static async Task<string> CompressJpgImage(string fullInputPath)
+        {
+            var outputPath = fullInputPath.Replace(".jpg", "-resized.jpg");
+
+            await using var input = File.OpenRead(fullInputPath);
+            var image = await Image.LoadAsync(input);
+            var newWidth = image.Width / 4;
+            var newHeight = image.Height / 4;
+            image.Mutate(img => img.Resize(newWidth, newHeight));
+            await image.SaveAsync(outputPath);
+
+            return outputPath;
+        }
+
+        private static async Task UploadImageToContainerClient(BlobContainerClient containerClient, string folderName,
             string fileName, string fullPath)
         {
             var blobClient = containerClient.GetBlobClient($"{folderName}/{fileName}.jpg");
