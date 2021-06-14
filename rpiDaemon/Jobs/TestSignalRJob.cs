@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Logging;
 using Quartz;
+using Shared;
 
 namespace rpiDaemon.Jobs
 {
@@ -17,7 +18,7 @@ namespace rpiDaemon.Jobs
         {
             _logger = logger;
             _connection = new HubConnectionBuilder()
-                .WithUrl("http://localhost:3000/budorhub")
+                .WithUrl(GlobalConstants.DevelopmentHubUrl)
                 .WithAutomaticReconnect()
                 .Build();
 
