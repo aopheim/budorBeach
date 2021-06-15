@@ -1,0 +1,19 @@
+[Unit]
+Description=Daemon for Raspberry Pi
+Wants=network.target
+
+[Service]
+Type=notify
+WorkingDirectory=/home/pi/budorBeach/deploy
+ExecStart=/home/pi/dotnet-arm32/dotnet /home/pi/budorBeach/deploy/rpiDaemon.dll
+Restart=always
+# Restart service after 10 seconds if the dotnet service crashes:
+RestartSec=10
+KillSignal=SIGINT
+SyslogIdentifier=rpiDaemon
+User=pi
+Environment=ASPNETCORE_ENVIRONMENT=Production
+Environment=DOTNET_PRINT_TELEMETRY_MESSAGE=true
+
+[Install]
+WantedBy=multi-user.target
