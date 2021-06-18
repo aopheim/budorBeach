@@ -58,6 +58,39 @@ namespace budorWeb.Services
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-1/4-45-5.jpg",
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-1/7-50-5.jpg"
                     }
+                },
+                new NewsFeedEntry
+                {
+                    Id = 5,
+                    Date = new DateTime(2021, 06, 01),
+                    Header = "Svarthvit fluesnapper",
+                    Body =
+                        "Etter å ha fått eksperthjelp av søstrene Ulvensøen, som har studiekompetanse i fugletitting, har vi fått avklart fugleartene. Det er svarthvit fluesnapper som har flyttet inn - hannen og hunnen ser veldig ulike ut. ",
+                },
+                new NewsFeedEntry
+                {
+                    Id = 6,
+                    Date = new DateTime(2021, 06, 03),
+                    Header = "Strømbrudd!",
+                    Body =
+                        "Akkurat i den mest intense innflyttingsperioden får vi plutselig ikke lenger kontakt med fuglekassa. Sannsynligvis har strømmen gått i løpet av natten, og datamaskinen i fuglekassa har ikke greid å få kontakt med internettet igjen. Krise! " +
+                        "Fuglekasseteknikeren gjør det han kan for å få reddet situasjonen. Herr og fru fluesnapper har nå bygget seg et fint rede og er nok straks klare for å legge egg",
+                    ImageUrls = new List<string>
+                        {"https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-4/10-30-6.jpg"}
+                },
+                new NewsFeedEntry
+                {
+                    Id = 7,
+                    Date = new DateTime(2021, 06, 14),
+                    Header = "Fuglekassa er oppe og går igjen!",
+                    Body =
+                        "Plutselig fikk vi kontakt med fuglekassa igjen! Og nå har det skjedd mye - Fru Fluesnapper har lagt seks fine egg! Man ser dem litt uklart i bildet her - det var en våt og grå dag på Budor Beach. Fru Fluesnapper " +
+                        "ligger nå for det meste og ruger på eggene. Herr Fluesnapper har vi ikke sett på lenge. Kameraet er nå skrudd til å ta bilder hvert 5.minutt for å få med seg dramatikken.",
+                    ImageUrls = new List<string>
+                    {
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-14/12-53-28.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-14/18-43-28.jpg"
+                    }
                 }
             };
         }
