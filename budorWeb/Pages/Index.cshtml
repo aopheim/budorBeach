@@ -104,7 +104,7 @@
     <br/>
     <h2>Siste fuglekassenytt</h2>
     <div class="row">
-        <div class="col-sm-6 col-lg-3">
+        <div class="col-4">
             @foreach (var entry in NewsFeedService.GetNewsFeedEntries())
             {
                 <nav id="navbar-example3" class="navbar navbar-light bg-light flex-column align-items-stretch p-3">
@@ -115,7 +115,7 @@
 
             }
         </div>
-        <div class="col-sm-6 col-lg-9">
+        <div class="col-8">
             <div data-bs-spy="scroll" data-bs-target="#navbar-example3" data-bs-offset="0" tabindex="0" style="height: 400px; overflow-y: scroll">
                 <h4 id="@NewsFeedService.GetNewsFeedEntries()[0].Id">@DateTimeParser.GetLocalDateAsString(@NewsFeedService.GetNewsFeedEntries()[0].Date) - @NewsFeedService.GetNewsFeedEntries()[0].Header</h4>
                 <p>@NewsFeedService.GetNewsFeedEntries()[0].Body</p>
@@ -143,6 +143,8 @@
                     </div>
                     <div class="col-2"></div>
                 </div>
+                
+                <hr class="my-4"/>
 
                 <h4 id="@NewsFeedService.GetNewsFeedEntries()[1].Id">@DateTimeParser.GetLocalDateAsString(@NewsFeedService.GetNewsFeedEntries()[1].Date) - @NewsFeedService.GetNewsFeedEntries()[1].Header</h4>
                 <p>@NewsFeedService.GetNewsFeedEntries()[1].Body</p>
