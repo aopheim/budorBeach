@@ -18,8 +18,8 @@ namespace budorWeb.Services
                         "Fuglekassen er nå satt opp. I overetasjen er det satt opp et lite kamera som tar bilder med faste mellomrom. Nå er det bare å vente på besøk!",
                     ImageUrls = new List<string>
                     {
-                        "https://budorbeach.blob.core.windows.net/images/2021-4-1/8-37-40.jpg",
-                        "https://budorbeach.blob.core.windows.net/images/2021-4-1/kassa.JPG"
+                        "https://budorbeach.blob.core.windows.net/images/2021-4-1/kassa.JPG",
+                        "https://budorbeach.blob.core.windows.net/images/2021-4-1/8-37-40.jpg"
                     }
                 },
                 new NewsFeedEntry
