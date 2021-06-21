@@ -259,8 +259,35 @@
                     </div>
                     <div class="col-1"></div>
                 </div>
-            </div>
 
+                <hr class="my-4" />
+
+                <h4 id="@NewsFeedService.GetNewsFeedEntries()[7].Id">@DateTimeParser.GetLocalDateAsString(@NewsFeedService.GetNewsFeedEntries()[7].Date) - @NewsFeedService.GetNewsFeedEntries()[7].Header</h4>
+                <p>@NewsFeedService.GetNewsFeedEntries()[7].Body</p>
+                <div class="row">
+                    <div id="carouselExampleControls5" class="carousel slide" data-interval="false">
+                        <div class="carousel-inner">
+                            <div class="carousel-item active">
+                                <img src="@NewsFeedService.GetNewsFeedEntries()[7].ImageUrls[0]" class="d-block w-100" alt="...">
+                            </div>
+                            <div class="carousel-item">
+                                <img src="@NewsFeedService.GetNewsFeedEntries()[7].ImageUrls[1]" class="d-block w-100" alt="...">
+                            </div>
+                            <div class="carousel-item">
+                                <img src="@NewsFeedService.GetNewsFeedEntries()[7].ImageUrls[2]" class="d-block w-100" alt="...">
+                            </div>
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls5" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls5" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <h2>Kamera-innstillinger</h2>
