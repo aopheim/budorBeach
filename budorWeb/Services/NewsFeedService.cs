@@ -91,6 +91,20 @@ namespace budorWeb.Services
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-14/12-53-28.jpg",
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-14/18-43-28.jpg"
                     }
+                },
+                new NewsFeedEntry
+                {
+                    Id = 8,
+                    Date = new DateTime(2021, 06, 21),
+                    Header = "Nærmer vi oss klekking?",
+                    Body =
+                        "Det kan se ut som det nærmer seg klekking! Se på bildene hvordan det har dannet seg en liten sprekk i de øverste eggene på bare en drøy time. Kan Fru Fluesnapper være i gang med klekking?",
+                    ImageUrls = new List<string>
+                    {
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-21/8-32-32.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-21/9-7-32.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-21/9-2-32.jpg"
+                    }
                 }
             };
         }
