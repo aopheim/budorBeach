@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace budorWeb.Services
 {
@@ -11,7 +12,7 @@ namespace budorWeb.Services
             {
                 new NewsFeedEntry
                 {
-                    Id = 1,
+                    Id = "a",
                     Date = new DateTime(2021, 04, 01),
                     Header = "Fuglekassa er satt opp!",
                     Body =
@@ -24,7 +25,7 @@ namespace budorWeb.Services
                 },
                 new NewsFeedEntry
                 {
-                    Id = 2,
+                    Id = "b",
                     Date = new DateTime(2021, 05, 1),
                     Header = "Fortsatt ingen besøk",
                     Body = "Etter en måned er det dessverre fortsatt ingen besøkende i fuglekassa. ",
@@ -35,7 +36,7 @@ namespace budorWeb.Services
                 },
                 new NewsFeedEntry
                 {
-                    Id = 3,
+                    Id = "c",
                     Date = new DateTime(2021, 05, 30),
                     Header = "Første fugl har kommet!",
                     Body =
@@ -48,7 +49,7 @@ namespace budorWeb.Services
                 },
                 new NewsFeedEntry
                 {
-                    Id = 4,
+                    Id = "d",
                     Date = new DateTime(2021, 06, 01),
                     Header = "Første bilde av innflytterne",
                     Body =
@@ -61,7 +62,7 @@ namespace budorWeb.Services
                 },
                 new NewsFeedEntry
                 {
-                    Id = 5,
+                    Id = "e",
                     Date = new DateTime(2021, 06, 01),
                     Header = "Svarthvit fluesnapper",
                     Body =
@@ -69,7 +70,7 @@ namespace budorWeb.Services
                 },
                 new NewsFeedEntry
                 {
-                    Id = 6,
+                    Id = "f",
                     Date = new DateTime(2021, 06, 03),
                     Header = "Strømbrudd!",
                     Body =
@@ -80,7 +81,7 @@ namespace budorWeb.Services
                 },
                 new NewsFeedEntry
                 {
-                    Id = 7,
+                    Id = "g",
                     Date = new DateTime(2021, 06, 14),
                     Header = "Fuglekassa er oppe og går igjen!",
                     Body =
@@ -94,7 +95,7 @@ namespace budorWeb.Services
                 },
                 new NewsFeedEntry
                 {
-                    Id = 8,
+                    Id = "h",
                     Date = new DateTime(2021, 06, 21),
                     Header = "Nærmer vi oss klekking?",
                     Body =
@@ -105,15 +106,35 @@ namespace budorWeb.Services
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-21/9-7-32.jpg",
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-21/9-2-32.jpg"
                     }
+                },
+                new NewsFeedEntry
+                {
+                    Id = "i",
+                    Date = new DateTime(2021, 06, 23),
+                    Header = "Klekking!",
+                    Body =
+                        "I dag morges klekket eggene! Se i bildeserien hvordan alle seks eggene ble klekket i løpet av dagen. Dessverre er det ganske dårlig " +
+                        "oppløsning på bildene fra fuglekassa, så det er vanskelig å se baby-fluesnapperne så tydelig. " +
+                        "Men vi håper det står bra til med alle sammen. Fru Fluesnapper ser veldig stolt ut. Herr Fluesnapper, derimot, er det fortsatt ingen tegn til.",
+                    ImageUrls = new List<string>
+                    {
+                        "https://budorbeach.blob.core.windows.net/images/2021-6-23/4-7-32.jpg",
+                        "https://budorbeach.blob.core.windows.net/images/2021-6-23/4-32-32.jpg",
+                        "https://budorbeach.blob.core.windows.net/images/2021-6-23/6-27-32.jpg",
+                        "https://budorbeach.blob.core.windows.net/images/2021-6-23/7-7-32.jpg",
+                        "https://budorbeach.blob.core.windows.net/images/2021-6-23/12-12-32.jpg",
+                        "https://budorbeach.blob.core.windows.net/images/2021-6-23/13-57-32.jpg",
+                        "https://budorbeach.blob.core.windows.net/images/2021-6-23/14-12-32.jpg"
+                    }
                 }
-            };
+            }.OrderByDescending(e => e.Date).ToList();
         }
     }
 }
 
 public class NewsFeedEntry
 {
-    public int Id { get; set; }
+    public string Id { get; set; }
     public DateTime Date { get; set; }
     public string Header { get; set; }
     public string Body { get; set; }
