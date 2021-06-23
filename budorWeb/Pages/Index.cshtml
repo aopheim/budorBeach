@@ -153,14 +153,14 @@
         <div class="row">
             <div class="col-sm-6">
                 <div class="text-center">
-                    <h5>ISO</h5>
+                    <h5>ISO (0 = auto)</h5>
                     <input type="range" asp-for="IsoSetting" id="iso-slider" value="@Model.IsoSetting" min="0" max="800" step="100" onclick="showValue('iso-slider', 'iso-slider-val')">
                     <h4 id="iso-slider-val">@Model.IsoSetting</h4>
                 </div>
             </div>
             <div class="col-sm-6">
                 <div class="text-center">
-                    <h5>Shutter speed</h5>
+                    <h5>Lukkerhastighet (0 = auto)</h5>
                     <input type="range" asp-for="ShutterTimeSetting" id="shutterspeed-slider" value="@Model.ShutterTimeSetting" min="0" max="6000" step="10" onclick="showValue('shutterspeed-slider', 'shutterspeed-slider-val')">
                     <h4 id="shutterspeed-slider-val">@Model.ShutterTimeSetting</h4>
                 </div>
