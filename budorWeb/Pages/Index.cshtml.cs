@@ -27,7 +27,6 @@ namespace budorWeb.Pages
 {
     public class BudorBeachModel : PageModel
     {
-        private const string BlobContainerName = "images";
         private readonly IConfiguration _config;
         private readonly HubConnection _connection;
         private readonly ApplicationDbContext _context;
@@ -53,7 +52,8 @@ namespace budorWeb.Pages
 
 
         public List<BlobItem> LatestImages { get; set; }
-        public BlobContainerClient ContainerClient { get; set; }
+        public BlobContainerClient ThumbnailsContainerClient { get; set; }
+        public BlobContainerClient ImagesContainerClient { get; set; }
         [CanBeNull] public SensorReadingModel LatestSensorReadingModel { get; set; }
         [BindProperty] public int IsoSetting { get; set; }
         [BindProperty] public int ShutterTimeSetting { get; set; }
@@ -67,8 +67,11 @@ namespace budorWeb.Pages
 
             LatestSensorReadingModel = _context.SensorReadings.OrderByDescending(m => m.MeasuredAtUtc).FirstOrDefault();
 
-            ContainerClient = AzureStorageHelper.GetBlobContainerClient(_config, BlobContainerName);
-            var blobs = ContainerClient.GetBlobs()
+            ThumbnailsContainerClient =
+                AzureStorageHelper.GetBlobContainerClient(_config, GlobalConstants.ThumbnailImagesContainerName);
+            ImagesContainerClient =
+                AzureStorageHelper.GetBlobContainerClient(_config, GlobalConstants.ImagesContainerName);
+            var blobs = ThumbnailsContainerClient.GetBlobs()
                 .OrderByDescending(blob => DateTimeParser.GetDateTimeFromFolderAndFileName(blob.Name)).Take(5).ToList();
 
             LatestImages = blobs;
