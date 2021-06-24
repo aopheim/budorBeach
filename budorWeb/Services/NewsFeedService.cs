@@ -113,8 +113,8 @@ namespace budorWeb.Services
                     Date = new DateTime(2021, 06, 23),
                     Header = "Klekking!",
                     Body =
-                        "I dag morges klekket eggene! Se i bildeserien hvordan alle seks eggene ble klekket i løpet av dagen. Dessverre er det ganske dårlig " +
-                        "oppløsning på bildene fra fuglekassa, så det er vanskelig å se baby-fluesnapperne så tydelig. " +
+                        "I dag morges klekket eggene! Se i bildeserien hvordan alle seks eggene ble klekket i løpet av dagen. Dessverre er ikke kameraet i fuglekassa " +
+                        "av den beste kvaliteten, så det er vanskelig å se baby-fluesnapperne så tydelig. " +
                         "Men vi håper det står bra til med alle sammen. Fru Fluesnapper ser veldig stolt ut. Herr Fluesnapper, derimot, er det fortsatt ingen tegn til.",
                     ImageUrls = new List<string>
                     {
@@ -125,6 +125,22 @@ namespace budorWeb.Services
                         "https://budorbeach.blob.core.windows.net/images/2021-6-23/12-12-32.jpg",
                         "https://budorbeach.blob.core.windows.net/images/2021-6-23/13-57-32.jpg",
                         "https://budorbeach.blob.core.windows.net/images/2021-6-23/14-12-32.jpg"
+                    }
+                },
+                new NewsFeedEntry
+                {
+                    Id = "j",
+                    Date = new DateTime(2021, 06, 24),
+                    Header = "Første mating",
+                    Body =
+                        "Nå ser det ut som alle eggene er klekket, og Fru Fluesnapper er i gang med å snappe fluer til barna sine. Fuglekassa tok et fint bilde av matende " +
+                        "fluesnapper i dag morges. Etter god respons på fuglekasse-prosjektet i går, finnes nå dette nettstedet på budorbeach.no i stedet for den forrige " +
+                        "adressen det var vanskelig å huske.",
+                    ImageUrls = new List<string>
+                    {
+                        "https://budorbeach.blob.core.windows.net/images/2021-6-24/5-32-32.jpg",
+                        "https://budorbeach.blob.core.windows.net/images/2021-6-24/8-20-18.jpg",
+                        "https://budorbeach.blob.core.windows.net/images/2021-6-24/8-30-18.jpg"
                     }
                 }
             }.OrderByDescending(e => e.Date).ToList();
