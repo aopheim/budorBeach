@@ -61,6 +61,7 @@ namespace rpiDaemon.Jobs
 
             await PushReadingsToBudorHub(sensorReadingModel, jobExecutionContext.CancellationToken);
             await _connection.StopAsync(jobExecutionContext.CancellationToken);
+            await _connection.DisposeAsync();
         }
 
         private async Task PushReadingsToBudorHub(SensorReadingModel model, CancellationToken cancellationToken)
