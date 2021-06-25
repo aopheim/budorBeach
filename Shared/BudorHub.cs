@@ -26,8 +26,6 @@ namespace Shared
 
         public override async Task OnConnectedAsync()
         {
-            await Clients.All.ConsoleLogMessage("SignalR is connected!");
-
             await base.OnConnectedAsync();
         }
     }
