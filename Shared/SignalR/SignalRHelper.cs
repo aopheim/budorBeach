@@ -9,24 +9,25 @@ namespace Shared.SignalR
 {
     public static class SignalRHelper
     {
-        public static async Task<bool> StartWithRetryAsync(HubConnection connection, CancellationToken token)
+        public static async Task<bool> StartWithRetryAsync(HubConnection connection,
+            CancellationToken cancellationToken)
         {
             // Keep trying to until we can start or the token is canceled.
             while (true)
                 try
                 {
-                    await connection.StartAsync(token);
+                    await connection.StartAsync(cancellationToken);
                     Debug.Assert(connection.State == HubConnectionState.Connected);
                     return true;
                 }
-                catch when (token.IsCancellationRequested)
+                catch when (cancellationToken.IsCancellationRequested)
                 {
                     return false;
                 }
                 catch (Exception e)
                 {
                     Debug.Assert(connection.State == HubConnectionState.Disconnected);
-                    await Task.Delay(5000, token);
+                    await Task.Delay(5000, cancellationToken);
                 }
         }
 
@@ -42,14 +43,12 @@ namespace Shared.SignalR
         {
             connection.Reconnecting += e =>
             {
-                Debug.Assert(connection.State == HubConnectionState.Reconnecting);
                 logger.LogError("Reconnecting connection...");
                 logger.LogError(e, e.Message);
                 return Task.CompletedTask;
             };
             connection.Reconnected += message =>
             {
-                Debug.Assert(connection.State == HubConnectionState.Connected);
                 logger.LogInformation("Connection successfully reconnected");
                 logger.LogInformation(message);
                 return Task.CompletedTask;
