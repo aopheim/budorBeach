@@ -118,13 +118,13 @@ namespace budorWeb.Services
                         "Men vi håper det står bra til med alle sammen. Fru Fluesnapper ser veldig stolt ut. Herr Fluesnapper, derimot, er det fortsatt ingen tegn til.",
                     ImageUrls = new List<string>
                     {
-                        "https://budorbeach.blob.core.windows.net/images/2021-6-23/4-7-32.jpg",
-                        "https://budorbeach.blob.core.windows.net/images/2021-6-23/4-32-32.jpg",
-                        "https://budorbeach.blob.core.windows.net/images/2021-6-23/6-27-32.jpg",
-                        "https://budorbeach.blob.core.windows.net/images/2021-6-23/7-7-32.jpg",
-                        "https://budorbeach.blob.core.windows.net/images/2021-6-23/12-12-32.jpg",
-                        "https://budorbeach.blob.core.windows.net/images/2021-6-23/13-57-32.jpg",
-                        "https://budorbeach.blob.core.windows.net/images/2021-6-23/14-12-32.jpg"
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-23/4-7-32.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-23/4-32-32.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-23/6-27-32.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-23/7-7-32.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-23/12-12-32.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-23/13-57-32.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-23/14-12-32.jpg"
                     }
                 },
                 new NewsFeedEntry
@@ -138,9 +138,24 @@ namespace budorWeb.Services
                         "adressen det var vanskelig å huske.",
                     ImageUrls = new List<string>
                     {
-                        "https://budorbeach.blob.core.windows.net/images/2021-6-24/5-32-32.jpg",
-                        "https://budorbeach.blob.core.windows.net/images/2021-6-24/8-20-18.jpg",
-                        "https://budorbeach.blob.core.windows.net/images/2021-6-24/8-30-18.jpg"
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-24/5-32-32.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-24/8-20-18.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-24/8-30-18.jpg"
+                    }
+                },
+                new NewsFeedEntry
+                {
+                    Id = "k",
+                    Date = new DateTime(2021, 6, 26),
+                    Header = "Herr Fluesnapper vender tilbake!",
+                    Body =
+                        "I dag fikk vi et gjensyn med Herr Fluesnapper for første gang på over en uke. Han kom raskt innom for å hilse på baby-fluesnapperne sine, " +
+                        "men forsvant raskt etter det. Baby-fluesnapperne har vokst mye på bare noen dager, og man kan nå blant annet se at de har fått tydelige nebb",
+                    ImageUrls = new List<string>
+                    {
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-26/12-28-55.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-26/15-28-55.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-26/13-38-55.jpg"
                     }
                 }
             }.OrderByDescending(e => e.Date).ToList();
