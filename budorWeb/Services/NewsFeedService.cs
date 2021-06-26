@@ -145,8 +145,8 @@ namespace budorWeb.Services
                 },
                 new NewsFeedEntry
                 {
-                    Id = "k",
                     Date = new DateTime(2021, 6, 26),
+                    Id = "k",
                     Header = "Herr Fluesnapper vender tilbake!",
                     Body =
                         "I dag fikk vi et gjensyn med Herr Fluesnapper for første gang på over en uke. Han kom raskt innom for å hilse på baby-fluesnapperne sine, " +
