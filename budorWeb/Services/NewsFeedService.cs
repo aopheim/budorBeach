@@ -157,6 +157,21 @@ namespace budorWeb.Services
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-26/15-28-55.jpg",
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-26/13-38-55.jpg"
                     }
+                },
+                new NewsFeedEntry
+                {
+                    Id = "l",
+                    Header = "Kjærligheten blomstrer!",
+                    Body =
+                        "I dag fikk vi det første parbildet av Herr og Fru Fluesnapper. Herr Fluesnapper er nå oftere innom og hilser på, og det ser ut som kjærligheten blomstrer " +
+                        "i fuglekassa.",
+                    Date = new DateTime(2021, 06, 27),
+                    ImageUrls = new List<string>
+                    {
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-27/15-53-55.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-27/8-28-55.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-27/13-3-55.jpg"
+                    }
                 }
             }.OrderByDescending(e => e.Date).ToList();
         }
