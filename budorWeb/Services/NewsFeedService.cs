@@ -172,6 +172,21 @@ namespace budorWeb.Services
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-27/8-28-55.jpg",
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-27/13-3-55.jpg"
                     }
+                },
+                new NewsFeedEntry
+                {
+                    Id = "m",
+                    Date = new DateTime(2021, 06, 29),
+                    Header = "Baby-fluesnapperne vokser fort",
+                    Body =
+                        "På bare seks dager har baby-fluesnapperne vokst fort, og har nå tydelige nebb og det som ser ut som begynnelsen på en fjærdrakt. Fru Fluesnapper " +
+                        "ligger nå mye mindre og ruger, og er mye frem og tilbake for å mate sine håpefulle",
+                    ImageUrls = new List<string>
+                    {
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-29/2-23-55.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-29/4-58-55.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-29/6-13-55.jpg"
+                    }
                 }
             }.OrderByDescending(e => e.Date).ToList();
         }
