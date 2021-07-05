@@ -187,6 +187,19 @@ namespace budorWeb.Services
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-29/4-58-55.jpg",
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-29/6-13-55.jpg"
                     }
+                },
+                new NewsFeedEntry
+                {
+                    Id = "n",
+                    Date = new DateTime(2021, 07, 05),
+                    Header = "Snart flyedyktige?",
+                    Body =
+                        "Baby-fluesnapperne har nå fått en tydelig fjærdrakt, og det er nesten ikke plass til hele familien Fluesnapper i fuglekassa lenger. Kommer de snart til å forlate redet? ",
+                    ImageUrls = new List<string>
+                    {
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-7-5/5-42-44.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-7-5/9-32-44.jpg"
+                    }
                 }
             }.OrderByDescending(e => e.Date).ToList();
         }
