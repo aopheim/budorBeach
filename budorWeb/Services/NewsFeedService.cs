@@ -200,6 +200,22 @@ namespace budorWeb.Services
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-7-5/5-42-44.jpg",
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-7-5/9-32-44.jpg"
                     }
+                },
+                new NewsFeedEntry
+                {
+                    Id = "o",
+                    Date = new DateTime(2021, 07, 07),
+                    Header = "Utålmodige tenårings-fluesnappere",
+                    Body =
+                        "Det er nå mye aktivitet blant baby-fluesnapperne, som ikke lengre er babyer, men ordentlige tenåringer. De ligger sjeldnere og sover, og begynner " +
+                        "heller å prøve ut vingene sine. Kanskje første flytur skjer i løpet av uka?",
+                    ImageUrls = new List<string>
+                    {
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-7-7/9-12-44.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-7-7/10-47-44.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-7-7/7-57-44.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-7-7/8-22-44.jpg"
+                    }
                 }
             }.OrderByDescending(e => e.Date).ToList();
         }
