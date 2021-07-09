@@ -216,6 +216,24 @@ namespace budorWeb.Services
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-7-7/7-57-44.jpg",
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-7-7/8-22-44.jpg"
                     }
+                },
+                new NewsFeedEntry
+                {
+                    Id = "p",
+                    Date = new DateTime(2021, 07, 09),
+                    Header = "Fluesnapperne har forlatt redet",
+                    Body =
+                        "I går og i dag tidlig forlot fluesnapperne redet én etter én. Hvordan den første flyveturen gikk vet vi ikke, men vi håper det gikk bra. ",
+                    ImageUrls = new List<string>
+                    {
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-7-9/4-52-23.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-7-9/5-17-23.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-7-9/5-27-23.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-7-9/6-17-23.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-7-9/6-27-23.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-7-9/6-32-23.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-7-9/6-37-23.jpg"
+                    }
                 }
             }.OrderByDescending(e => e.Date).ToList();
         }
