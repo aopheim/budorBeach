@@ -63,7 +63,7 @@ namespace budorWeb.Services
                 new NewsFeedEntry
                 {
                     Id = "e",
-                    Date = new DateTime(2021, 06, 01),
+                    Date = new DateTime(2021, 06, 01, 13, 00, 00),
                     Header = "Svarthvit fluesnapper",
                     Body =
                         "Etter å ha fått eksperthjelp av søstrene Ulvensøen, som har studiekompetanse i fugletitting, har vi fått avklart fugleartene. Det er svarthvit fluesnapper som har flyttet inn - hannen og hunnen ser veldig ulike ut. ",
