@@ -223,7 +223,7 @@ namespace budorWeb.Services
                     Date = new DateTime(2021, 07, 09),
                     Header = "Fluesnapperne har forlatt redet",
                     Body =
-                        "I går og i dag tidlig forlot fluesnapperne redet én etter én. Hvordan den første flyveturen gikk vet vi ikke, men vi håper det gikk bra. ",
+                        "I går og i dag tidlig forlot fluesnapperne redet én etter én. Hvordan den første flyveturen gikk vet vi ikke, men vi håper det gikk bra. Nå håper vi de finner veien tilbake neste år også.",
                     ImageUrls = new List<string>
                     {
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-7-9/4-52-23.jpg",

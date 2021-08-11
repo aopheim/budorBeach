@@ -319,7 +319,7 @@
           "System.Xml.XPath": "5.0.0.0",
           "System.Xml.XPath.XDocument": "5.0.0.0",
           "WindowsBase": "4.0.0.0",
-          "runtimepack.Microsoft.Windows.SDK.NET.Ref": "10.0.17763.13"
+          "runtimepack.Microsoft.Windows.SDK.NET.Ref": "10.0.17763.12"
         },
         "runtime": {
           "rpiDaemon.dll": {}
@@ -328,15 +328,15 @@
           "rpiDaemon.dll": {}
         }
       },
-      "runtimepack.Microsoft.Windows.SDK.NET.Ref/10.0.17763.13": {
+      "runtimepack.Microsoft.Windows.SDK.NET.Ref/10.0.17763.12": {
         "runtime": {
           "Microsoft.Windows.SDK.NET.dll": {
             "assemblyVersion": "10.0.17763.10",
-            "fileVersion": "10.0.17763.13"
+            "fileVersion": "10.0.17763.12"
           },
           "WinRT.Runtime.dll": {
             "assemblyVersion": "1.1.0.0",
-            "fileVersion": "1.1.1.34171"
+            "fileVersion": "1.1.0.33641"
           }
         }
       },
@@ -4170,7 +4170,7 @@
       "serviceable": false,
       "sha512": ""
     },
-    "runtimepack.Microsoft.Windows.SDK.NET.Ref/10.0.17763.13": {
+    "runtimepack.Microsoft.Windows.SDK.NET.Ref/10.0.17763.12": {
       "type": "runtimepack",
       "serviceable": false,
       "sha512": ""
