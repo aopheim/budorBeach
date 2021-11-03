@@ -33,20 +33,12 @@ namespace budorWeb
             services.AddSignalR();
 
             var connectionString = _hostingEnvironment.IsProduction()
-                ? Configuration.GetConnectionString("ProductionDb")
-                : Configuration.GetConnectionString("DevelopmentDb");
+                ? Configuration["ProductionDb"]
+                : Configuration["DevelopmentDb"];
             services.AddDbContext<ApplicationDbContext>(options =>
             {
                 options.UseSqlServer(connectionString);
                 options.EnableSensitiveDataLogging();
-            });
-
-            services.AddAzureClients(builder =>
-            {
-                builder.AddBlobServiceClient(Configuration["ConnectionStrings:AzureStorageConnectionString:blob"],
-                    true);
-                builder.AddQueueServiceClient(Configuration["ConnectionStrings:AzureStorageConnectionString:queue"],
-                    true);
             });
         }
 
@@ -73,25 +65,6 @@ namespace budorWeb
                 endpoints.MapRazorPages();
                 endpoints.MapHub<BudorHub>(GlobalConstants.HubEndpoint);
             });
-        }
-    }
-
-    internal static class StartupExtensions
-    {
-        public static IAzureClientBuilder<BlobServiceClient, BlobClientOptions> AddBlobServiceClient(
-            this AzureClientFactoryBuilder builder, string serviceUriOrConnectionString, bool preferMsi)
-        {
-            if (preferMsi && Uri.TryCreate(serviceUriOrConnectionString, UriKind.Absolute, out var serviceUri))
-                return builder.AddBlobServiceClient(serviceUri);
-            return builder.AddBlobServiceClient(serviceUriOrConnectionString);
-        }
-
-        public static IAzureClientBuilder<QueueServiceClient, QueueClientOptions> AddQueueServiceClient(
-            this AzureClientFactoryBuilder builder, string serviceUriOrConnectionString, bool preferMsi)
-        {
-            if (preferMsi && Uri.TryCreate(serviceUriOrConnectionString, UriKind.Absolute, out var serviceUri))
-                return builder.AddQueueServiceClient(serviceUri);
-            return builder.AddQueueServiceClient(serviceUriOrConnectionString);
         }
     }
 }
