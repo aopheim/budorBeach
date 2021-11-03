@@ -26,6 +26,7 @@ namespace Shared.SignalR
                 }
                 catch (Exception e)
                 {
+                    Console.WriteLine(e);
                     Debug.Assert(connection.State == HubConnectionState.Disconnected);
                     await Task.Delay(5000, cancellationToken);
                 }
