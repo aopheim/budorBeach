@@ -52,19 +52,17 @@ namespace rpiDaemon
 
             if (_environment.IsProduction())
                 services.AddDbContext<ApplicationDbContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("ProductionDb")));
+                    options.UseSqlServer(Configuration["ProductionDb"]));
             else
                 services.AddDbContext<ApplicationDbContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("DevelopmentDb")));
+                    options.UseSqlServer(Configuration["DevelopmentDb"]));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment()) app.UseDeveloperExceptionPage();
-
             app.UseRouting();
-
             app.UseEndpoints(endpoints => { endpoints.MapHub<BudorHub>(GlobalConstants.HubEndpoint); });
         }
     }
