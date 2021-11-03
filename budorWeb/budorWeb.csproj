@@ -1,9 +1,9 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net5.0-windows10.0.17763.0</TargetFramework>
     <CopyRefAssembliesToPublishDirectory>false</CopyRefAssembliesToPublishDirectory>
-    <UserSecretsId>b2aa8b81-2030-43fa-926e-3d6c06a1610b</UserSecretsId>
+    <UserSecretsId>7a7d43a7-4a55-45c9-b915-7c7aec6d1751</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
