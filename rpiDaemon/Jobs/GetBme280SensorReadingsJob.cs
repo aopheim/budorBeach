@@ -53,7 +53,8 @@ namespace rpiDaemon.Jobs
             var lastDbPushInUtc = _context.SensorReadings.OrderByDescending(m => m.MeasuredAtUtc).FirstOrDefault()
                 ?.MeasuredAtUtc;
             if (lastDbPushInUtc == null ||
-                sensorReadingModel.MeasuredAtUtc.Subtract(lastDbPushInUtc.Value) > DbPushInterval)
+                sensorReadingModel.MeasuredAtUtc.Subtract(lastDbPushInUtc.Value) > DbPushInterval ||
+                _environment.IsDevelopment())
             {
                 _context.SensorReadings.Add(sensorReadingModel);
                 await _context.SaveChangesAsync(jobExecutionContext.CancellationToken);
@@ -78,6 +79,7 @@ namespace rpiDaemon.Jobs
             if (_environment.IsDevelopment())
             {
                 var model = _fixture.Create<SensorReadingModel>();
+                model.MeasuredAtUtc = DateTime.UtcNow;
                 model.Id = default;
                 return model;
             }
