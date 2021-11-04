@@ -1,12 +1,13 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using Azure.Storage.Blobs;
+using CameraService.Interfaces;
+using JetBrains.Annotations;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using MMALSharp;
 using rpiDaemon.Jobs;
 using Shared;
 using Shared.Azure;
@@ -17,10 +18,10 @@ using Shared.SignalR;
 
 namespace rpiDaemon
 {
+    [UsedImplicitly]
     public class BudorHubPiClient : IBudorHubClient, IHostedService
     {
-        private readonly MMALCamera _camera;
-
+        private readonly ICameraService _cameraService;
         private readonly HubConnection _connection;
         private readonly IWebHostEnvironment _environment;
         private readonly BlobContainerClient _imagesContainerClient;
@@ -28,10 +29,13 @@ namespace rpiDaemon
         private readonly BlobContainerClient _thumbnailsContainerClient;
 
         public BudorHubPiClient(ILogger<BudorHubPiClient> logger, IWebHostEnvironment environment,
-            IConfiguration config)
+            IConfiguration config,
+            ICameraService cameraService
+        )
         {
             _logger = logger;
             _environment = environment;
+            _cameraService = cameraService;
             _connection = new HubConnectionBuilder()
                 .WithUrl(environment.IsProduction()
                     ? GlobalConstants.ProductionHubUrl
@@ -41,7 +45,6 @@ namespace rpiDaemon
                 AzureStorageHelper.GetBlobContainerClient(config, GlobalConstants.ImagesContainerName);
             _thumbnailsContainerClient =
                 AzureStorageHelper.GetBlobContainerClient(config, GlobalConstants.ThumbnailImagesContainerName);
-            _camera = environment.IsProduction() ? MMALCamera.Instance : default;
         }
 
         public Task ConsoleLogMessage(string message)
@@ -59,7 +62,8 @@ namespace rpiDaemon
 
         public async Task TakeImage(PiCameraSettings settings)
         {
-            await TakePictureJobHelper.TakeImageAndUploadAsync(_environment, _camera, _logger, _imagesContainerClient,
+            await TakePictureJobHelper.TakeImageAndUploadAsync(_environment, _cameraService, _logger,
+                _imagesContainerClient,
                 _thumbnailsContainerClient, settings);
         }
 
