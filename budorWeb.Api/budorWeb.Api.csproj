@@ -16,6 +16,9 @@
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="5.0.11" />
         <PackageReference Include="NSwag.AspNetCore" Version="13.13.2" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+        <PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" Version="6.2.3" />
+        <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="6.2.3" />
     </ItemGroup>
 
     <ItemGroup>
@@ -51,6 +54,15 @@
                 <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
             </ResolvedFileToPublish>
         </ItemGroup>
+    </Target>
+    
+    <Target Name="Export swagger json file" AfterTargets="PostBuildEvent">
+        <Exec Command="dotnet tool restore" />
+        <Exec Command="dotnet swagger tofile --output swagger.json $(OutputPath)\$(AssemblyName).dll v1 " />
+    </Target>
+    
+    <Target Name="Generate services" AfterTargets="PostBuildEvent">
+        <Exec WorkingDirectory="../TSGenerator/" Command="dotnet run"/>
     </Target>
 
 </Project>

@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shared", "Shared\Shared.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "budorWeb.Api", "budorWeb.Api\budorWeb.Api.csproj", "{7DB8A8A8-B975-40E6-A9A3-20CA20BE1376}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TSGenerator", "TSGenerator\TSGenerator.csproj", "{C6A125CF-B66F-4E52-ACDF-7641E2B228FF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{7DB8A8A8-B975-40E6-A9A3-20CA20BE1376}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7DB8A8A8-B975-40E6-A9A3-20CA20BE1376}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7DB8A8A8-B975-40E6-A9A3-20CA20BE1376}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C6A125CF-B66F-4E52-ACDF-7641E2B228FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C6A125CF-B66F-4E52-ACDF-7641E2B228FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C6A125CF-B66F-4E52-ACDF-7641E2B228FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C6A125CF-B66F-4E52-ACDF-7641E2B228FF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
