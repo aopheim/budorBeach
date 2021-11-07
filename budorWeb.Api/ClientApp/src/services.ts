@@ -18,6 +18,55 @@ export class Client {
     }
 
     /**
+     * @param numberOfImages (optional) 
+     * @return Success
+     */
+    getLatestBirdImages(numberOfImages: number | undefined): Promise<BirdImageDto[]> {
+        let url_ = this.baseUrl + "/images/GetLatestBirdImages?";
+        if (numberOfImages === null)
+            throw new Error("The parameter 'numberOfImages' cannot be null.");
+        else if (numberOfImages !== undefined)
+            url_ += "numberOfImages=" + encodeURIComponent("" + numberOfImages) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "GET",
+            headers: {
+                "Accept": "text/plain"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetLatestBirdImages(_response);
+        });
+    }
+
+    protected processGetLatestBirdImages(response: Response): Promise<BirdImageDto[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(BirdImageDto.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<BirdImageDto[]>(<any>null);
+    }
+
+    /**
      * @return Success
      */
     weatherForecast(): Promise<WeatherForecast[]> {
@@ -60,6 +109,46 @@ export class Client {
         }
         return Promise.resolve<WeatherForecast[]>(<any>null);
     }
+}
+
+export class BirdImageDto implements IBirdImageDto {
+    imageTakenAt?: Date;
+    url?: string | undefined;
+
+    constructor(data?: IBirdImageDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.imageTakenAt = _data["imageTakenAt"] ? new Date(_data["imageTakenAt"].toString()) : <any>undefined;
+            this.url = _data["url"];
+        }
+    }
+
+    static fromJS(data: any): BirdImageDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new BirdImageDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["imageTakenAt"] = this.imageTakenAt ? this.imageTakenAt.toISOString() : <any>undefined;
+        data["url"] = this.url;
+        return data; 
+    }
+}
+
+export interface IBirdImageDto {
+    imageTakenAt?: Date;
+    url?: string | undefined;
 }
 
 export class WeatherForecast implements IWeatherForecast {
