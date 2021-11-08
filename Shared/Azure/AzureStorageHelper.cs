@@ -11,7 +11,7 @@ namespace Shared.Azure
     {
         public static BlobContainerClient GetBlobContainerClient(IConfiguration config, string blobContainerName)
         {
-            var blobServiceClient = new BlobServiceClient(config.GetConnectionString("AzureStorageConnectionString"));
+            var blobServiceClient = new BlobServiceClient(config["AzureStorageConnectionString"]);
             return blobServiceClient.GetBlobContainerClient(blobContainerName);
         }
 
