@@ -63,10 +63,10 @@ namespace rpiDaemon
 
             if (_environment.IsProduction())
                 services.AddDbContext<ApplicationDbContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("ProductionDb")));
+                    options.UseSqlServer(Configuration["ProductionDb"]));
             else
                 services.AddDbContext<ApplicationDbContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("DevelopmentDb")));
+                    options.UseSqlServer(Configuration["DevelopmentDb"]));
         }
 
         private void InitializeContainer()
@@ -80,7 +80,6 @@ namespace rpiDaemon
             if (env.IsDevelopment()) app.UseDeveloperExceptionPage();
             app.UseSimpleInjector(_container);
             app.UseRouting();
-
             app.UseEndpoints(endpoints => { endpoints.MapHub<BudorHub>(GlobalConstants.HubEndpoint); });
             _container.Verify();
         }
