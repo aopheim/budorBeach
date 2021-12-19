@@ -17,28 +17,27 @@ namespace CameraService
         public CameraService(ILogger<CameraService> logger)
         {
             _logger = logger;
+        }
+
+        public async Task TakeImage(string fullPath, PiCameraSettings settings)
+        {
             try
             {
                 _camera = MMALCamera.Instance;
             }
             catch (Exception e)
             {
-                _logger.LogError("Setting MMALCamera instance throws exception", e);
-                _camera = default;
+                _logger.LogError(e, "Setting MMALCamera instance throws exception");
+                return;
             }
-        }
 
-        public async Task TakeImage(string fullPath, PiCameraSettings settings)
-        {
-            var camera = MMALCamera.Instance;
             using var imgCaptureHandler = new ImageStreamCaptureHandler(fullPath);
 
             MMALCameraConfig.ISO = settings.Iso;
             MMALCameraConfig.ShutterSpeed = settings.ShutterTime;
+            _camera.ConfigureCameraSettings();
 
-            camera.ConfigureCameraSettings();
-
-            await camera.TakePicture(imgCaptureHandler, MMALEncoding.JPEG, MMALEncoding.I420);
+            await _camera.TakePicture(imgCaptureHandler, MMALEncoding.JPEG, MMALEncoding.I420);
         }
 
         public Task CaptureVideo(string fullPath, int secondsToRecord)

@@ -14,7 +14,7 @@ namespace rpiDaemon
             var host = CreateHostBuilder(args)
                 .UseSystemd()
                 .Build();
-            //CreateDbIfNotExists(host);
+            CreateDbIfNotExists(host);
 
             host.Run();
         }
