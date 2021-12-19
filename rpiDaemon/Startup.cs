@@ -8,21 +8,27 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Quartz;
 using rpiDaemon.Jobs;
+using rpiDaemon.Jobs.JobFactories;
+using Services;
 using Shared;
+using Shared.SignalR;
 using SimpleInjector;
+using SimpleInjector.Lifestyles;
 
 namespace rpiDaemon
 {
     public class Startup
     {
-        private readonly Container _container = new Container();
+        private readonly Container _container;
         private readonly IWebHostEnvironment _environment;
 
         public Startup(IConfiguration config, IWebHostEnvironment environment)
         {
             _environment = environment;
             Configuration = config;
+            _container = new Container();
             _container.Options.ResolveUnregisteredConcreteTypes = false;
+            _container.Options.DefaultScopedLifestyle = new AsyncScopedLifestyle();
         }
 
         private IConfiguration Configuration { get; }
@@ -33,32 +39,20 @@ namespace rpiDaemon
             {
                 options.AddAspNetCore();
                 options.AddLogging();
-                //options.AddHostedService<BudorHubPiClient>();
+                options.AddHostedService<BudorHubPiClient>();
             });
             InitializeContainer();
 
             services.AddQuartz(q =>
             {
-                var pictureJobKey = new JobKey(nameof(TakePictureJob), "secondJobs");
-                var bme280JobKey = new JobKey(nameof(GetBme280SensorReadingsJob), "secondJobs");
-
-                q.AddJob<TakePictureJob>(j => j.WithIdentity(pictureJobKey));
-                q.AddJob<GetBme280SensorReadingsJob>(j => j.WithIdentity(bme280JobKey));
-
-                q.AddTrigger(t => t
-                    .WithIdentity("pictureTrigger")
-                    .ForJob(pictureJobKey)
-                    .StartAt(DateTime.UtcNow.AddSeconds(10))
-                    .WithSimpleSchedule(s => s.WithInterval(TimeSpan.FromHours(4)).RepeatForever()));
-                q.AddTrigger(t => t.WithIdentity("bme280Trigger")
-                    .ForJob(bme280JobKey)
-                    .StartAt(DateTime.UtcNow.AddSeconds(10))
-                    .WithSimpleSchedule(s => s.WithInterval(TimeSpan.FromSeconds(10)).RepeatForever()));
-
-                q.UseMicrosoftDependencyInjectionJobFactory();
+                q.UseJobFactory<JobFactory>();
+                // q.AddJobAndTrigger<GetBme280SensorReadingsJob>(GlobalConstants.SecondJobs,
+                //     GlobalConstants.Bme280Trigger,
+                //     _environment.IsDevelopment() ? TimeSpan.FromSeconds(2) : TimeSpan.FromSeconds(10));
+                q.AddJobAndTrigger<TakePictureJob>(GlobalConstants.SecondJobs, GlobalConstants.PictureTrigger,
+                    _environment.IsDevelopment() ? TimeSpan.FromSeconds(10) : TimeSpan.FromHours(4));
             });
-            services.AddQuartzHostedService(q => q.WaitForJobsToComplete = false);
-
+            services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
             services.AddSignalR();
 
             if (_environment.IsProduction())
@@ -72,6 +66,9 @@ namespace rpiDaemon
         private void InitializeContainer()
         {
             _container.RegisterSingleton<ICameraService, CameraService.CameraService>();
+            _container.RegisterSingleton<ISignalRService, SignalRService>();
+            _container.Register<GetBme280SensorReadingsJob>();
+            _container.Register<TakePictureJob>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

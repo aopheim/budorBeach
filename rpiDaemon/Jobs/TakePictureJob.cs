@@ -15,6 +15,7 @@ using Shared.PiCameraSettings;
 
 namespace rpiDaemon.Jobs
 {
+    [DisallowConcurrentExecution]
     [UsedImplicitly]
     public class TakePictureJob : IJob
     {
@@ -33,10 +34,8 @@ namespace rpiDaemon.Jobs
             _containerClient = AzureStorageHelper.GetBlobContainerClient(config, GlobalConstants.ImagesContainerName);
             _thumbnailsContainerClient =
                 AzureStorageHelper.GetBlobContainerClient(config, GlobalConstants.ThumbnailImagesContainerName);
-
             MMALCameraConfig.Debug = true;
         }
-
 
         public async Task Execute(IJobExecutionContext context)
         {
