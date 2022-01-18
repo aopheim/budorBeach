@@ -1,2 +1,8 @@
-<h2>De siste 5 bildene</h2>
-<bird-image [birdImage]="birdImage"></bird-image>>
+<h2>De siste bildene</h2>
+<div class="container">
+    <div class="row">
+    </div>
+    <div class="row">
+        <bird-image class="col-md-6" *ngFor="let birdImage of birdImages" [birdImage]="birdImage"></bird-image>        
+    </div>
+</div>
