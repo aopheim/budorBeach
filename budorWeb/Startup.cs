@@ -1,27 +1,30 @@
-using System;
-using Azure.Core.Extensions;
-using Azure.Storage.Blobs;
-using Azure.Storage.Queues;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using rpiDaemon;
+using Services;
 using Shared;
+using Shared.SignalR;
+using SimpleInjector;
+using SimpleInjector.Lifestyles;
 
 namespace budorWeb
 {
     public class Startup
     {
+        private readonly Container _container;
         private readonly IWebHostEnvironment _hostingEnvironment;
 
         public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
             _hostingEnvironment = environment;
             Configuration = configuration;
+            _container = new Container();
+            _container.Options.ResolveUnregisteredConcreteTypes = false;
+            _container.Options.DefaultScopedLifestyle = new AsyncScopedLifestyle();
         }
 
         public IConfiguration Configuration { get; }
@@ -30,6 +33,14 @@ namespace budorWeb
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddRazorPages();
+            services.AddSimpleInjector(_container, options =>
+            {
+                options.AddAspNetCore()
+                    .AddPageModelActivation();
+                options.AddLogging();
+            });
+            InitializeContainer();
+
             services.AddSignalR();
 
             var connectionString = _hostingEnvironment.IsProduction()
@@ -40,6 +51,11 @@ namespace budorWeb
                 options.UseSqlServer(connectionString);
                 options.EnableSensitiveDataLogging();
             });
+        }
+
+        private void InitializeContainer()
+        {
+            _container.RegisterSingleton<ISignalRService, SignalRService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -65,6 +81,8 @@ namespace budorWeb
                 endpoints.MapRazorPages();
                 endpoints.MapHub<BudorHub>(GlobalConstants.HubEndpoint);
             });
+            app.UseSimpleInjector(_container);
+            _container.Verify();
         }
     }
 }
