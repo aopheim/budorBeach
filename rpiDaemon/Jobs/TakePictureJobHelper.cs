@@ -3,12 +3,10 @@ using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Azure.Storage.Blobs;
+using CameraService.Interfaces;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using MMALSharp;
-using MMALSharp.Common;
-using MMALSharp.Handlers;
 using rpiDaemon.DateTimeHelpers;
 using Shared.Azure;
 using Shared.PiCameraSettings;
@@ -19,7 +17,7 @@ namespace rpiDaemon.Jobs
 {
     public static class TakePictureJobHelper
     {
-        public static async Task TakeImageAndUploadAsync(IWebHostEnvironment environment, MMALCamera camera,
+        public static async Task TakeImageAndUploadAsync(IWebHostEnvironment environment, ICameraService cameraService,
             ILogger logger, BlobContainerClient containerClient, BlobContainerClient thumbnailContainerClient,
             PiCameraSettings settings)
         {
@@ -37,14 +35,7 @@ namespace rpiDaemon.Jobs
                 var fullPath = folderPath + $"/{fileName}.jpg";
                 try
                 {
-                    using var imgCaptureHandler = new ImageStreamCaptureHandler(fullPath);
-
-                    MMALCameraConfig.ISO = settings.Iso;
-                    MMALCameraConfig.ShutterSpeed = settings.ShutterTime;
-
-                    camera.ConfigureCameraSettings();
-
-                    await camera.TakePicture(imgCaptureHandler, MMALEncoding.JPEG, MMALEncoding.I420);
+                    await cameraService.TakeImage(fullPath, settings);
                 }
                 catch (Exception e)
                 {
