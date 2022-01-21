@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
+using DataAccess.EFCore;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -25,11 +26,11 @@ namespace budorWeb.Pages
     public class BudorBeachModel : PageModel
     {
         private readonly IConfiguration _config;
-        private readonly ApplicationDbContext _context;
+        private readonly BudorDbContext _context;
         private readonly ILogger<BudorBeachModel> _logger;
         private readonly ISignalRService _signalRService;
 
-        public BudorBeachModel(ILogger<BudorBeachModel> logger, IConfiguration config, ApplicationDbContext context,
+        public BudorBeachModel(ILogger<BudorBeachModel> logger, IConfiguration config, BudorDbContext context,
             IWebHostEnvironment environment, ISignalRService signalRService)
         {
             _context = context;

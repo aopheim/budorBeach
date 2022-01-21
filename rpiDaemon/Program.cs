@@ -1,4 +1,5 @@
 using System;
+using DataAccess.EFCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -32,7 +33,7 @@ namespace rpiDaemon
                 var services = scope.ServiceProvider;
                 try
                 {
-                    var context = services.GetRequiredService<ApplicationDbContext>();
+                    var context = services.GetRequiredService<BudorDbContext>();
                     DbInitializer.Initialize(context);
                 }
                 catch (Exception ex)
