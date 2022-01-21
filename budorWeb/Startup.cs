@@ -1,3 +1,4 @@
+using DataAccess.EFCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -46,7 +47,7 @@ namespace budorWeb
             var connectionString = _hostingEnvironment.IsProduction()
                 ? Configuration["ProductionDb"]
                 : Configuration["DevelopmentDb"];
-            services.AddDbContext<ApplicationDbContext>(options =>
+            services.AddDbContext<BudorDbContext>(options =>
             {
                 options.UseSqlServer(connectionString);
                 options.EnableSensitiveDataLogging();
