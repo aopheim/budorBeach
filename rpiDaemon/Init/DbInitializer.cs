@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using DataAccess.EFCore;
 using Shared.Models;
 
 namespace rpiDaemon.Init
 {
     public class DbInitializer
     {
-        public static void Initialize(ApplicationDbContext context)
+        public static void Initialize(BudorDbContext context)
         {
             context.Database.EnsureCreated();
 

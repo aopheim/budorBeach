@@ -5,6 +5,7 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
+using DataAccess.EFCore;
 using Iot.Device.Bmxx80;
 using Iot.Device.Bmxx80.PowerMode;
 using JetBrains.Annotations;
@@ -21,13 +22,13 @@ namespace rpiDaemon.Jobs
     [UsedImplicitly]
     public class GetBme280SensorReadingsJob : IJob
     {
-        private readonly ApplicationDbContext _context;
+        private readonly BudorDbContext _context;
         private readonly IWebHostEnvironment _environment;
         private readonly Fixture _fixture;
         private readonly ILogger<GetBme280SensorReadingsJob> _logger;
         private readonly ISignalRService _signalRService;
 
-        public GetBme280SensorReadingsJob(ApplicationDbContext context, ILogger<GetBme280SensorReadingsJob> logger,
+        public GetBme280SensorReadingsJob(BudorDbContext context, ILogger<GetBme280SensorReadingsJob> logger,
             IWebHostEnvironment environment, ISignalRService signalRService)
         {
             _context = context;

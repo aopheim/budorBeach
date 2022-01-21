@@ -1,5 +1,6 @@
 using System;
 using CameraService.Interfaces;
+using DataAccess.EFCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -10,7 +11,9 @@ using Quartz;
 using rpiDaemon.Jobs;
 using rpiDaemon.Jobs.JobFactories;
 using Services;
+using Services.Interfaces;
 using Shared;
+using Shared.Interfaces;
 using Shared.SignalR;
 using SimpleInjector;
 using SimpleInjector.Lifestyles;
@@ -46,29 +49,32 @@ namespace rpiDaemon
             services.AddQuartz(q =>
             {
                 q.UseJobFactory<JobFactory>();
-                // q.AddJobAndTrigger<GetBme280SensorReadingsJob>(GlobalConstants.SecondJobs,
-                //     GlobalConstants.Bme280Trigger,
-                //     _environment.IsDevelopment() ? TimeSpan.FromSeconds(2) : TimeSpan.FromSeconds(10));
+                q.AddJobAndTrigger<GetBme280SensorReadingsJob>(GlobalConstants.SecondJobs,
+                    GlobalConstants.Bme280Trigger,
+                    _environment.IsDevelopment() ? TimeSpan.FromSeconds(2) : TimeSpan.FromSeconds(10));
                 q.AddJobAndTrigger<TakePictureJob>(GlobalConstants.SecondJobs, GlobalConstants.PictureTrigger,
                     _environment.IsDevelopment() ? TimeSpan.FromSeconds(10) : TimeSpan.FromHours(4));
+                q.AddJobAndTrigger<GetProximityJob>(GlobalConstants.SecondJobs, GlobalConstants.ProximityTrigger,
+                    TimeSpan.FromSeconds(5));
             });
             services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
             services.AddSignalR();
 
-            if (_environment.IsProduction())
-                services.AddDbContext<ApplicationDbContext>(options =>
-                    options.UseSqlServer(Configuration["ProductionDb"]));
-            else
-                services.AddDbContext<ApplicationDbContext>(options =>
-                    options.UseSqlServer(Configuration["DevelopmentDb"]));
+            services.AddDbContext<BudorDbContext>(options => options.UseSqlServer(_environment.IsDevelopment()
+                ? Configuration["DevelopmentDb"]
+                : Configuration["ProductionDb"]));
         }
 
         private void InitializeContainer()
         {
             _container.RegisterSingleton<ICameraService, CameraService.CameraService>();
             _container.RegisterSingleton<ISignalRService, SignalRService>();
+            _container.RegisterSingleton<IProximityService, ProximityService>();
+            _container.RegisterSingleton<IBirdPresenceCalculator, BirdPresenceCalculator>();
+            _container.Register<IRepositories, Repositories>(Lifestyle.Scoped);
             _container.Register<GetBme280SensorReadingsJob>();
             _container.Register<TakePictureJob>();
+            _container.Register<GetProximityJob>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
