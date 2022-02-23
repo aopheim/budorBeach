@@ -1,8 +1,6 @@
 using System;
-using DataAccess.EFCore;
 using NSubstitute;
 using NUnit.Framework;
-using Shared.Interfaces;
 using SimpleInjector;
 
 namespace rpiDaemon.Test

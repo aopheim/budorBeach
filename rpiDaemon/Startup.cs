@@ -71,6 +71,7 @@ namespace rpiDaemon
             _container.RegisterSingleton<ISignalRService, SignalRService>();
             _container.RegisterSingleton<IProximityService, ProximityService>();
             _container.RegisterSingleton<IBirdPresenceCalculator, BirdPresenceCalculator>();
+            _container.RegisterSingleton<IBirdPresenceRegistrator, BirdPresenceRegistrator>();
             _container.Register<IRepositories, Repositories>(Lifestyle.Scoped);
             _container.Register<GetBme280SensorReadingsJob>();
             _container.Register<TakePictureJob>();
