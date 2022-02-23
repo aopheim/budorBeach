@@ -11,12 +11,12 @@ namespace DataAccess.EFCore
         {
             _context = context;
             SensorReadings = new SensorReadingRepo(context);
-            BirdPresenceReadings = new BirdPresenceRepo(context);
+            BirdPresenceRegistrations = new BirdPresenceRepo(context);
         }
 
 
         public ISensorReadingRepo SensorReadings { get; }
-        public IBirdPresenceRepo BirdPresenceReadings { get; }
+        public IBirdPresenceRepo BirdPresenceRegistrations { get; }
 
 
         public async Task SaveChangesAsync()
