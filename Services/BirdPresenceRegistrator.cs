@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
+using Services.Interfaces;
 using Shared.Interfaces;
 using Shared.Models;
 using SimpleInjector;
@@ -13,8 +14,6 @@ namespace Services
 {
     public class BirdPresenceRegistrator : IBirdPresenceRegistrator
     {
-        private const double BirdPresenceMaxDistance = 30;
-        private const double MinimumChangeInDistance = 3;
         private const int MaximumNumberOfRegistrations = 100;
         private readonly TimeSpan _bufferTimeSpanForRegistrations = TimeSpan.FromSeconds(60);
         private readonly IBirdPresenceCalculator _calculator;
@@ -54,7 +53,7 @@ namespace Services
                 case true when _dbHasOpenPresenceRegistration:
                     return Task.CompletedTask;
                 default:
-                    CloseBirdPresenceRegistration(measuredAt, repos);
+                    CloseBirdPresenceRegistrationInDb(measuredAt, repos);
                     break;
             }
 
@@ -74,7 +73,7 @@ namespace Services
             _dbHasOpenPresenceRegistration = true;
         }
 
-        private void CloseBirdPresenceRegistration(DateTime birdDisappearedAt, IRepositories repos)
+        private void CloseBirdPresenceRegistrationInDb(DateTime birdDisappearedAt, IRepositories repos)
         {
             var openRegistration = repos.BirdPresenceRegistrations.GetLatestRegistration();
             openRegistration.DurationInSeconds =

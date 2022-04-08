@@ -4,6 +4,7 @@ using FluentAssertions;
 using NSubstitute;
 using NUnit.Framework;
 using Services;
+using Services.Interfaces;
 using Shared.Interfaces;
 using Shared.Models;
 
