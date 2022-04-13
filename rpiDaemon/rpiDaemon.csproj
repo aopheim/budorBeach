@@ -36,8 +36,6 @@
         <Content Include="appsettings.json">
             <CopyToPublishDirectory>Never</CopyToPublishDirectory>
         </Content>
-    </ItemGroup>
-    <ItemGroup>
         <Content Include="appsettings.Development.json">
             <CopyToPublishDirectory>Never</CopyToPublishDirectory>
         </Content>
