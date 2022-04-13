@@ -77,7 +77,7 @@ namespace budorWeb.Services
                         "Akkurat i den mest intense innflyttingsperioden får vi plutselig ikke lenger kontakt med fuglekassa. Sannsynligvis har strømmen gått i løpet av natten, og datamaskinen i fuglekassa har ikke greid å få kontakt med internettet igjen. Krise! " +
                         "Fuglekasseteknikeren gjør det han kan for å få reddet situasjonen. Herr og fru fluesnapper har nå bygget seg et fint rede og er nok straks klare for å legge egg",
                     ImageUrls = new List<string>
-                        {"https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-4/10-30-6.jpg"}
+                        { "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-4/10-30-6.jpg" }
                 },
                 new NewsFeedEntry
                 {
@@ -233,6 +233,18 @@ namespace budorWeb.Services
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-7-9/6-27-23.jpg",
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-7-9/6-32-23.jpg",
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-7-9/6-37-23.jpg"
+                    }
+                },
+                new NewsFeedEntry
+                {
+                    Id = "q",
+                    Date = new DateTime(2022, 04, 13),
+                    Header = "Klar for ny fluesnapper-sesong!",
+                    Body =
+                        "Påsken er kommet, og fuglekassa har våknet til liv igjen etter å ha vært skrudd ned i noen måneder. Fuglekassa er nå tømt og innflyttingsklar. Vi håper å få et gjensyn med Herr og Fru Fluesnapper etter hvert som det blir varmere i været.",
+                    ImageUrls = new List<string>
+                    {
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-4-13/11-25-56.jpg"
                     }
                 }
             }.OrderByDescending(e => e.Date).ToList();
