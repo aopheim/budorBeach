@@ -246,6 +246,19 @@ namespace budorWeb.Services
                     {
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-4-13/11-25-56.jpg"
                     }
+                },
+                new NewsFeedEntry
+                {
+                    Id = "r",
+                    Date = new DateTime(2022, 04, 26),
+                    Header = "Fluesnapperen er tilbake på visning!",
+                    Body =
+                        "I dag har fluesnapperne kommet tilbake! Dette er mye tidligere enn i fjor, da de kom først i starten av juni. Men tydeligvis har de startet å gå på fuglekasse-visning tidligere i år. Håper de finner seg til rette og har finansieringsbeviset i orden",
+                    ImageUrls = new List<string>
+                    {
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-4-26/11-14-11.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-4-26/9-29-11.jpg"
+                    }
                 }
             }.OrderByDescending(e => e.Date).ToList();
         }
