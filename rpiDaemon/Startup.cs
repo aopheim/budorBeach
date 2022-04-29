@@ -41,19 +41,23 @@ namespace rpiDaemon
                 options.AddLogging();
                 options.AddHostedService<BudorHubPiClient>();
             });
-            InitializeContainer();
 
             services.AddQuartz(q =>
             {
                 q.UseJobFactory<JobFactory>();
-                // q.AddJobAndTrigger<GetBme280SensorReadingsJob>(GlobalConstants.SecondJobs,
-                //     GlobalConstants.Bme280Trigger,
-                //     _environment.IsDevelopment() ? TimeSpan.FromSeconds(2) : TimeSpan.FromSeconds(10));
+                q.AddJobAndTrigger<GetBme280SensorReadingsJob>(GlobalConstants.SecondJobs,
+                    GlobalConstants.Bme280Trigger,
+                    _environment.IsDevelopment() ? TimeSpan.FromSeconds(2) : TimeSpan.FromSeconds(10));
                 q.AddJobAndTrigger<TakePictureJob>(GlobalConstants.SecondJobs, GlobalConstants.PictureTrigger,
                     _environment.IsDevelopment() ? TimeSpan.FromSeconds(10) : TimeSpan.FromHours(4));
             });
+            InitializeContainer();
+
             services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
             services.AddSignalR();
+            services.AddHostedService<BudorHubPiClient>();
+            if (_environment.IsProduction())
+                services.AddApplicationInsightsTelemetry(Configuration["ApplicationInsightsConnectionString"]);
 
             if (_environment.IsProduction())
                 services.AddDbContext<ApplicationDbContext>(options =>
