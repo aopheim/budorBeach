@@ -41,6 +41,7 @@ namespace rpiDaemon
                 options.AddLogging();
                 options.AddHostedService<BudorHubPiClient>();
             });
+            InitializeContainer();
 
             services.AddQuartz(q =>
             {
@@ -51,11 +52,9 @@ namespace rpiDaemon
                 q.AddJobAndTrigger<TakePictureJob>(GlobalConstants.SecondJobs, GlobalConstants.PictureTrigger,
                     _environment.IsDevelopment() ? TimeSpan.FromSeconds(10) : TimeSpan.FromHours(4));
             });
-            InitializeContainer();
 
             services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
             services.AddSignalR();
-            services.AddHostedService<BudorHubPiClient>();
             if (_environment.IsProduction())
                 services.AddApplicationInsightsTelemetry(Configuration["ApplicationInsightsConnectionString"]);
 
