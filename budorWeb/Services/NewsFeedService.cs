@@ -259,6 +259,23 @@ namespace budorWeb.Services
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-4-26/11-14-11.jpg",
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-4-26/9-29-11.jpg"
                     }
+                },
+                new NewsFeedEntry
+                {
+                    Id = "s",
+                    Date = new DateTime(2022, 04,
+                        28),
+                    Header = "Innflyttingen er i gang!",
+                    Body =
+                        "Det ble en rask budrunde, og Herr Fluesnapper er nå stolt eier av fuglekassa i Størigardsvegen. Nå flyttes det inn for harde livet, og på bare noen timer har han laget til en myk og fin madrass til Fru Fluesnapper",
+                    ImageUrls = new List<string>
+                    {
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-4-27/6-29-11.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-4-27/6-44-11.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-4-27/8-59-11.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-4-27/9-29-11.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-4-27/15-14-11.jpg"
+                    }
                 }
             }.OrderByDescending(e => e.Date).ToList();
         }
