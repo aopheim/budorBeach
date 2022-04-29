@@ -13,5 +13,6 @@
         public const string DailyJobs = "dailyJobs";
         public const string PictureTrigger = "pictureTrigger";
         public const string Bme280Trigger= "bme280Trigger";
+        public const string AudioRecordingTrigger = "bme280Trigger";
     }
 }

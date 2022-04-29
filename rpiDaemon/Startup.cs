@@ -1,4 +1,5 @@
 using System;
+using AudioService.Interfaces;
 using CameraService.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -51,6 +52,8 @@ namespace rpiDaemon
                     _environment.IsDevelopment() ? TimeSpan.FromSeconds(2) : TimeSpan.FromSeconds(10));
                 q.AddJobAndTrigger<TakePictureJob>(GlobalConstants.SecondJobs, GlobalConstants.PictureTrigger,
                     _environment.IsDevelopment() ? TimeSpan.FromSeconds(10) : TimeSpan.FromHours(4));
+                q.AddJobAndTrigger<TakeAudioRecordingJob>(GlobalConstants.SecondJobs,
+                    GlobalConstants.AudioRecordingTrigger, TimeSpan.FromSeconds(15));
             });
 
             services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
@@ -72,6 +75,8 @@ namespace rpiDaemon
             _container.RegisterSingleton<ISignalRService, SignalRService>();
             _container.Register<GetBme280SensorReadingsJob>();
             _container.Register<TakePictureJob>();
+            _container.Register<TakeAudioRecordingJob>();
+            _container.Register<IAudioService, AudioService.AudioService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
