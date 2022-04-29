@@ -33,6 +33,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\CameraService\CameraService.csproj" />
+        <ProjectReference Include="..\AudioService\AudioService.csproj" />
         <ProjectReference Include="..\Services\Services.csproj" />
         <ProjectReference Include="..\Shared\Shared.csproj" />
     </ItemGroup>
