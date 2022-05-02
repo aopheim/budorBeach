@@ -12,7 +12,11 @@
         public const string SecondJobs = "secondJobs";
         public const string DailyJobs = "dailyJobs";
         public const string PictureTrigger = "pictureTrigger";
-        public const string Bme280Trigger= "bme280Trigger";
-        public const string AudioRecordingTrigger = "bme280Trigger";
+        public const string Bme280Trigger = "bme280Trigger";
+        public const string AudioRecordingTrigger = "audioRecordingTrigger";
+        public const string AudioAnalyzerTrigger = "audioAnalyzerTrigger";
+        public const string BirdNetServerUrl = "http://localhost:8080/analyze";
+        public const double BudorLatitude = 60.974951;
+        public const double BudorLongitude = 11.285140;
     }
 }

@@ -40,7 +40,7 @@ namespace rpiDaemon.Jobs
         public async Task Execute(IJobExecutionContext context)
         {
             var now = DateTime.UtcNow;
-            var solarTimes = new SolarTimes(now, 60.974951, 11.285140);
+            var solarTimes = new SolarTimes(now, GlobalConstants.BudorLatitude, GlobalConstants.BudorLongitude);
             var sunrise = solarTimes.Sunrise;
             var sunset = solarTimes.Sunset;
 

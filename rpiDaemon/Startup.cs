@@ -11,6 +11,7 @@ using Quartz;
 using rpiDaemon.Jobs;
 using rpiDaemon.Jobs.JobFactories;
 using Services;
+using Services.Interfaces;
 using Shared;
 using Shared.SignalR;
 using SimpleInjector;
@@ -54,6 +55,8 @@ namespace rpiDaemon
                     _environment.IsDevelopment() ? TimeSpan.FromSeconds(10) : TimeSpan.FromHours(4));
                 q.AddJobAndTrigger<TakeAudioRecordingJob>(GlobalConstants.SecondJobs,
                     GlobalConstants.AudioRecordingTrigger, TimeSpan.FromSeconds(15));
+                q.AddJobAndTrigger<AnalyzeAudioRecordingsJob>(GlobalConstants.SecondJobs,
+                    GlobalConstants.AudioAnalyzerTrigger, TimeSpan.FromSeconds(20));
             });
 
             services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
@@ -77,6 +80,8 @@ namespace rpiDaemon
             _container.Register<TakePictureJob>();
             _container.Register<TakeAudioRecordingJob>();
             _container.Register<IAudioService, AudioService.AudioService>();
+            _container.Register<AnalyzeAudioRecordingsJob>();
+            _container.Register<IBirdNetResultConverter, BirdNetResultConverter>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
