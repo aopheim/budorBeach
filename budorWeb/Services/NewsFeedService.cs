@@ -77,7 +77,7 @@ namespace budorWeb.Services
                         "Akkurat i den mest intense innflyttingsperioden får vi plutselig ikke lenger kontakt med fuglekassa. Sannsynligvis har strømmen gått i løpet av natten, og datamaskinen i fuglekassa har ikke greid å få kontakt med internettet igjen. Krise! " +
                         "Fuglekasseteknikeren gjør det han kan for å få reddet situasjonen. Herr og fru fluesnapper har nå bygget seg et fint rede og er nok straks klare for å legge egg",
                     ImageUrls = new List<string>
-                        {"https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-4/10-30-6.jpg"}
+                        { "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-4/10-30-6.jpg" }
                 },
                 new NewsFeedEntry
                 {
@@ -233,6 +233,48 @@ namespace budorWeb.Services
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-7-9/6-27-23.jpg",
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-7-9/6-32-23.jpg",
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-7-9/6-37-23.jpg"
+                    }
+                },
+                new NewsFeedEntry
+                {
+                    Id = "q",
+                    Date = new DateTime(2022, 04, 13),
+                    Header = "Klar for ny fluesnapper-sesong!",
+                    Body =
+                        "Påsken er kommet, og fuglekassa har våknet til liv igjen etter å ha vært skrudd ned i noen måneder. Fuglekassa er nå tømt og innflyttingsklar. Vi håper å få et gjensyn med Herr og Fru Fluesnapper etter hvert som det blir varmere i været.",
+                    ImageUrls = new List<string>
+                    {
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-4-13/11-25-56.jpg"
+                    }
+                },
+                new NewsFeedEntry
+                {
+                    Id = "r",
+                    Date = new DateTime(2022, 04, 26),
+                    Header = "Fluesnapperen er tilbake på visning!",
+                    Body =
+                        "I dag har fluesnapperne kommet tilbake! Dette er mye tidligere enn i fjor, da de kom først i starten av juni. Men tydeligvis har de startet å gå på fuglekasse-visning tidligere i år. Håper de finner seg til rette og har finansieringsbeviset i orden",
+                    ImageUrls = new List<string>
+                    {
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-4-26/11-14-11.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-4-26/9-29-11.jpg"
+                    }
+                },
+                new NewsFeedEntry
+                {
+                    Id = "s",
+                    Date = new DateTime(2022, 04,
+                        28),
+                    Header = "Innflyttingen er i gang!",
+                    Body =
+                        "Det ble en rask budrunde, og Herr Fluesnapper er nå stolt eier av fuglekassa i Størigardsvegen. Nå flyttes det inn for harde livet, og på bare noen timer har han laget til en myk og fin madrass til Fru Fluesnapper",
+                    ImageUrls = new List<string>
+                    {
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-4-27/6-29-11.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-4-27/6-44-11.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-4-27/8-59-11.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-4-27/9-29-11.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-4-27/15-14-11.jpg"
                     }
                 }
             }.OrderByDescending(e => e.Date).ToList();
