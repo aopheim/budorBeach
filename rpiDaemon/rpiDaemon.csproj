@@ -7,13 +7,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AutoFixture" Version="4.17.0"/>
-        <PackageReference Include="Azure.Storage.Blobs" Version="12.8.4"/>
-        <PackageReference Include="Iot.Device.Bindings" Version="1.4.0"/>
-        <PackageReference Include="JetBrains.Annotations" Version="2021.1.0"/>
-        <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.20.0"/>
-        <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="5.0.6"/>
-        <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="5.0.6"/>
+        <PackageReference Include="AutoFixture" Version="4.17.0" />
+        <PackageReference Include="Azure.Storage.Blobs" Version="12.8.4" />
+        <PackageReference Include="Iot.Device.Bindings" Version="1.4.0" />
+        <PackageReference Include="JetBrains.Annotations" Version="2021.1.0" />
+        <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.20.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="5.0.6" />
+        <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="5.0.6" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.6">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -34,6 +34,7 @@
     <ItemGroup>
         <ProjectReference Include="..\CameraService\CameraService.csproj" />
         <ProjectReference Include="..\AudioService\AudioService.csproj" />
+        <ProjectReference Include="..\Dtos\Dtos.csproj" />
         <ProjectReference Include="..\Services\Services.csproj" />
         <ProjectReference Include="..\Shared\Shared.csproj" />
     </ItemGroup>
@@ -43,7 +44,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Shared\Shared.csproj"/>
+        <ProjectReference Include="..\Shared\Shared.csproj" />
     </ItemGroup>
     <ItemGroup>
         <Content Include="appsettings.json">
