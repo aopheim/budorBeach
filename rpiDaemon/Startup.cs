@@ -1,4 +1,5 @@
 using System;
+using AudioService.Interfaces;
 using CameraService.Interfaces;
 using DataAccess.EFCore;
 using Microsoft.AspNetCore.Builder;
@@ -56,9 +57,16 @@ namespace rpiDaemon
                     _environment.IsDevelopment() ? TimeSpan.FromSeconds(10) : TimeSpan.FromHours(4));
                 q.AddJobAndTrigger<GetProximityJob>(GlobalConstants.SecondJobs, GlobalConstants.ProximityTrigger,
                     TimeSpan.FromSeconds(5));
+                q.AddJobAndTrigger<TakeAudioRecordingJob>(GlobalConstants.SecondJobs,
+                    GlobalConstants.AudioRecordingTrigger, TimeSpan.FromSeconds(15));
+                q.AddJobAndTrigger<AnalyzeAudioRecordingsJob>(GlobalConstants.SecondJobs,
+                    GlobalConstants.AudioAnalyzerTrigger, TimeSpan.FromSeconds(20));
             });
+
             services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
             services.AddSignalR();
+            if (_environment.IsProduction())
+                services.AddApplicationInsightsTelemetry(Configuration["ApplicationInsightsConnectionString"]);
 
             services.AddDbContext<BudorDbContext>(options => options.UseSqlServer(_environment.IsDevelopment()
                 ? Configuration["DevelopmentDb"]
@@ -76,6 +84,10 @@ namespace rpiDaemon
             _container.Register<GetBme280SensorReadingsJob>();
             _container.Register<TakePictureJob>();
             _container.Register<GetProximityJob>();
+            _container.Register<TakeAudioRecordingJob>();
+            _container.Register<IAudioService, AudioService.AudioService>();
+            _container.Register<AnalyzeAudioRecordingsJob>();
+            _container.Register<IBirdNetResultConverter, BirdNetResultConverter>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
