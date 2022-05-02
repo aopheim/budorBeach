@@ -1,64 +1,61 @@
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
 using System.Linq;
-using System.Net.Http;
 using System.Runtime.InteropServices;
-using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
-using Dtos;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
 using Quartz;
 using Services.Interfaces;
 using Shared;
+using Shared.Interfaces;
 
 namespace rpiDaemon.Jobs
 {
     public class AnalyzeAudioRecordingsJob : IJob
     {
-        private static readonly HttpClient Client = new HttpClient();
-        private readonly IWebHostEnvironment _environment;
+        private readonly IBirdNetServer _birdNetServer;
+
+        private readonly IFileSystemService _fileSystemService;
         private readonly ILogger<AnalyzeAudioRecordingsJob> _logger;
+        private readonly IRepositories _repos;
         private readonly IBirdNetResultConverter _resultConverter;
 
-        public AnalyzeAudioRecordingsJob(ILogger<AnalyzeAudioRecordingsJob> logger, IWebHostEnvironment environment,
-            IBirdNetResultConverter resultConverter)
+        public AnalyzeAudioRecordingsJob(ILogger<AnalyzeAudioRecordingsJob> logger,
+            IBirdNetResultConverter resultConverter, IFileSystemService fileSystemService, IRepositories repos,
+            IBirdNetServer birdNetServer)
         {
             _logger = logger;
-            _environment = environment;
             _resultConverter = resultConverter;
+            _fileSystemService = fileSystemService;
+            _repos = repos;
+            _birdNetServer = birdNetServer;
         }
+
+        private static double MinConfidenceLevel => 0.3;
 
         public async Task Execute(IJobExecutionContext context)
         {
-            var url = GlobalConstants.BirdNetServerUrl;
             var recordingsFolderName = RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
-                ? @"C:\Users\AdrianOpheim\Documents\budorBeach\AudioService"
-                : @"home\pi\audioRecordings";
-            var fullFileNames = Directory.GetFiles(recordingsFolderName);
-            var recordingFileNames = fullFileNames.Select(Path.GetFileNameWithoutExtension).ToList();
-            
+                ? GlobalConstants.AudioRecordingsFolderWindows
+                : GlobalConstants.AudioRecordingsFolderLinux;
+            var recordingIds = _fileSystemService.GetFileNamesWithoutExtensionInFolder(recordingsFolderName);
 
-            await using var audioFileAsStream =
-                new FileStream(recordingsFolderName, FileMode.Open,
-                    FileAccess.Read);
-            var form = new MultipartFormDataContent();
-            var dto = new RecordingAnalyzerInputDto
+            foreach (var recordingId in recordingIds)
             {
-                Lat = GlobalConstants.BudorLatitude,
-                Long = GlobalConstants.BudorLongitude,
-                Week = ISOWeek.GetWeekOfYear(DateTime.UtcNow),
-            };
-            form.Add(new StringContent(JsonSerializer.Serialize(dto)), "meta");
-            form.Add(new StreamContent(audioFileAsStream), "audio", "kjottmeis.wav");
+                var filePath = recordingsFolderName + recordingId + ".wav";
+                var audioFileAsStream = _fileSystemService.GetFileStream(filePath);
+                var response =
+                    await _birdNetServer.PostAsync(audioFileAsStream?.FileStream,
+                        context?.CancellationToken ?? new CancellationToken());
+                _logger.LogInformation($"Response from server: {response}");
 
-            var res = await Client.PostAsync(url, form, context.CancellationToken);
-            var response = await res.Content.ReadAsStringAsync(context.CancellationToken);
-            _logger.LogInformation($"Response from server: {response}");
-            var result = _resultConverter.ConvertJson(response);
-            _logger.LogInformation(result.Message);
+                var result = _resultConverter.ConvertJson(response);
+                if (!result.Results.Any(r => r.Confidence > MinConfidenceLevel))
+                {
+                    _logger.LogInformation(
+                        $"No results with higher confidence than {MinConfidenceLevel}. Deleting recording");
+                    _fileSystemService.DeleteFile($"{recordingsFolderName}{recordingId}.wav");
+                }
+            }
         }
     }
 }

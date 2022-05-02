@@ -12,7 +12,9 @@ namespace DataAccess.EFCore
             _context = context;
             SensorReadings = new SensorReadingRepo(context);
             BirdPresenceRegistrations = new BirdPresenceRepo(context);
+            SpeciesRecognitions = new SpeciesRecognitionRepo(context);
         }
+        public ISpeciesRecognitionRepo SpeciesRecognitions { get; }
 
 
         public ISensorReadingRepo SensorReadings { get; }

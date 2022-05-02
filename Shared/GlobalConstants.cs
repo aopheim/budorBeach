@@ -19,5 +19,7 @@
         public const string BirdNetServerUrl = "http://localhost:8080/analyze";
         public const double BudorLatitude = 60.974951;
         public const double BudorLongitude = 11.285140;
+        public const string AudioRecordingsFolderWindows = @"C:\Users\AdrianOpheim\Documents\budorBeach\AudioService\";
+        public const string AudioRecordingsFolderLinux = @"home\pi\audioRecordings\";
     }
 }

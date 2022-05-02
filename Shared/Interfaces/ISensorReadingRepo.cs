@@ -10,4 +10,8 @@ namespace Shared.Interfaces
     {
         BirdPresenceRegistration GetLatestRegistration();
     }
+
+    public interface ISpeciesRecognitionRepo : IRepository<SpeciesRecognitionModel>
+    {
+    }
 }
