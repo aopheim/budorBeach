@@ -280,7 +280,7 @@ namespace budorWeb.Services
                 new NewsFeedEntry
                 {
                     Id = "t",
-                    Date = new DateTime(2022, 02, 05),
+                    Date = new DateTime(2022, 05, 02),
                     Header = "Bygningsarbeid pågår",
                     Body =
                         "De siste dagene har Herr Fluesnapper virkelig stått på. Se hvordan han har bygget et lunt og godt rede for sin fremtidige Fluesnapperkone: Først et lag med det som ser ut som lyng, deretter ser det ut som han har nappet av fjær for ekstra isolering",
