@@ -63,7 +63,7 @@ namespace Services
                 {
                     await _connection.StartAsync(cancellationToken);
                 }
-                catch (HttpRequestException e)
+                catch (HttpRequestException )
                 {
                     _logger.LogError("Connecting with SignalR threw HttpRequestException");
                 }

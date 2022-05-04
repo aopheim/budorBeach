@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.IO;
 
 namespace Services.Interfaces
 {
@@ -7,11 +6,5 @@ namespace Services.Interfaces
     {
         IEnumerable<string> GetFileNamesWithoutExtensionInFolder(string folderFilePath);
         void DeleteFile(string path);
-        FileStreamWrapper GetFileStream(string filePath);
-    }
-
-    public class FileStreamWrapper
-    {
-        public FileStream FileStream { get; set; }
     }
 }

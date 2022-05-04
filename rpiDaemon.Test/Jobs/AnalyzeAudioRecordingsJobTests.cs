@@ -55,8 +55,7 @@ namespace rpiDaemon.Test.Jobs
             var fileMock = Get<IFileSystemService>();
             fileMock.GetFileNamesWithoutExtensionInFolder(Arg.Any<string>())
                 .ReturnsForAnyArgs(_recordingIds);
-            fileMock.GetFileStream(Arg.Any<string>()).ReturnsForAnyArgs(new FileStreamWrapper());
-            Get<IBirdNetServer>().PostAsync(Arg.Any<FileStream>(), default).ReturnsForAnyArgs("");
+            Get<IBirdNetServer>().PostAsync(Arg.Any<string>(), default).ReturnsForAnyArgs("");
         }
     }
 }

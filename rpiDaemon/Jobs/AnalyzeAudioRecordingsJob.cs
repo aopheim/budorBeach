@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -35,16 +36,15 @@ namespace rpiDaemon.Jobs
         public async Task Execute(IJobExecutionContext context)
         {
             var recordingsFolderName = RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
-                ? GlobalConstants.AudioRecordingsFolderWindows
+                ? Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\BudorBeach\"
                 : GlobalConstants.AudioRecordingsFolderLinux;
             var recordingIds = _fileSystemService.GetFileNamesWithoutExtensionInFolder(recordingsFolderName);
 
             foreach (var recordingId in recordingIds)
             {
                 var filePath = recordingsFolderName + recordingId + ".wav";
-                var audioFileAsStream = _fileSystemService.GetFileStream(filePath);
                 var response =
-                    await _birdNetServer.PostAsync(audioFileAsStream?.FileStream,
+                    await _birdNetServer.PostAsync(filePath,
                         context?.CancellationToken ?? new CancellationToken());
                 _logger.LogInformation($"Response from server: {response}");
 
