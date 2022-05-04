@@ -7,6 +7,7 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Dtos;
+using Microsoft.Extensions.Logging;
 using Services.Interfaces;
 using Shared;
 
@@ -15,18 +16,17 @@ namespace Services
     public class BirdNetServer : IBirdNetServer
     {
         private static readonly HttpClient Client = new();
+        private readonly ILogger _logger;
         private Process _process;
 
-        public async Task<string> PostAsync(FileStream audioFileAsStream, CancellationToken cancellationToken)
+        public BirdNetServer(ILogger logger)
         {
-            var form = GetMultipartForm(audioFileAsStream);
-            var responseMessage =
-                await Client.PostAsync(GlobalConstants.BirdNetServerUrl, form, cancellationToken);
-            return await responseMessage.Content.ReadAsStringAsync(cancellationToken);
+            _logger = logger;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
+            _logger.LogInformation("Starting up BirdNet server...");
             _process = new Process();
             var startInfo = new ProcessStartInfo
             {
@@ -41,7 +41,18 @@ namespace Services
 
         public Task StopAsync(CancellationToken cancellationToken)
         {
+            _logger.LogInformation("Shutting down BirdNetServer...");
             return Task.FromResult(_process.WaitForExit(1));
+        }
+
+        public async Task<string> PostAsync(string filePath, CancellationToken cancellationToken)
+        {
+            await using var audioFileAsStream = new FileStream(filePath, FileMode.Open,
+                FileAccess.Read);
+            var form = GetMultipartForm(audioFileAsStream);
+            var responseMessage =
+                await Client.PostAsync(GlobalConstants.BirdNetServerUrl, form, cancellationToken);
+            return await responseMessage.Content.ReadAsStringAsync(cancellationToken);
         }
 
         private MultipartFormDataContent GetMultipartForm(FileStream audioFileAsStream)

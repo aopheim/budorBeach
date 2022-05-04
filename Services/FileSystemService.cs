@@ -19,14 +19,5 @@ namespace Services
         {
             File.Delete(path);
         }
-
-        public FileStreamWrapper GetFileStream(string filePath)
-        {
-            return new FileStreamWrapper
-            {
-                FileStream = new FileStream(filePath, FileMode.Open,
-                    FileAccess.Read)
-            };
-        }
     }
 }
