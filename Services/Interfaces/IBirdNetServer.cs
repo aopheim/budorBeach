@@ -7,6 +7,6 @@ namespace Services.Interfaces
 {
     public interface IBirdNetServer : IHostedService
     {
-        Task<string> PostAsync(FileStream audioFileAsStream, CancellationToken cancellationToken);
+        Task<string> PostAsync(string filePathToAudioFile, CancellationToken cancellationToken);
     }
 }
