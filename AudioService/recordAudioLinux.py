@@ -24,7 +24,7 @@ while True:
     chans = 1 # 1 channel
     samp_rate = 44100 # 44.1kHz sampling rate
     chunk = 4096 # 2^12 samples for buffer
-    record_secs = 5 # seconds to record
+    record_secs = 10 # seconds to record
     dev_index = 1 # device index found by p.get_device_info_by_index(ii)
     wav_output_filename = uuid.uuid4().hex + '.wav' # name of .wav file
     
