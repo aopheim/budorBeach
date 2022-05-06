@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -16,6 +17,10 @@ namespace rpiDaemon.Jobs
         private readonly IBirdNetServer _birdNetServer;
 
         private readonly IFileSystemService _fileSystemService;
+
+        private readonly List<string> _latinNamesToExcludeFromUpload =
+            new List<string> { "Homo sapiens", "Homo Sapiens" };
+
         private readonly ILogger<AnalyzeAudioRecordingsJob> _logger;
         private readonly IRepositories _repos;
         private readonly IBirdNetResultConverter _resultConverter;
@@ -31,7 +36,7 @@ namespace rpiDaemon.Jobs
             _birdNetServer = birdNetServer;
         }
 
-        private static double MinConfidenceLevel => 0.3;
+        private static double MinConfidenceLevel => 0.5;
 
         public async Task Execute(IJobExecutionContext context)
         {
@@ -49,7 +54,8 @@ namespace rpiDaemon.Jobs
                 _logger.LogInformation($"Response from server: {response}");
 
                 var result = _resultConverter.ConvertJson(response);
-                if (!result.Results.Any(r => r.Confidence > MinConfidenceLevel))
+                if (!result.Results?.Any(r =>
+                    r.Confidence > MinConfidenceLevel || _latinNamesToExcludeFromUpload.Contains(r.LatinName)) ?? true)
                 {
                     _logger.LogInformation(
                         $"No results with higher confidence than {MinConfidenceLevel}. Deleting recording");

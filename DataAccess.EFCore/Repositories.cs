@@ -15,8 +15,6 @@ namespace DataAccess.EFCore
             SpeciesRecognitions = new SpeciesRecognitionRepo(context);
         }
         public ISpeciesRecognitionRepo SpeciesRecognitions { get; }
-
-
         public ISensorReadingRepo SensorReadings { get; }
         public IBirdPresenceRepo BirdPresenceRegistrations { get; }
 
