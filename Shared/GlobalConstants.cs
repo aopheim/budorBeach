@@ -6,6 +6,7 @@ namespace Shared
     {
         public const string ImagesContainerName = "images";
         public const string ThumbnailImagesContainerName = "images-thumbnails";
+        public const string AudioRecordingsContainerName = "audio-recordings";
 
         public const string DevelopmentUrl = "http://localhost:3000";
         public const string ProductionUrl = "https://budorbeach.no";
