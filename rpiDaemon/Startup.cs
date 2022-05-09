@@ -56,8 +56,8 @@ namespace rpiDaemon
                     _environment.IsDevelopment() ? TimeSpan.FromSeconds(2) : TimeSpan.FromSeconds(10));
                 q.AddJobAndTrigger<TakePictureJob>(GlobalConstants.SecondJobs, GlobalConstants.PictureTrigger,
                     _environment.IsDevelopment() ? TimeSpan.FromSeconds(10) : TimeSpan.FromHours(4));
-                // q.AddJobAndTrigger<TakeVideoJob>(GlobalConstants.SecondJobs, GlobalConstants.VideoRecordingTrigger,
-                //     null, DateTime.UtcNow.AddSeconds(20));
+                q.AddJobAndTrigger<TakeVideoJob>(GlobalConstants.SecondJobs, GlobalConstants.VideoRecordingTrigger,
+                    null, DateTime.UtcNow.AddSeconds(20));
                 q.AddJobAndTrigger<GetProximityJob>(GlobalConstants.SecondJobs, GlobalConstants.ProximityTrigger,
                     TimeSpan.FromSeconds(5));
                 q.AddJobAndTrigger<TakeAudioRecordingJob>(GlobalConstants.SecondJobs,
@@ -96,6 +96,7 @@ namespace rpiDaemon
             _container.Register<AnalyzeAudioRecordingsJob>();
             _container.Register<IBirdNetResultConverter, BirdNetResultConverter>();
             _container.Register<IFileSystemService, FileSystemService>();
+            _container.Register<IAzureStorageService, AzureStorageService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

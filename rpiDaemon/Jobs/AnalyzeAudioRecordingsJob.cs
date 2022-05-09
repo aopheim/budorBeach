@@ -16,6 +16,7 @@ namespace rpiDaemon.Jobs
 {
     public class AnalyzeAudioRecordingsJob : IJob
     {
+        private readonly IAzureStorageService _azureStorageService;
         private readonly IBirdNetServer _birdNetServer;
 
         private readonly List<string> _englishNamesToExcludeFromUpload =
@@ -33,13 +34,14 @@ namespace rpiDaemon.Jobs
 
         public AnalyzeAudioRecordingsJob(ILogger<AnalyzeAudioRecordingsJob> logger,
             IBirdNetResultConverter resultConverter, IFileSystemService fileSystemService, IRepositories repos,
-            IBirdNetServer birdNetServer)
+            IBirdNetServer birdNetServer, IAzureStorageService azureStorageService)
         {
             _logger = logger;
             _resultConverter = resultConverter;
             _fileSystemService = fileSystemService;
             _repos = repos;
             _birdNetServer = birdNetServer;
+            _azureStorageService = azureStorageService;
         }
 
         private static double MinConfidenceLevel => 0.5;
@@ -94,6 +96,7 @@ namespace rpiDaemon.Jobs
                     });
 
                 speciesRecognitionsToAddToDb.AddRange(modelsToSave);
+
                 _fileSystemService.DeleteFile(filePath);
             }
 
