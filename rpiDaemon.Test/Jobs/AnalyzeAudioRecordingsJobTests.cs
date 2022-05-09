@@ -6,6 +6,7 @@ using Dtos;
 using NSubstitute;
 using NUnit.Framework;
 using rpiDaemon.Jobs;
+using Services;
 using Services.Interfaces;
 using Shared.Interfaces;
 using Shared.Models;
@@ -170,6 +171,52 @@ namespace rpiDaemon.Test.Jobs
             Get<IRepositories>().SpeciesRecognitions
                 .AddRange(Arg.Is<List<SpeciesRecognitionModel>>(models => models.Count <= MaxNumberOfFilesToAnalyze));
             Get<IFileSystemService>().Received(MaxNumberOfFilesToAnalyze).DeleteFile(Arg.Any<string>());
+        }
+
+        [Test]
+        public async Task UploadFileIfConfidenceIsAboveLimit()
+        {
+            SetupMocking();
+
+            Get<IBirdNetResultConverter>().ConvertJson(Arg.Any<string>()).ReturnsForAnyArgs(new BirdNetOutputDto
+            {
+                Message = "success",
+                Results = new List<ClassificationResultDto>
+                {
+                    new()
+                    {
+                        Confidence = MinConfidenceLevel + 0.01,
+                        EnglishName = "ToSave"
+                    }
+                }
+            });
+
+            await TestSubject.Execute(default);
+
+            await Get<IAzureStorageService>().Received(4).UploadFileFromPath(Arg.Any<string>(), default);
+        }
+
+        [Test]
+        public async Task DoNotUploadFileIfConfidenceIsBelowLimit()
+        {
+            SetupMocking();
+
+            Get<IBirdNetResultConverter>().ConvertJson(Arg.Any<string>()).ReturnsForAnyArgs(new BirdNetOutputDto
+            {
+                Message = "success",
+                Results = new List<ClassificationResultDto>
+                {
+                    new()
+                    {
+                        Confidence = MinConfidenceLevel - 0.01,
+                        EnglishName = "ToSave"
+                    }
+                }
+            });
+
+            await TestSubject.Execute(default);
+
+            await Get<IAzureStorageService>().Received(0).UploadFileFromPath(Arg.Any<string>(), default);
         }
 
         private void SetupMocking()
