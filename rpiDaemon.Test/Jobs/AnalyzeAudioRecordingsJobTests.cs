@@ -6,7 +6,6 @@ using Dtos;
 using NSubstitute;
 using NUnit.Framework;
 using rpiDaemon.Jobs;
-using Services;
 using Services.Interfaces;
 using Shared.Interfaces;
 using Shared.Models;
@@ -78,7 +77,8 @@ namespace rpiDaemon.Test.Jobs
             await TestSubject.Execute(default);
 
             Get<IFileSystemService>().Received(4).DeleteFile(Arg.Any<string>());
-            Get<IRepositories>().Received(0).SpeciesRecognitions.Add(Arg.Any<SpeciesRecognitionModel>());
+            Get<IRepositories>().SpeciesRecognitions
+                .AddRange(Arg.Is<List<SpeciesRecognitionModel>>(models => models.Count == 0));
         }
 
         [Test]
@@ -108,7 +108,8 @@ namespace rpiDaemon.Test.Jobs
             await TestSubject.Execute(default);
 
             Get<IFileSystemService>().Received(4).DeleteFile(Arg.Any<string>());
-            Get<IRepositories>().Received(0).SpeciesRecognitions.Add(Arg.Any<SpeciesRecognitionModel>());
+            Get<IRepositories>().SpeciesRecognitions
+                .AddRange(Arg.Is<List<SpeciesRecognitionModel>>(models => models.Count == 0));
         }
 
         [Test]
@@ -170,13 +171,14 @@ namespace rpiDaemon.Test.Jobs
 
             Get<IRepositories>().SpeciesRecognitions
                 .AddRange(Arg.Is<List<SpeciesRecognitionModel>>(models => models.Count <= MaxNumberOfFilesToAnalyze));
-            Get<IFileSystemService>().Received(MaxNumberOfFilesToAnalyze).DeleteFile(Arg.Any<string>());
         }
 
         [Test]
-        public async Task UploadFileIfConfidenceIsAboveLimit()
+        public async Task IfRecordingIdAlreadyExistsInDb_DoNotAnalyze()
         {
             SetupMocking();
+            // Overwriting setup
+            Get<IRepositories>().SpeciesRecognitions.Exists(Arg.Any<Guid>()).ReturnsForAnyArgs(true);
 
             Get<IBirdNetResultConverter>().ConvertJson(Arg.Any<string>()).ReturnsForAnyArgs(new BirdNetOutputDto
             {
@@ -193,30 +195,8 @@ namespace rpiDaemon.Test.Jobs
 
             await TestSubject.Execute(default);
 
-            await Get<IAzureStorageService>().Received(4).UploadFileFromPath(Arg.Any<string>(), default);
-        }
-
-        [Test]
-        public async Task DoNotUploadFileIfConfidenceIsBelowLimit()
-        {
-            SetupMocking();
-
-            Get<IBirdNetResultConverter>().ConvertJson(Arg.Any<string>()).ReturnsForAnyArgs(new BirdNetOutputDto
-            {
-                Message = "success",
-                Results = new List<ClassificationResultDto>
-                {
-                    new()
-                    {
-                        Confidence = MinConfidenceLevel - 0.01,
-                        EnglishName = "ToSave"
-                    }
-                }
-            });
-
-            await TestSubject.Execute(default);
-
-            await Get<IAzureStorageService>().Received(0).UploadFileFromPath(Arg.Any<string>(), default);
+            Get<IRepositories>().SpeciesRecognitions
+                .AddRange(Arg.Is<List<SpeciesRecognitionModel>>(models => models.Count == 0));
         }
 
         private void SetupMocking()

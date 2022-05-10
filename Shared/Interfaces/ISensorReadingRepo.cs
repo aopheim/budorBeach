@@ -1,3 +1,4 @@
+using System;
 using Shared.Models;
 
 namespace Shared.Interfaces
@@ -13,5 +14,6 @@ namespace Shared.Interfaces
 
     public interface ISpeciesRecognitionRepo : IRepository<SpeciesRecognitionModel>
     {
+        bool Exists(Guid recordingId);
     }
 }

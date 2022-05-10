@@ -2,7 +2,9 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Azure.Storage.Blobs;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Services.Interfaces;
 
 namespace Services
@@ -12,14 +14,17 @@ namespace Services
         private readonly BlobServiceClient _blobServiceClient;
         private readonly IConfiguration _config;
 
-        public AzureStorageService(IConfiguration config)
+        public AzureStorageService(IConfiguration config, IWebHostEnvironment environment)
         {
             _config = config;
-            _blobServiceClient = new BlobServiceClient(config[AzureStorageConnectionString]);
+            _blobServiceClient =
+                new BlobServiceClient(environment.IsDevelopment()
+                    ? config[AzuriteStorageConnectionString]
+                    : config[AzureStorageConnectionString]);
         }
 
-        private static string AudioRecordingsContainerName => "audiorecordings";
         private static string AzureStorageConnectionString => "AzureStorageConnectionString";
+        private static string AzuriteStorageConnectionString => "AzuriteStorageConnectionString";
 
 
         public async Task<bool> UploadFileFromPath(string containerName, string filePath, string fileNameWithExtension,
