@@ -1,6 +1,7 @@
 import sounddevice as sd
 import scipy.io.wavfile as wf 
 import uuid
+import os
 
 
 fs = 44100  # Sample rate
@@ -11,5 +12,6 @@ while True:
     sd.wait()  # Wait until recording is finished
     print('Writing file...')
     fileName = uuid.uuid4().hex
-    wf.write(fileName + '.wav', fs, myrecording)  # Save as WAV file 
-    print('Finished!')
+    filePath = os.getenv('APPDATA') + '\BudorBeach\\' + fileName + '.wav' 
+    wf.write(filePath, fs, myrecording)  # Save as WAV file 
+    print('Saved recording to ', filePath)

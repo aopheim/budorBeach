@@ -51,21 +51,24 @@ namespace rpiDaemon
             services.AddQuartz(q =>
             {
                 q.UseJobFactory<JobFactory>();
-                q.AddJobAndTrigger<GetBme280SensorReadingsJob>(GlobalConstants.SecondJobs,
-                    GlobalConstants.Bme280Trigger,
-                    _environment.IsDevelopment() ? TimeSpan.FromSeconds(2) : TimeSpan.FromSeconds(10));
-                q.AddJobAndTrigger<TakePictureJob>(GlobalConstants.SecondJobs, GlobalConstants.PictureTrigger,
-                    _environment.IsDevelopment() ? TimeSpan.FromSeconds(10) : TimeSpan.FromHours(4));
-                q.AddJobAndTrigger<TakeVideoJob>(GlobalConstants.SecondJobs, GlobalConstants.VideoRecordingTrigger,
-                    null, DateTime.UtcNow.AddSeconds(20));
-                q.AddJobAndTrigger<GetProximityJob>(GlobalConstants.SecondJobs, GlobalConstants.ProximityTrigger,
-                    TimeSpan.FromSeconds(5));
+                // q.AddJobAndTrigger<GetBme280SensorReadingsJob>(GlobalConstants.SecondJobs,
+                //     GlobalConstants.Bme280Trigger,
+                //     _environment.IsDevelopment() ? TimeSpan.FromSeconds(2) : TimeSpan.FromSeconds(10));
+                // q.AddJobAndTrigger<TakePictureJob>(GlobalConstants.SecondJobs, GlobalConstants.PictureTrigger,
+                //     _environment.IsDevelopment() ? TimeSpan.FromSeconds(10) : TimeSpan.FromHours(4));
+                // q.AddJobAndTrigger<TakeVideoJob>(GlobalConstants.SecondJobs, GlobalConstants.VideoRecordingTrigger,
+                //     null, DateTime.UtcNow.AddSeconds(20));
+                // q.AddJobAndTrigger<GetProximityJob>(GlobalConstants.SecondJobs, GlobalConstants.ProximityTrigger,
+                //     TimeSpan.FromSeconds(5));
                 q.AddJobAndTrigger<TakeAudioRecordingJob>(GlobalConstants.SecondJobs,
-                    GlobalConstants.AudioRecordingTrigger, null);
-                q.AddJobAndTrigger<AnalyzeAudioRecordingsJob>(GlobalConstants.SecondJobs,
-                    GlobalConstants.AudioAnalyzerTrigger,
-                    _environment.IsDevelopment() ? TimeSpan.FromSeconds(10) : TimeSpan.FromSeconds(60),
-                    DateTime.UtcNow.AddSeconds(30));
+                    GlobalConstants.AudioRecordingTrigger, TimeSpan.FromSeconds(10));
+                // q.AddJobAndTrigger<AnalyzeAudioRecordingsJob>(GlobalConstants.SecondJobs,
+                //     GlobalConstants.AudioAnalyzerTrigger,
+                //     _environment.IsDevelopment() ? TimeSpan.FromSeconds(10) : TimeSpan.FromSeconds(60),
+                //     DateTime.UtcNow.AddSeconds(30));
+                // q.AddJobAndTrigger<UploadAudioRecordingsJob>(GlobalConstants.MinuteJobs,
+                //     GlobalConstants.UploadAudioRecordingTrigger, TimeSpan.FromMinutes(1),
+                //     DateTime.UtcNow.AddMinutes(1));
             });
 
             services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
@@ -92,6 +95,7 @@ namespace rpiDaemon
             _container.Register<GetProximityJob>();
             _container.Register<TakeAudioRecordingJob>();
             _container.Register<TakeVideoJob>();
+            _container.Register<UploadAudioRecordingsJob>();
             _container.Register<IAudioService, AudioService.AudioService>();
             _container.Register<AnalyzeAudioRecordingsJob>();
             _container.Register<IBirdNetResultConverter, BirdNetResultConverter>();
