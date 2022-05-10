@@ -54,10 +54,11 @@ namespace rpiDaemon.Jobs
             var recordingIds = _fileSystemService.GetFileNamesWithoutExtensionInFolder(recordingsFolderName).ToList();
 
             var speciesRecognitionsToAddToDb = new List<SpeciesRecognitionModel>();
-            var recordingIdsToAnalyze = recordingIds.Count() > MaxNumberOfFilesToAnalyze
+            var recordingIdsToAnalyze = (recordingIds.Count() > MaxNumberOfFilesToAnalyze
                 ? recordingIds.Take(
                     MaxNumberOfFilesToAnalyze)
-                : recordingIds;
+                : recordingIds).ToList();
+            _logger.LogInformation($"Found {recordingIdsToAnalyze.Count} recordings to analyze");
             foreach (var recordingId in recordingIdsToAnalyze)
             {
                 if (!Guid.TryParse(recordingId, out var recordingIdAsGuid)) continue;
