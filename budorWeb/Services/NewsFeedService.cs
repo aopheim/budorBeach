@@ -292,6 +292,19 @@ namespace budorWeb.Services
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-5-3/9-14-11.jpg",
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-5-3/3-44-11.jpg"
                     }
+                },
+                new NewsFeedEntry
+                {
+                    Id = "u",
+                    Date = new DateTime(2022, 05, 10),
+                    Header = "Nå mangler bare Fru Fluesnapper",
+                    Body =
+                        "Nå ser det ut som Herr Fluesnapper er fornøyd med redet sitt. Det ser veldig mykt og fint ut. Så nå mangler bare en Fru Fluesnapper. Herr Fluesnapper er nå mye sjeldnere innom fuglekassa, så alt tyder på at han er på sjekkern langs Størigardsvegen.",
+                    ImageUrls = new List<string>
+                    {
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-5-8/11-59-34.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-5-10/6-59-34.jpg"
+                    }
                 }
             }.OrderByDescending(e => e.Date).ToList();
         }
