@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Shared
+﻿namespace Shared
 {
     public static class GlobalConstants
     {
@@ -16,6 +14,7 @@ namespace Shared
         public const string BirdNetServerUrl = "http://localhost:8080/analyze";
 
         public const string SecondJobs = "secondJobs";
+        public const string MinuteJobs = "minuteJobs";
         public const string DailyJobs = "dailyJobs";
 
         public const string PictureTrigger = "pictureTrigger";
@@ -24,6 +23,7 @@ namespace Shared
         public const string AudioRecordingTrigger = "audioRecordingTrigger";
         public const string AudioAnalyzerTrigger = "audioAnalyzerTrigger";
         public const string VideoRecordingTrigger = "videoRecordingTrigger";
+        public const string UploadAudioRecordingTrigger = "uploadAudioRecordingTrigger";
 
         public const double BudorLatitude = 60.974951;
         public const double BudorLongitude = 11.285140;

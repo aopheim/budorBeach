@@ -61,6 +61,8 @@ namespace rpiDaemon.Jobs
             foreach (var recordingId in recordingIdsToAnalyze)
             {
                 if (!Guid.TryParse(recordingId, out var recordingIdAsGuid)) continue;
+                if (_repos.SpeciesRecognitions?.Exists(recordingIdAsGuid) ?? false)
+                    continue;
                 var filePath = recordingsFolderName + recordingId + ".wav";
                 var response =
                     await _birdNetServer.PostAsync(filePath,
@@ -96,13 +98,11 @@ namespace rpiDaemon.Jobs
                     });
 
                 speciesRecognitionsToAddToDb.AddRange(modelsToSave);
-
-                _fileSystemService.DeleteFile(filePath);
             }
 
             if (speciesRecognitionsToAddToDb.Any())
             {
-                _repos.SpeciesRecognitions.AddRange(speciesRecognitionsToAddToDb);
+                _repos.SpeciesRecognitions?.AddRange(speciesRecognitionsToAddToDb);
                 await _repos.SaveChangesAsync();
             }
         }
