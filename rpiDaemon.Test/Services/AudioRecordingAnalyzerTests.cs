@@ -3,16 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Dtos;
+using FluentAssertions;
 using NSubstitute;
 using NUnit.Framework;
-using rpiDaemon.Jobs;
+using Services;
 using Services.Interfaces;
 using Shared.Interfaces;
 using Shared.Models;
 
-namespace rpiDaemon.Test.Jobs
+namespace rpiDaemon.Test.Services
 {
-    public class AnalyzeAudioRecordingsJobTests : UnitTestBase<AnalyzeAudioRecordingsJob>
+    public class AudioRecordingAnalyzerTests : UnitTestBase<AudioRecordingRecordingAnalyzer>
     {
         private static readonly double MinConfidenceLevel = 0.5;
         private static readonly int MaxNumberOfFilesToAnalyze = 15;
@@ -51,7 +52,7 @@ namespace rpiDaemon.Test.Jobs
                 }
             });
 
-            await TestSubject.Execute(default);
+            await TestSubject.RunAnalyzer(default);
 
             Get<IFileSystemService>().Received(4).DeleteFile(Arg.Any<string>());
         }
@@ -74,15 +75,17 @@ namespace rpiDaemon.Test.Jobs
                 }
             });
 
-            await TestSubject.Execute(default);
+            await TestSubject.RunAnalyzer(default);
 
             Get<IFileSystemService>().Received(4).DeleteFile(Arg.Any<string>());
             Get<IRepositories>().SpeciesRecognitions
                 .AddRange(Arg.Is<List<SpeciesRecognitionModel>>(models => models.Count == 0));
+            var calls = Get<IRepositories>().ReceivedCalls();
+            calls.Where(c => c.GetMethodInfo().Name == nameof(ISpeciesRecognitionRepo.AddRange)).Should().BeEmpty();
         }
 
         [Test]
-        public async Task IfHumanSpeciesIsDetected_EvenThoughBirdSpeciesIsAboveMinLevel()
+        public async Task IfHumanSpeciesIsDetected_DoNotAddToDb_EvenThoughBirdSpeciesIsAboveMinLevel()
         {
             SetupMocking();
             Get<IBirdNetResultConverter>().ConvertJson(Arg.Any<string>()).ReturnsForAnyArgs(new BirdNetOutputDto
@@ -105,17 +108,17 @@ namespace rpiDaemon.Test.Jobs
                 }
             });
 
-            await TestSubject.Execute(default);
+            await TestSubject.RunAnalyzer(default);
 
             Get<IFileSystemService>().Received(4).DeleteFile(Arg.Any<string>());
-            Get<IRepositories>().SpeciesRecognitions
-                .AddRange(Arg.Is<List<SpeciesRecognitionModel>>(models => models.Count == 0));
+            Get<IRepositories>().ReceivedCalls()
+                .Where(c => c.GetMethodInfo().Name == nameof(ISpeciesRecognitionRepo.AddRange)).Should().BeEmpty();
         }
 
         [Test]
         public async Task OnlySpeciesWithConfidenceAboveLimitShouldBeSaved()
         {
-            SetupMocking();
+            SetupMockingWithOneFile();
             Get<IBirdNetResultConverter>().ConvertJson(Arg.Any<string>()).ReturnsForAnyArgs(new BirdNetOutputDto
             {
                 Message = "success",
@@ -137,10 +140,12 @@ namespace rpiDaemon.Test.Jobs
                 }
             });
 
-            await TestSubject.Execute(default);
+            await TestSubject.RunAnalyzer(default);
 
-            Get<IRepositories>().SpeciesRecognitions.AddRange(Arg.Is<List<SpeciesRecognitionModel>>(models =>
-                models.Select(m => m.EnglishName).Distinct().Single() == "ToSave"));
+            var calls = Get<IRepositories>().SpeciesRecognitions.ReceivedCalls();
+            var arg = calls.Single(c => c.GetMethodInfo().Name == nameof(ISpeciesRecognitionRepo.AddRange))
+                .GetArguments().First();
+            (arg as List<SpeciesRecognitionModel>).First().EnglishName.Should().Be("ToSave");
         }
 
         [Test]
@@ -167,10 +172,12 @@ namespace rpiDaemon.Test.Jobs
                 }
             });
 
-            await TestSubject.Execute(default);
+            await TestSubject.RunAnalyzer(default);
 
-            Get<IRepositories>().SpeciesRecognitions
-                .AddRange(Arg.Is<List<SpeciesRecognitionModel>>(models => models.Count <= MaxNumberOfFilesToAnalyze));
+            var calls = Get<IRepositories>().SpeciesRecognitions.ReceivedCalls();
+            var arg = calls.Single(c => c.GetMethodInfo().Name == nameof(ISpeciesRecognitionRepo.AddRange))
+                .GetArguments().First();
+            (arg as List<SpeciesRecognitionModel>).Count.Should().BeLessOrEqualTo(MaxNumberOfFilesToAnalyze);
         }
 
         [Test]
@@ -193,10 +200,11 @@ namespace rpiDaemon.Test.Jobs
                 }
             });
 
-            await TestSubject.Execute(default);
+            await TestSubject.RunAnalyzer(default);
 
-            Get<IRepositories>().SpeciesRecognitions
-                .AddRange(Arg.Is<List<SpeciesRecognitionModel>>(models => models.Count == 0));
+            var calls = Get<IRepositories>().SpeciesRecognitions.ReceivedCalls();
+            var arg = calls.Where(c => c.GetMethodInfo().Name == nameof(ISpeciesRecognitionRepo.AddRange)).Should()
+                .HaveCount(0);
         }
 
         private void SetupMocking()
@@ -204,6 +212,14 @@ namespace rpiDaemon.Test.Jobs
             var fileMock = Get<IFileSystemService>();
             fileMock.GetFileNamesWithoutExtensionInFolder(Arg.Any<string>())
                 .ReturnsForAnyArgs(_recordingIds);
+            Get<IBirdNetServer>().PostAsync(Arg.Any<string>(), default).ReturnsForAnyArgs("");
+        }
+
+        private void SetupMockingWithOneFile()
+        {
+            var fileMock = Get<IFileSystemService>();
+            fileMock.GetFileNamesWithoutExtensionInFolder(Arg.Any<string>())
+                .ReturnsForAnyArgs(_recordingIds.Take(1));
             Get<IBirdNetServer>().PostAsync(Arg.Any<string>(), default).ReturnsForAnyArgs("");
         }
     }
