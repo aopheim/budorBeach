@@ -276,6 +276,49 @@ namespace budorWeb.Services
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-4-27/9-29-11.jpg",
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-4-27/15-14-11.jpg"
                     }
+                },
+                new NewsFeedEntry
+                {
+                    Id = "t",
+                    Date = new DateTime(2022, 05, 02),
+                    Header = "Bygningsarbeid pågår",
+                    Body =
+                        "De siste dagene har Herr Fluesnapper virkelig stått på. Se hvordan han har bygget et lunt og godt rede for sin fremtidige Fluesnapperkone: Først et lag med det som ser ut som lyng, deretter ser det ut som han har nappet av fjær for ekstra isolering",
+                    ImageUrls = new List<string>
+                    {
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-4-29/9-44-11.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-4-30/9-44-11.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-4-30/13-44-11.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-5-3/9-14-11.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-5-3/3-44-11.jpg"
+                    }
+                },
+                new NewsFeedEntry
+                {
+                    Id = "u",
+                    Date = new DateTime(2022, 05, 10),
+                    Header = "Nå mangler bare Fru Fluesnapper",
+                    Body =
+                        "Nå ser det ut som Herr Fluesnapper er fornøyd med redet sitt. Det ser veldig mykt og fint ut. Så nå mangler bare en Fru Fluesnapper. Herr Fluesnapper er nå mye sjeldnere innom fuglekassa, så alt tyder på at han er på sjekkern langs Størigardsvegen.",
+                    ImageUrls = new List<string>
+                    {
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-5-8/11-59-34.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-5-10/6-59-34.jpg"
+                    }
+                },
+                new NewsFeedEntry
+                {
+                    Id = "v",
+                    Date = new DateTime(2022, 05, 12),
+                    Header = "Jomfrufødsel fra Herr Fluesnapper?",
+                    Body =
+                        "I dag kom det egg i fuglekassa! Men hvem som har lagt egget er et mysterium. Vi har ikke sett noe til besøk fra Fru Fluesnapper, og selve fødselen må ha skjedd veldig fort i morgentimene. Kameraet har bare greid å plukke opp det svart-hvite hodet til Herr Fluesnapper, så sannsynligvis må dette være verdens første dokumenterte jomfrufødsel fra enn mannlig fluesnapper. Sensasjon!",
+                    ImageUrls = new List<string>
+                    {
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-5-12/3-29-34.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-5-12/2-59-34.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-5-12/3-14-34.jpg"
+                    }
                 }
             }.OrderByDescending(e => e.Date).ToList();
         }
