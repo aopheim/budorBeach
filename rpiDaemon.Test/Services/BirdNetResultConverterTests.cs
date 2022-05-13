@@ -3,7 +3,7 @@ using FluentAssertions;
 using NUnit.Framework;
 using Services;
 
-namespace rpiDaemon.Test.ServicesTests
+namespace rpiDaemon.Test.Services
 {
     public class BirdNetResultConverterTests
     {

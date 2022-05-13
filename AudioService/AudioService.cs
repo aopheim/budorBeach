@@ -9,8 +9,16 @@ namespace AudioService
 {
     public class AudioService : IAudioService
     {
+        private bool _isRunning;
+
+        public AudioService()
+        {
+            _isRunning = false;
+        }
+
         public Task<bool> CaptureAudio(CancellationToken cancellationToken)
         {
+            _isRunning = true;
             Process process = new();
             ProcessStartInfo startInfo = new();
             startInfo.WindowStyle = ProcessWindowStyle.Hidden;
@@ -24,7 +32,13 @@ namespace AudioService
             process.StartInfo = startInfo;
             process.Start();
 
+            _isRunning = false;
             return Task.FromResult(true);
+        }
+
+        public bool IsRunning()
+        {
+            return _isRunning;
         }
     }
 }
