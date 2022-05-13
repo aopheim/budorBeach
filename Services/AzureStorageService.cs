@@ -48,8 +48,10 @@ namespace Services
 
         private BlobClient GetBlobClient(string containerName, string fileNameWithExtension)
         {
-            return _blobServiceClient.GetBlobContainerClient(containerName)
-                .GetBlobClient(fileNameWithExtension);
+            var containerClient = _blobServiceClient.GetBlobContainerClient(containerName);
+            containerClient.CreateIfNotExists();
+
+            return containerClient.GetBlobClient(fileNameWithExtension);
         }
     }
 }
