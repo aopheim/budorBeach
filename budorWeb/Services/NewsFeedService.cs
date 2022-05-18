@@ -319,6 +319,22 @@ namespace budorWeb.Services
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-5-12/2-59-34.jpg",
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-5-12/3-14-34.jpg"
                     }
+                },
+                new NewsFeedEntry
+                {
+                    Id = "w",
+                    Date = new DateTime(2022, 05, 17),
+                    Header = "Herr Fluesnapper har fått seg kjæreste!",
+                    Body =
+                        "På selveste nasjonaldagen  dukket det opp en Fru Fluesnapper i fuglekassa! Det ser ut som hun ispiserer redebyggingen til Herr Fluesnapper, men har så langt kommet tilbake flere ganger, så det ser ut som hun lar seg sjarmere. Det ene egget som på uforklarig vis hadde havnet i fuglekassa har ligget uten tilsyn i mange dager. Vi begynner å tro at det er en gjøk som har vært innom. Det ser ut som det nå ligger nedgravd under litt ekstra kvist som har kommet til.",
+                    ImageUrls = new List<string>
+                    {
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-5-17/8-18-39.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-5-17/7-23-39.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-5-18/3-53-39.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-5-17/7-43-39.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-5-17/14-53-39.jpg"
+                    }
                 }
             }.OrderByDescending(e => e.Date).ToList();
         }
