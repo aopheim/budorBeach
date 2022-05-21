@@ -9,18 +9,26 @@ using Shared.PiCameraSettings;
 
 namespace CameraService
 {
-    public class CameraService : ICameraService
+    public partial class CameraService : ICameraService
     {
         private readonly ILogger<CameraService> _logger;
         private MMALCamera _camera;
+        private bool _cameraIsInUse;
 
         public CameraService(ILogger<CameraService> logger)
         {
             _logger = logger;
+            _cameraIsInUse = false;
+        }
+
+        public bool CameraIsInUse()
+        {
+            return _cameraIsInUse;
         }
 
         public async Task TakeImage(string fullPath, PiCameraSettings settings)
         {
+            _cameraIsInUse = true;
             try
             {
                 _camera = MMALCamera.Instance;
@@ -38,6 +46,7 @@ namespace CameraService
             _camera.ConfigureCameraSettings();
 
             await _camera.TakePicture(imgCaptureHandler, MMALEncoding.JPEG, MMALEncoding.I420);
+            _cameraIsInUse = false;
         }
 
         public Task CaptureVideo(string fullPath, int secondsToRecord)
