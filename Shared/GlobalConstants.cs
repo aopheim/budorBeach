@@ -1,4 +1,6 @@
-﻿namespace Shared
+﻿using System;
+
+namespace Shared
 {
     public static class GlobalConstants
     {
@@ -29,6 +31,7 @@
         public const double BudorLongitude = 11.285140;
 
         public const string AudioRecordingsFolderLinux = @"home\pi\audioRecordings\";
+        public const string VideoRecordingsFolderLinux = @"home\pi\videos\";
         public const string AudioServiceFolderLinux = @"home\pi\budorBeach\AudioService";
         public const string AudioServiceFolderWindows = @"C:\repos\budorBeach\AudioService";
     }
