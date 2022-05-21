@@ -6,12 +6,14 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="MMALSharp" Version="0.6.0" />
-        <PackageReference Include="MMALSharp.Processing" Version="0.6.0" />
+        <PackageReference Include="MMALSharp" Version="0.7.0-380"/>
+        <PackageReference Include="MMALSharp.Processing" Version="0.7.0-380"/>
+<!--        <PackageReference Include="MMALSharp" Version="0.6.0" />-->
+<!--        <PackageReference Include="MMALSharp.Processing" Version="0.6.0"/>-->
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Shared\Shared.csproj" />
+        <ProjectReference Include="..\Shared\Shared.csproj"/>
     </ItemGroup>
 
 </Project>
