@@ -8,7 +8,6 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Dtos;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
 using Services.Interfaces;
 using Shared;
@@ -18,14 +17,12 @@ namespace Services
     public class BirdNetServer : IBirdNetServer
     {
         private static readonly HttpClient Client = new();
-        private readonly IWebHostEnvironment _environment;
         private readonly ILogger _logger;
         private Process _process;
 
-        public BirdNetServer(ILogger logger, IWebHostEnvironment environment)
+        public BirdNetServer(ILogger logger)
         {
             _logger = logger;
-            _environment = environment;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
@@ -38,13 +35,19 @@ namespace Services
                 : GlobalConstants.BirdNetAnalyzerPathLinux;
             var pythonAbbr = isWindows ? "py" : "python";
             var arguments = @$"/C cd {birdNetAnalyzerPath} && {pythonAbbr} server.py";
-            var startInfo = new ProcessStartInfo
+            var startInfoWindows = new ProcessStartInfo
             {
                 WindowStyle = ProcessWindowStyle.Hidden,
                 FileName = "cmd.exe",
                 Arguments = arguments
             };
-            _process.StartInfo = startInfo;
+            var startInfoLinux = new ProcessStartInfo
+            {
+                UseShellExecute = true,
+                WindowStyle = ProcessWindowStyle.Hidden,
+                FileName = "startServer.sh"
+            };
+            _process.StartInfo = isWindows ? startInfoWindows : startInfoLinux;
 
             return Task.FromResult(_process.Start());
         }
