@@ -3,10 +3,12 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Net.Http;
+using System.Runtime.InteropServices;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Dtos;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
 using Services.Interfaces;
 using Shared;
@@ -16,23 +18,31 @@ namespace Services
     public class BirdNetServer : IBirdNetServer
     {
         private static readonly HttpClient Client = new();
+        private readonly IWebHostEnvironment _environment;
         private readonly ILogger _logger;
         private Process _process;
 
-        public BirdNetServer(ILogger logger)
+        public BirdNetServer(ILogger logger, IWebHostEnvironment environment)
         {
             _logger = logger;
+            _environment = environment;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
             _logger.LogInformation("Starting up BirdNet server...");
             _process = new Process();
+            var isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+            var birdNetAnalyzerPath = isWindows
+                ? GlobalConstants.BirdNetAnalyzerPathWindows
+                : GlobalConstants.BirdNetAnalyzerPathLinux;
+            var pythonAbbr = isWindows ? "py" : "python";
+            var arguments = @$"/C cd {birdNetAnalyzerPath} && {pythonAbbr} server.py";
             var startInfo = new ProcessStartInfo
             {
                 WindowStyle = ProcessWindowStyle.Hidden,
                 FileName = "cmd.exe",
-                Arguments = @"/C cd C:\repos\BirdNET-Analyzer && py server.py"
+                Arguments = arguments
             };
             _process.StartInfo = startInfo;
 
