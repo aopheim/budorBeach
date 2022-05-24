@@ -35,5 +35,7 @@ namespace Shared
         public const string VideoRecordingsFolderLinux = @"home\pi\videos\";
         public const string AudioServiceFolderLinux = @"home\pi\budorBeach\AudioService";
         public const string AudioServiceFolderWindows = @"C:\repos\budorBeach\AudioService";
+        public const string BirdNetAnalyzerPathWindows = @"C:\repos\BirdNET-Analyzer";
+        public const string BirdNetAnalyzerPathLinux = @"home\pi\BirdNET-Analyzer";
     }
 }
