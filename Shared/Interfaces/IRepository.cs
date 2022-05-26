@@ -22,6 +22,7 @@ namespace Shared.Interfaces
     {
         ISensorReadingRepo SensorReadings { get; }
         IBirdPresenceRepo BirdPresenceRegistrations { get; }
+        ISpeciesRecognitionRepo SpeciesRecognitions { get; }
         public Task SaveChangesAsync();
     }
 }

@@ -1,0 +1,9 @@
+version: "3.9"
+services:
+    db:
+        image: "mcr.microsoft.com/mssql/server"
+        ports:
+            - "1430:1430"
+        environment:
+            SA_PASSWORD: "Dev-Password-123"
+            ACCEPT_EULA: "Y"
