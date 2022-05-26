@@ -1,0 +1,6 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Publish rpiDaemon to folder" type="DotNetFolderPublish" factoryName="Publish to folder">
+    <riderPublish configuration="Release" delete_existing_files="true" platform="Any CPU" runtime="linux-arm" target_folder="$PROJECT_DIR$/deploy" target_framework="net6.0-windows" uuid_high="-1877657177332690967" uuid_low="-9032187782102250095" />
+    <method v="2" />
+  </configuration>
+</component>
