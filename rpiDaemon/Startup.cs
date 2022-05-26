@@ -44,23 +44,33 @@ namespace rpiDaemon
                 options.AddAspNetCore();
                 options.AddLogging();
                 options.AddHostedService<BudorHubPiClient>();
+                options.AddHostedService<BirdNetServer>();
             });
             InitializeContainer();
 
             services.AddQuartz(q =>
             {
                 q.UseJobFactory<JobFactory>();
-                q.AddJobAndTrigger<GetBme280SensorReadingsJob>(GlobalConstants.SecondJobs,
-                    GlobalConstants.Bme280Trigger,
-                    _environment.IsDevelopment() ? TimeSpan.FromSeconds(2) : TimeSpan.FromSeconds(10));
-                q.AddJobAndTrigger<TakePictureJob>(GlobalConstants.SecondJobs, GlobalConstants.PictureTrigger,
-                    _environment.IsDevelopment() ? TimeSpan.FromSeconds(10) : TimeSpan.FromHours(4));
-                q.AddJobAndTrigger<GetProximityJob>(GlobalConstants.SecondJobs, GlobalConstants.ProximityTrigger,
-                    TimeSpan.FromSeconds(5));
-                q.AddJobAndTrigger<TakeAudioRecordingJob>(GlobalConstants.SecondJobs,
-                    GlobalConstants.AudioRecordingTrigger, TimeSpan.FromSeconds(15));
-                q.AddJobAndTrigger<AnalyzeAudioRecordingsJob>(GlobalConstants.SecondJobs,
-                    GlobalConstants.AudioAnalyzerTrigger, TimeSpan.FromSeconds(20));
+                // q.AddJobAndTrigger<GetBme280SensorReadingsJob>(GlobalConstants.SecondJobs,
+                //     GlobalConstants.Bme280Trigger,
+                //     _environment.IsDevelopment() ? TimeSpan.FromSeconds(2) : TimeSpan.FromSeconds(10));
+                // q.AddJobAndTrigger<TakePictureJob>(GlobalConstants.SecondJobs, GlobalConstants.PictureTrigger,
+                //     _environment.IsDevelopment() ? TimeSpan.FromSeconds(10) : TimeSpan.FromHours(4));
+                // q.AddJobAndTrigger<TakeVideoJob>(GlobalConstants.SecondJobs, GlobalConstants.VideoRecordingTrigger,
+                //     null, DateTime.UtcNow.AddSeconds(20));
+                // q.AddJobAndTrigger<GetProximityJob>(GlobalConstants.SecondJobs, GlobalConstants.ProximityTrigger,
+                //     TimeSpan.FromSeconds(5));
+                // q.AddJobAndTrigger<TakeAudioRecordingJob>(GlobalConstants.SecondJobs,
+                //     GlobalConstants.AudioRecordingTrigger, null);
+                // q.AddJobAndTrigger<AnalyzeAudioRecordingsJob>(GlobalConstants.SecondJobs,
+                //     GlobalConstants.AudioAnalyzerTrigger,
+                //     _environment.IsDevelopment() ? TimeSpan.FromSeconds(15) : TimeSpan.FromSeconds(60),
+                //     DateTime.UtcNow.AddSeconds(15));
+                // q.AddJobAndTrigger<UploadAudioRecordingsJob>(GlobalConstants.MinuteJobs,
+                //     GlobalConstants.UploadAudioRecordingTrigger, TimeSpan.FromMinutes(1),
+                //     DateTime.UtcNow.AddSeconds(10));
+                q.AddJobAndTrigger<StartVideoSurveillanceJob>(GlobalConstants.SecondJobs,
+                    GlobalConstants.StartVideSurveillanceTrigger, null, DateTime.UtcNow.AddSeconds(30));
             });
 
             services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
@@ -80,14 +90,22 @@ namespace rpiDaemon
             _container.RegisterSingleton<IProximityService, ProximityService>();
             _container.RegisterSingleton<IBirdPresenceCalculator, BirdPresenceCalculator>();
             _container.RegisterSingleton<IBirdPresenceRegistrator, BirdPresenceRegistrator>();
+            _container.RegisterSingleton<IBirdNetServer, BirdNetServer>();
+            _container.RegisterSingleton<IBirdRecordingAnalyzer, AudioRecordingRecordingAnalyzer>();
+            _container.RegisterSingleton<IAudioService, AudioService.AudioService>();
+            _container.RegisterSingleton<IAudioUploader, AudioUploaderService>();
             _container.Register<IRepositories, Repositories>(Lifestyle.Scoped);
             _container.Register<GetBme280SensorReadingsJob>();
             _container.Register<TakePictureJob>();
             _container.Register<GetProximityJob>();
             _container.Register<TakeAudioRecordingJob>();
-            _container.Register<IAudioService, AudioService.AudioService>();
+            _container.Register<TakeVideoJob>();
+            _container.Register<UploadAudioRecordingsJob>();
             _container.Register<AnalyzeAudioRecordingsJob>();
+            _container.Register<StartVideoSurveillanceJob>();
             _container.Register<IBirdNetResultConverter, BirdNetResultConverter>();
+            _container.Register<IFileSystemService, FileSystemService>();
+            _container.Register<IAzureStorageService, AzureStorageService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

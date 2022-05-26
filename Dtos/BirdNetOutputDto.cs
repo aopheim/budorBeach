@@ -4,8 +4,8 @@ namespace Dtos
 {
     public class BirdNetOutputDto
     {
-        public string Message { get; set; }
+        public string? Message { get; set; }
 
-        public List<ClassificationResultDto> Results { get; set; }
+        public List<ClassificationResultDto>? Results { get; set; }
     }
 }

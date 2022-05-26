@@ -1,3 +1,4 @@
+using System;
 using Shared.Models;
 
 namespace Shared.Interfaces
@@ -9,5 +10,10 @@ namespace Shared.Interfaces
     public interface IBirdPresenceRepo : IRepository<BirdPresenceRegistration>
     {
         BirdPresenceRegistration GetLatestRegistration();
+    }
+
+    public interface ISpeciesRecognitionRepo : IRepository<SpeciesRecognitionModel>
+    {
+        bool Exists(Guid recordingId);
     }
 }

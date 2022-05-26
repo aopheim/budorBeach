@@ -16,7 +16,7 @@ namespace rpiDaemon.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.13")
+                .HasAnnotation("ProductVersion", "5.0.6")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("Shared.Models.BirdPresenceRegistration", b =>
@@ -26,7 +26,7 @@ namespace rpiDaemon.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("DurationInSeconds")
+                    b.Property<int?>("DurationInSeconds")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("StartedAt")
@@ -62,6 +62,33 @@ namespace rpiDaemon.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("SensorReadings");
+                });
+
+            modelBuilder.Entity("Shared.Models.SpeciesRecognitionModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<double>("Confidence")
+                        .HasColumnType("float");
+
+                    b.Property<string>("EnglishName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LatinName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("RecognizedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("RecordingId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SpeciesRecognitions");
                 });
 #pragma warning restore 612, 618
         }
