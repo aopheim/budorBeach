@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Quartz;
 using rpiDaemon.Jobs;
 using rpiDaemon.Jobs.JobFactories;
@@ -60,21 +61,22 @@ namespace rpiDaemon
                 //     null, DateTime.UtcNow.AddSeconds(20));
                 // q.AddJobAndTrigger<GetProximityJob>(GlobalConstants.SecondJobs, GlobalConstants.ProximityTrigger,
                 //     TimeSpan.FromSeconds(5));
-                // q.AddJobAndTrigger<TakeAudioRecordingJob>(GlobalConstants.SecondJobs,
-                //     GlobalConstants.AudioRecordingTrigger, null);
-                // q.AddJobAndTrigger<AnalyzeAudioRecordingsJob>(GlobalConstants.SecondJobs,
-                //     GlobalConstants.AudioAnalyzerTrigger,
-                //     _environment.IsDevelopment() ? TimeSpan.FromSeconds(15) : TimeSpan.FromSeconds(60),
-                //     DateTime.UtcNow.AddSeconds(15));
-                // q.AddJobAndTrigger<UploadAudioRecordingsJob>(GlobalConstants.MinuteJobs,
-                //     GlobalConstants.UploadAudioRecordingTrigger, TimeSpan.FromMinutes(1),
-                //     DateTime.UtcNow.AddSeconds(10));
-                q.AddJobAndTrigger<StartVideoSurveillanceJob>(GlobalConstants.SecondJobs,
-                    GlobalConstants.StartVideSurveillanceTrigger, null, DateTime.UtcNow.AddSeconds(30));
+                q.AddJobAndTrigger<TakeAudioRecordingJob>(GlobalConstants.SecondJobs,
+                    GlobalConstants.AudioRecordingTrigger, null);
+                q.AddJobAndTrigger<AnalyzeAudioRecordingsJob>(GlobalConstants.SecondJobs,
+                    GlobalConstants.AudioAnalyzerTrigger,
+                    _environment.IsDevelopment() ? TimeSpan.FromSeconds(15) : TimeSpan.FromSeconds(60),
+                    DateTime.UtcNow.AddSeconds(60));
+                q.AddJobAndTrigger<UploadAudioRecordingsJob>(GlobalConstants.MinuteJobs,
+                    GlobalConstants.UploadAudioRecordingTrigger, TimeSpan.FromMinutes(1),
+                    DateTime.UtcNow.AddSeconds(10));
+                // q.AddJobAndTrigger<StartVideoSurveillanceJob>(GlobalConstants.SecondJobs,
+                //     GlobalConstants.StartVideSurveillanceTrigger, null, DateTime.UtcNow.AddSeconds(30));
             });
 
             services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
             services.AddSignalR();
+            services.AddLogging(loggingBuilder => loggingBuilder.AddSeq());
             if (_environment.IsProduction())
                 services.AddApplicationInsightsTelemetry(Configuration["ApplicationInsightsConnectionString"]);
 

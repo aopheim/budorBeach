@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Services;
 using Shared;
 using Shared.SignalR;
@@ -44,6 +45,7 @@ namespace budorWeb
 
             services.AddSignalR();
 
+            services.AddLogging(loggingBuilder => loggingBuilder.AddSeq());
             var connectionString = _hostingEnvironment.IsProduction()
                 ? Configuration["ProductionDb"]
                 : Configuration["DevelopmentDb"];
