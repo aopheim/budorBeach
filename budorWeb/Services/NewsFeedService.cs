@@ -10,7 +10,7 @@ namespace budorWeb.Services
         {
             return new List<NewsFeedEntry>
             {
-                new NewsFeedEntry
+                new()
                 {
                     Id = "a",
                     Date = new DateTime(2021, 04, 01),
@@ -23,7 +23,7 @@ namespace budorWeb.Services
                         "https://budorbeach.blob.core.windows.net/images/2021-4-1/8-37-40.jpg"
                     }
                 },
-                new NewsFeedEntry
+                new()
                 {
                     Id = "b",
                     Date = new DateTime(2021, 05, 1),
@@ -34,7 +34,7 @@ namespace budorWeb.Services
                         "https://budorbeach.blob.core.windows.net/images/2021-5-1/9-39-33.jpg"
                     }
                 },
-                new NewsFeedEntry
+                new()
                 {
                     Id = "c",
                     Date = new DateTime(2021, 05, 30),
@@ -45,9 +45,9 @@ namespace budorWeb.Services
                     {
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-5-30/11-51-48.jpg",
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-5-31/5-52-4.jpg"
-                    },
+                    }
                 },
-                new NewsFeedEntry
+                new()
                 {
                     Id = "d",
                     Date = new DateTime(2021, 06, 01),
@@ -60,15 +60,15 @@ namespace budorWeb.Services
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-1/7-50-5.jpg"
                     }
                 },
-                new NewsFeedEntry
+                new()
                 {
                     Id = "e",
                     Date = new DateTime(2021, 06, 01, 13, 00, 00),
                     Header = "Svarthvit fluesnapper",
                     Body =
-                        "Etter å ha fått eksperthjelp av søstrene Ulvensøen, som har studiekompetanse i fugletitting, har vi fått avklart fugleartene. Det er svarthvit fluesnapper som har flyttet inn - hannen og hunnen ser veldig ulike ut. ",
+                        "Etter å ha fått eksperthjelp av søstrene Ulvensøen, som har studiekompetanse i fugletitting, har vi fått avklart fugleartene. Det er svarthvit fluesnapper som har flyttet inn - hannen og hunnen ser veldig ulike ut. "
                 },
-                new NewsFeedEntry
+                new()
                 {
                     Id = "f",
                     Date = new DateTime(2021, 06, 03),
@@ -79,7 +79,7 @@ namespace budorWeb.Services
                     ImageUrls = new List<string>
                         { "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-4/10-30-6.jpg" }
                 },
-                new NewsFeedEntry
+                new()
                 {
                     Id = "g",
                     Date = new DateTime(2021, 06, 14),
@@ -93,7 +93,7 @@ namespace budorWeb.Services
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-14/18-43-28.jpg"
                     }
                 },
-                new NewsFeedEntry
+                new()
                 {
                     Id = "h",
                     Date = new DateTime(2021, 06, 21),
@@ -107,7 +107,7 @@ namespace budorWeb.Services
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-21/9-2-32.jpg"
                     }
                 },
-                new NewsFeedEntry
+                new()
                 {
                     Id = "i",
                     Date = new DateTime(2021, 06, 23),
@@ -127,7 +127,7 @@ namespace budorWeb.Services
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-23/14-12-32.jpg"
                     }
                 },
-                new NewsFeedEntry
+                new()
                 {
                     Id = "j",
                     Date = new DateTime(2021, 06, 24),
@@ -143,7 +143,7 @@ namespace budorWeb.Services
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-24/8-30-18.jpg"
                     }
                 },
-                new NewsFeedEntry
+                new()
                 {
                     Date = new DateTime(2021, 6, 26),
                     Id = "k",
@@ -158,7 +158,7 @@ namespace budorWeb.Services
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-26/13-38-55.jpg"
                     }
                 },
-                new NewsFeedEntry
+                new()
                 {
                     Id = "l",
                     Header = "Kjærligheten blomstrer!",
@@ -173,7 +173,7 @@ namespace budorWeb.Services
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-27/13-3-55.jpg"
                     }
                 },
-                new NewsFeedEntry
+                new()
                 {
                     Id = "m",
                     Date = new DateTime(2021, 06, 29),
@@ -188,7 +188,7 @@ namespace budorWeb.Services
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-29/6-13-55.jpg"
                     }
                 },
-                new NewsFeedEntry
+                new()
                 {
                     Id = "n",
                     Date = new DateTime(2021, 07, 05),
@@ -201,7 +201,7 @@ namespace budorWeb.Services
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-7-5/9-32-44.jpg"
                     }
                 },
-                new NewsFeedEntry
+                new()
                 {
                     Id = "o",
                     Date = new DateTime(2021, 07, 07),
@@ -217,7 +217,7 @@ namespace budorWeb.Services
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-7-7/8-22-44.jpg"
                     }
                 },
-                new NewsFeedEntry
+                new()
                 {
                     Id = "p",
                     Date = new DateTime(2021, 07, 09),
@@ -235,7 +235,7 @@ namespace budorWeb.Services
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-7-9/6-37-23.jpg"
                     }
                 },
-                new NewsFeedEntry
+                new()
                 {
                     Id = "q",
                     Date = new DateTime(2022, 04, 13),
@@ -247,7 +247,7 @@ namespace budorWeb.Services
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-4-13/11-25-56.jpg"
                     }
                 },
-                new NewsFeedEntry
+                new()
                 {
                     Id = "r",
                     Date = new DateTime(2022, 04, 26),
@@ -260,7 +260,7 @@ namespace budorWeb.Services
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-4-26/9-29-11.jpg"
                     }
                 },
-                new NewsFeedEntry
+                new()
                 {
                     Id = "s",
                     Date = new DateTime(2022, 04,
@@ -277,7 +277,7 @@ namespace budorWeb.Services
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-4-27/15-14-11.jpg"
                     }
                 },
-                new NewsFeedEntry
+                new()
                 {
                     Id = "t",
                     Date = new DateTime(2022, 05, 02),
@@ -293,7 +293,7 @@ namespace budorWeb.Services
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-5-3/3-44-11.jpg"
                     }
                 },
-                new NewsFeedEntry
+                new()
                 {
                     Id = "u",
                     Date = new DateTime(2022, 05, 10),
@@ -306,7 +306,7 @@ namespace budorWeb.Services
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-5-10/6-59-34.jpg"
                     }
                 },
-                new NewsFeedEntry
+                new()
                 {
                     Id = "v",
                     Date = new DateTime(2022, 05, 12),
@@ -320,7 +320,7 @@ namespace budorWeb.Services
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-5-12/3-14-34.jpg"
                     }
                 },
-                new NewsFeedEntry
+                new()
                 {
                     Id = "w",
                     Date = new DateTime(2022, 05, 17),
@@ -334,6 +334,20 @@ namespace budorWeb.Services
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-5-18/3-53-39.jpg",
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-5-17/7-43-39.jpg",
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-5-17/14-53-39.jpg"
+                    }
+                },
+                new()
+                {
+                    Id = "x", Date = new DateTime(2022, 05, 26),
+                    Header = "Nytt egg!",
+                    Body =
+                        "i dag tidlig kom det et nytt egg i fuglekassa! Og denne gangen ser det ut som det er Fru Fluesnapper som har lagt det. Hun har ikke vært så mye innom de siste dagene, men vannet gikk tydeligvis i dag morges. Vi gratulerer så mye!",
+                    ImageUrls = new List<string>
+                    {
+                        "https://budorbeach.blob.core.windows.net/images/2022-5-26/4-43-39.jpg",
+                        "https://budorbeach.blob.core.windows.net/images/2022-5-26/5-23-39.jpg",
+                        "https://budorbeach.blob.core.windows.net/images/2022-5-26/4-48-39.jpg",
+                        "https://budorbeach.blob.core.windows.net/images/2022-5-26/4-58-39.jpg"
                     }
                 }
             }.OrderByDescending(e => e.Date).ToList();
