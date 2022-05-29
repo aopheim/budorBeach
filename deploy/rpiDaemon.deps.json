@@ -27,6 +27,7 @@
           "Quartz.AspNetCore": "3.3.3",
           "Quartz.Extensions.DependencyInjection": "3.3.3",
           "Quartz.Extensions.Hosting": "3.3.3",
+          "Seq.Extensions.Logging": "6.0.0",
           "Services": "1.0.0",
           "Shared": "1.0.0",
           "SimpleInjector": "5.3.2",
@@ -1282,6 +1283,19 @@
           "System.Private.Uri": "4.3.2",
           "runtime.native.System": "4.3.0",
           "runtime.native.System.Security.Cryptography.OpenSsl": "4.3.0"
+        }
+      },
+      "Seq.Extensions.Logging/6.0.0": {
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection": "5.0.1",
+          "Microsoft.Extensions.Logging": "5.0.0",
+          "Microsoft.Extensions.Logging.Configuration": "5.0.0"
+        },
+        "runtime": {
+          "lib/net5.0/Seq.Extensions.Logging.dll": {
+            "assemblyVersion": "6.0.0.0",
+            "fileVersion": "6.0.0.0"
+          }
         }
       },
       "SimpleInjector/5.3.2": {
@@ -3453,6 +3467,13 @@
       "sha512": "sha512-zQiTBVpiLftTQZW8GFsV0gjYikB1WMkEPIxF5O6RkUrSV/OgvRRTYgeFQha/0keBpuS0HYweraGRwhfhJ7dj7w==",
       "path": "runtime.unix.system.runtime.extensions/4.3.0",
       "hashPath": "runtime.unix.system.runtime.extensions.4.3.0.nupkg.sha512"
+    },
+    "Seq.Extensions.Logging/6.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-DtQvSYf2YettmDUDyFH81oAO3ajeI7kFLiNlWVYX75TUcrgTa2Vk2QztBs/rtyZDDZjtAvIjS2ZR8W5MB/7Fhw==",
+      "path": "seq.extensions.logging/6.0.0",
+      "hashPath": "seq.extensions.logging.6.0.0.nupkg.sha512"
     },
     "SimpleInjector/5.3.2": {
       "type": "package",
