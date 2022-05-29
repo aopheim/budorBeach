@@ -42,7 +42,7 @@ namespace rpiDaemon.Jobs
                 ? Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\BudorBeach\videos"
                 : GlobalConstants.VideoRecordingsFolderLinux;
 
-            await _cameraService.StartVideoSurveillance(path, 7);
+            await _cameraService.StartVideoSurveillance(path, 7, context.CancellationToken);
         }
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using MMALSharp;
 using MMALSharp.Common;
 using MMALSharp.Common.Utility;
@@ -16,7 +17,8 @@ namespace CameraService
     {
         private readonly TimeSpan _videoSurveillanceLength = TimeSpan.FromMinutes(60);
 
-        public async Task StartVideoSurveillance(string fullPath, int secondsToRecord)
+        public async Task StartVideoSurveillance(string fullPath, int secondsToRecord,
+            CancellationToken jobCancellationToken)
         {
             // Assumes the camera has been configured.
             var cam = MMALCamera.Instance;
@@ -54,7 +56,7 @@ namespace CameraService
 
                 // Duration of the motion-detection operation.
                 var stoppingToken = new CancellationTokenSource(_videoSurveillanceLength);
-                Console.WriteLine($"Detecting motion for {_videoSurveillanceLength.Seconds} seconds.");
+                _logger.LogInformation($"Detecting motion for {_videoSurveillanceLength.Seconds} seconds.");
 
                 await cam.WithMotionDetection(
                         motionCaptureHandler,
@@ -64,14 +66,14 @@ namespace CameraService
                         {
                             // When motion is detected, temporarily disable notifications
                             motionCaptureHandler.DisableMotionDetection();
-                            Console.WriteLine(
+                            _logger.LogInformation(
                                 $"\n     {DateTime.Now:hh\\:mm\\:ss} Motion detected, recording for {secondsToRecord} seconds.");
 
                             // When the recording period expires, stop recording and re-enable capture
                             var stopRecording = new CancellationTokenSource();
                             stopRecording.Token.Register(() =>
                             {
-                                Console.WriteLine($"     {DateTime.Now:hh\\:mm\\:ss} ...recording stopped.");
+                                _logger.LogInformation($"     {DateTime.Now:hh\\:mm\\:ss} ...recording stopped.");
                                 motionCaptureHandler.EnableMotionDetection();
 
                                 // Calling split will close the h.264 file stream and open another file to
@@ -89,7 +91,8 @@ namespace CameraService
                                 // video frames to the buffer until StopRecording is called. The first argument is an optional
                                 // initialization Action, which in this case ensures the h.264 stream emits an IFrame.
                                 videoCaptureHandler.StartRecording(videoEncoder.RequestIFrame, stopRecording.Token),
-                                stoppingToken.Token.AsTask()
+                                stoppingToken.Token.AsTask(),
+                                jobCancellationToken.AsTask()
                             );
 
                             // If the awaiter above exited because the overall stoppingToken

@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using Shared.PiCameraSettings;
 
 namespace CameraService.Interfaces
@@ -8,6 +9,6 @@ namespace CameraService.Interfaces
         bool CameraIsInUse();
         Task TakeImage(string fullPath, PiCameraSettings settings);
         Task CaptureVideo(string fullPath, int secondsToRecord);
-        Task StartVideoSurveillance(string fullPath, int secondsToRecord);
+        Task StartVideoSurveillance(string fullPath, int secondsToRecord, CancellationToken cancellationToken);
     }
 }
