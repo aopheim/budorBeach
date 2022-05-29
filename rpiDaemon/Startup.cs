@@ -61,10 +61,10 @@ namespace rpiDaemon
                 //     null, DateTime.UtcNow.AddSeconds(20));
                 // q.AddJobAndTrigger<GetProximityJob>(GlobalConstants.SecondJobs, GlobalConstants.ProximityTrigger,
                 //     TimeSpan.FromSeconds(5));
-                q.AddJobAndTrigger<StartVideoSurveillanceJob>(GlobalConstants.SecondJobs,
-                    GlobalConstants.StartVideSurveillanceTrigger, null, DateTime.UtcNow.AddSeconds(30));
-                // q.AddJobAndTrigger<TakeAudioRecordingJob>(GlobalConstants.SecondJobs,
-                //     GlobalConstants.AudioRecordingTrigger, null);
+                // q.AddJobAndTrigger<StartVideoSurveillanceJob>(GlobalConstants.SecondJobs,
+                //     GlobalConstants.StartVideSurveillanceTrigger, null, DateTime.UtcNow.AddSeconds(30));
+                q.AddJobAndTrigger<TakeAudioRecordingJob>(GlobalConstants.SecondJobs,
+                    GlobalConstants.AudioRecordingTrigger, null);
                 // q.AddJobAndTrigger<AnalyzeAudioRecordingsJob>(GlobalConstants.SecondJobs,
                 //     GlobalConstants.AudioAnalyzerTrigger,
                 //     _environment.IsDevelopment() ? TimeSpan.FromSeconds(15) : TimeSpan.FromSeconds(60),
