@@ -27,7 +27,7 @@ namespace rpiDaemon.Jobs
         {
             if (_cameraService.CameraIsInUse())
             {
-                _logger.LogInformation("Analyzer already running. Skipping");
+                _logger.LogInformation("Camera already in use. Skipping");
                 return;
             }
 
