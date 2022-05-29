@@ -31,6 +31,7 @@ namespace AudioService
                 var fileName = isWindows ? "recordAudioWindows.py" : "recordAudioLinux.py";
                 var argumentsWindows = @$"/C cd {filePath} && py {fileName}";
                 var argumentsLinux = @$"cd {filePath} && python {fileName}";
+                _logger.LogInformation($"Command to run: {argumentsLinux}");
                 Process process = new();
                 ProcessStartInfo windowsStartInfo = new()
                 {
@@ -46,8 +47,8 @@ namespace AudioService
                     RedirectStandardOutput = true
                 };
                 process.StartInfo = isWindows ? windowsStartInfo : linuxStartInfo;
-                process.Start();
                 _logger.LogInformation($"Beginning recording using {fileName}");
+                process.Start();
                 await process.WaitForExitAsync(cancellationToken);
                 _logger.LogInformation("Recording finished");
 
