@@ -29,19 +29,20 @@ namespace AudioService
                     ? GlobalConstants.AudioServiceFolderWindows
                     : GlobalConstants.AudioServiceFolderLinux;
                 var fileName = isWindows ? "recordAudioWindows.py" : "recordAudioLinux.py";
-                var arguments = @$"/C cd {filePath} && py {fileName}";
+                var argumentsWindows = @$"/C cd {filePath} && py {fileName}";
+                var argumentsLinux = @$"cd {filePath} && py {fileName}";
                 Process process = new();
                 ProcessStartInfo windowsStartInfo = new()
                 {
                     WindowStyle = ProcessWindowStyle.Hidden,
                     FileName = "cmd.exe",
-                    Arguments = arguments,
+                    Arguments = argumentsWindows,
                     RedirectStandardOutput = true
                 };
                 ProcessStartInfo linuxStartInfo = new()
                 {
                     FileName = "/bin/bash",
-                    Arguments = arguments,
+                    Arguments = argumentsLinux,
                     RedirectStandardOutput = true
                 };
                 process.StartInfo = isWindows ? windowsStartInfo : linuxStartInfo;
