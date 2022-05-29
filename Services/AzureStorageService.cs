@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,6 +14,8 @@ namespace Services
     {
         private readonly BlobServiceClient _blobServiceClient;
         private readonly IConfiguration _config;
+        private static readonly TimeSpan UploadTimeOut = TimeSpan.FromSeconds(15);
+        private CancellationTokenSource _timeOutTokenSource = new CancellationTokenSource(UploadTimeOut);
 
         public AzureStorageService(IConfiguration config, IWebHostEnvironment environment)
         {
@@ -32,7 +35,8 @@ namespace Services
         {
             var blobClient = GetBlobClient(containerName, fileNameWithExtension);
             await using var uploadFileStream = File.OpenRead(filePath);
-            await blobClient.UploadAsync(uploadFileStream, true, cancellationToken);
+            var cToken = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, _timeOutTokenSource.Token);
+            await blobClient.UploadAsync(uploadFileStream, true, cToken.Token);
             uploadFileStream.Close();
 
             return true;

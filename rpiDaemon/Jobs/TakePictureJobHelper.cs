@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using Azure.Storage.Blobs;
 using CameraService.Interfaces;
@@ -73,7 +74,8 @@ namespace rpiDaemon.Jobs
         {
             var blobClient = containerClient.GetBlobClient($"{folderName}/{fileName}.jpg");
             await using var uploadFileStream = File.OpenRead(fullPath);
-            await blobClient.UploadAsync(uploadFileStream, true);
+            var cTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+            await blobClient.UploadAsync(uploadFileStream, true, cTokenSource.Token);
             uploadFileStream.Close();
             await AzureStorageHelper.SetBlobPropertiesAsync(blobClient);
         }
