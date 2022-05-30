@@ -52,19 +52,19 @@ namespace rpiDaemon
             services.AddQuartz(q =>
             {
                 q.UseJobFactory<JobFactory>();
-                q.AddJobAndTrigger<GetBme280SensorReadingsJob>(GlobalConstants.SecondJobs,
-                    GlobalConstants.Bme280Trigger,
-                    _environment.IsDevelopment() ? TimeSpan.FromSeconds(2) : TimeSpan.FromSeconds(10));
+                // q.AddJobAndTrigger<GetBme280SensorReadingsJob>(GlobalConstants.SecondJobs,
+                //     GlobalConstants.Bme280Trigger,
+                //     _environment.IsDevelopment() ? TimeSpan.FromSeconds(2) : TimeSpan.FromSeconds(10));
                 // q.AddJobAndTrigger<TakePictureJob>(GlobalConstants.SecondJobs, GlobalConstants.PictureTrigger,
                 //     _environment.IsDevelopment() ? TimeSpan.FromSeconds(10) : TimeSpan.FromHours(4));
                 // q.AddJobAndTrigger<TakeVideoJob>(GlobalConstants.SecondJobs, GlobalConstants.VideoRecordingTrigger,
                 //     null, DateTime.UtcNow.AddSeconds(20));
                 // q.AddJobAndTrigger<GetProximityJob>(GlobalConstants.SecondJobs, GlobalConstants.ProximityTrigger,
                 //     TimeSpan.FromSeconds(5));
-                // q.AddJobAndTrigger<StartVideoSurveillanceJob>(GlobalConstants.SecondJobs,
-                //     GlobalConstants.StartVideSurveillanceTrigger, null, DateTime.UtcNow.AddSeconds(30));
-                q.AddJobAndTrigger<TakeAudioRecordingJob>(GlobalConstants.SecondJobs,
-                    GlobalConstants.AudioRecordingTrigger, null);
+                q.AddJobAndTrigger<StartVideoSurveillanceJob>(GlobalConstants.SecondJobs,
+                    GlobalConstants.StartVideSurveillanceTrigger, null, DateTime.UtcNow.AddSeconds(30));
+                // q.AddJobAndTrigger<TakeAudioRecordingJob>(GlobalConstants.SecondJobs,
+                //     GlobalConstants.AudioRecordingTrigger, null);
                 // q.AddJobAndTrigger<AnalyzeAudioRecordingsJob>(GlobalConstants.SecondJobs,
                 //     GlobalConstants.AudioAnalyzerTrigger,
                 //     _environment.IsDevelopment() ? TimeSpan.FromSeconds(15) : TimeSpan.FromSeconds(60),
