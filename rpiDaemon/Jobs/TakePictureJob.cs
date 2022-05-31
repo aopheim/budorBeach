@@ -28,6 +28,7 @@ namespace rpiDaemon.Jobs
         public TakePictureJob(ILogger<TakePictureJob> logger, IConfiguration config, IWebHostEnvironment environment,
             ICameraService cameraService)
         {
+            _logger.LogInformation("From TakePictureJob constructor");
             _logger = logger;
             _environment = environment;
             _cameraService = cameraService;
@@ -39,6 +40,7 @@ namespace rpiDaemon.Jobs
 
         public async Task Execute(IJobExecutionContext context)
         {
+            _logger.LogInformation("Executing TakePictureJob!");
             var now = DateTime.UtcNow;
             var solarTimes = new SolarTimes(now, GlobalConstants.BudorLatitude, GlobalConstants.BudorLongitude);
             var sunrise = solarTimes.Sunrise;
