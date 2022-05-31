@@ -29,7 +29,6 @@ namespace rpiDaemon.Jobs
             ICameraService cameraService)
         {
             _logger = logger;
-            logger.LogInformation("From TakePictureJob constructor");
             _environment = environment;
             _cameraService = cameraService;
             _containerClient = AzureStorageHelper.GetBlobContainerClient(config, GlobalConstants.ImagesContainerName);
@@ -40,7 +39,6 @@ namespace rpiDaemon.Jobs
 
         public async Task Execute(IJobExecutionContext context)
         {
-            _logger.LogInformation("Executing TakePictureJob!");
             var now = DateTime.UtcNow;
             var solarTimes = new SolarTimes(now, GlobalConstants.BudorLatitude, GlobalConstants.BudorLongitude);
             var sunrise = solarTimes.Sunrise;
