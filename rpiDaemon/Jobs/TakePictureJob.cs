@@ -28,8 +28,8 @@ namespace rpiDaemon.Jobs
         public TakePictureJob(ILogger<TakePictureJob> logger, IConfiguration config, IWebHostEnvironment environment,
             ICameraService cameraService)
         {
-            _logger.LogInformation("From TakePictureJob constructor");
             _logger = logger;
+            logger.LogInformation("From TakePictureJob constructor");
             _environment = environment;
             _cameraService = cameraService;
             _containerClient = AzureStorageHelper.GetBlobContainerClient(config, GlobalConstants.ImagesContainerName);
