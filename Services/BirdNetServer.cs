@@ -34,18 +34,22 @@ namespace Services
                 ? GlobalConstants.BirdNetAnalyzerPathWindows
                 : GlobalConstants.BirdNetAnalyzerPathLinux;
             var pythonAbbr = isWindows ? "py" : "python";
-            var arguments = @$"/C cd {birdNetAnalyzerPath} && {pythonAbbr} server.py";
+            var windowsArguments = @$"/C cd {birdNetAnalyzerPath} && {pythonAbbr} server.py";
+            var linuxArguments = @$"cd {birdNetAnalyzerPath} && {pythonAbbr} server.py";
+            
             var startInfoWindows = new ProcessStartInfo
             {
                 WindowStyle = ProcessWindowStyle.Hidden,
                 FileName = "cmd.exe",
-                Arguments = arguments
+                Arguments = windowsArguments
             };
             var startInfoLinux = new ProcessStartInfo
             {
                 UseShellExecute = true,
                 WindowStyle = ProcessWindowStyle.Hidden,
-                FileName = "startServer.sh"
+                FileName = "/bin/bash",
+                Arguments = windowsArguments, 
+                RedirectStandardOutput = true
             };
             _process.StartInfo = isWindows ? startInfoWindows : startInfoLinux;
 
