@@ -10,5 +10,6 @@ namespace CameraService.Interfaces
         Task TakeImage(string fullPath, PiCameraSettings settings);
         Task CaptureVideo(string fullPath, int secondsToRecord);
         Task StartVideoSurveillance(string fullPath, int secondsToRecord, CancellationToken cancellationToken);
+        Task StartVideoStream(CancellationToken cancellationToken);
     }
 }
