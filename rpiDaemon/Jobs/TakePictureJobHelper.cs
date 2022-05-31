@@ -29,11 +29,17 @@ namespace rpiDaemon.Jobs
             }
             else
             {
+                if (cameraService.CameraIsInUse())
+                {
+                    logger.LogInformation("Camera is in use. Skipping taking image");
+                    return;
+                }
                 var now = DateTime.UtcNow;
                 var folderName = DateTimeParser.GetFolderName(now);
                 var fileName = DateTimeParser.GetFileName(now);
                 var folderPath = $"/home/pi/images/{folderName}";
                 var fullPath = folderPath + $"/{fileName}.jpg";
+                    
                 try
                 {
                     await cameraService.TakeImage(fullPath, settings);

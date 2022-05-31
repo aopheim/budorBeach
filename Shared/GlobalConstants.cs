@@ -27,6 +27,7 @@ namespace Shared
         public const string VideoRecordingTrigger = "videoRecordingTrigger";
         public const string UploadAudioRecordingTrigger = "uploadAudioRecordingTrigger";
         public const string StartVideSurveillanceTrigger = "startVideoSurveillanceTrigger";
+        public const string StartVideoStreamTrigger = "startVideoStreamTrigger";
 
         public const double BudorLatitude = 60.974951;
         public const double BudorLongitude = 11.285140;
