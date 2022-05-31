@@ -36,6 +36,7 @@ namespace rpiDaemon.Jobs
                 var fullPath = folderPath + $"/{fileName}.jpg";
                 try
                 {
+                    logger.LogInformation($"Taking image and saving to {fullPath}");
                     await cameraService.TakeImage(fullPath, settings);
                 }
                 catch (Exception e)

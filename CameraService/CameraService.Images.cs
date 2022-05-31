@@ -31,6 +31,7 @@ namespace CameraService
             _cameraIsInUse = true;
             try
             {
+                _logger.LogInformation("Setting camera instance...");
                 _camera = MMALCamera.Instance;
             }
             catch (Exception e)
@@ -45,6 +46,7 @@ namespace CameraService
             MMALCameraConfig.ShutterSpeed = settings.ShutterTime;
             _camera.ConfigureCameraSettings();
 
+            _logger.LogInformation("Taking picture");
             await _camera.TakePicture(imgCaptureHandler, MMALEncoding.JPEG, MMALEncoding.I420);
             _cameraIsInUse = false;
         }
