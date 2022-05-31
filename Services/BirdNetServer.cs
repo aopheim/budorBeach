@@ -36,7 +36,7 @@ namespace Services
             var pythonAbbr = isWindows ? "py" : "python";
             var windowsArguments = @$"/C cd {birdNetAnalyzerPath} && {pythonAbbr} server.py";
             var linuxArguments = @$"cd {birdNetAnalyzerPath} && {pythonAbbr} server.py";
-            
+
             var startInfoWindows = new ProcessStartInfo
             {
                 WindowStyle = ProcessWindowStyle.Hidden,
@@ -47,7 +47,7 @@ namespace Services
             {
                 WindowStyle = ProcessWindowStyle.Hidden,
                 FileName = "/bin/bash",
-                Arguments = windowsArguments, 
+                Arguments = linuxArguments,
                 RedirectStandardOutput = true
             };
             _process.StartInfo = isWindows ? startInfoWindows : startInfoLinux;
