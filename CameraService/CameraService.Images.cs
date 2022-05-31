@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using CameraService.Interfaces;
 using Microsoft.Extensions.Logging;
@@ -14,11 +15,13 @@ namespace CameraService
         private readonly ILogger<CameraService> _logger;
         private MMALCamera _camera;
         private bool _cameraIsInUse;
+        private readonly bool _isWindows;
 
         public CameraService(ILogger<CameraService> logger)
         {
             _logger = logger;
             _cameraIsInUse = false;
+            _isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
         }
 
         public bool CameraIsInUse()
@@ -31,7 +34,6 @@ namespace CameraService
             _cameraIsInUse = true;
             try
             {
-                _logger.LogInformation("Setting camera instance...");
                 _camera = MMALCamera.Instance;
             }
             catch (Exception e)
