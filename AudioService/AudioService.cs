@@ -30,7 +30,7 @@ namespace AudioService
                     : GlobalConstants.AudioServiceFolderLinux;
                 var fileName = isWindows ? "recordAudioWindows.py" : "recordAudioLinux.py";
                 var argumentsWindows = @$"/C cd {filePath} && py {fileName}";
-                var argumentsLinux = @$"cd {filePath} && python {fileName}";
+                var argumentsLinux = $"-c \"cd {filePath} && python {fileName}\"";
                 _logger.LogInformation($"Command to run: {argumentsLinux}");
                 Process process = new();
                 ProcessStartInfo windowsStartInfo = new()
