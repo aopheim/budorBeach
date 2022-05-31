@@ -45,7 +45,6 @@ namespace Services
             };
             var startInfoLinux = new ProcessStartInfo
             {
-                UseShellExecute = true,
                 WindowStyle = ProcessWindowStyle.Hidden,
                 FileName = "/bin/bash",
                 Arguments = windowsArguments, 
