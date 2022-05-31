@@ -35,7 +35,7 @@ namespace Services
                 : GlobalConstants.BirdNetAnalyzerPathLinux;
             var pythonAbbr = isWindows ? "py" : "python";
             var windowsArguments = @$"/C cd {birdNetAnalyzerPath} && {pythonAbbr} server.py";
-            var linuxArguments = @$"cd ~/BirdNET-Analyzer && {pythonAbbr} server.py";
+            var linuxArguments = $"-c \"cd {birdNetAnalyzerPath} && {pythonAbbr} server.py\"";
 
             _logger.LogInformation($"Running args: {linuxArguments}");
             var startInfoWindows = new ProcessStartInfo
