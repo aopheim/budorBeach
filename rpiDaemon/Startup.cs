@@ -45,36 +45,36 @@ namespace rpiDaemon
                 options.AddAspNetCore();
                 options.AddLogging();
                 options.AddHostedService<BudorHubPiClient>();
-                options.AddHostedService<BirdNetServer>();
+                // options.AddHostedService<BirdNetServer>();
             });
             InitializeContainer();
 
             services.AddQuartz(q =>
             {
                 q.UseJobFactory<JobFactory>();
-                q.AddJobAndTrigger<GetBme280SensorReadingsJob>(GlobalConstants.SecondJobs,
-                    GlobalConstants.Bme280Trigger,
-                    _environment.IsDevelopment() ? TimeSpan.FromSeconds(2) : TimeSpan.FromSeconds(10));
-                q.AddJobAndTrigger<TakePictureJob>(GlobalConstants.SecondJobs, GlobalConstants.PictureTrigger,
-                    _environment.IsDevelopment() ? TimeSpan.FromSeconds(10) : TimeSpan.FromSeconds(30),
-                    DateTime.UtcNow.AddMinutes(1));
+                // q.AddJobAndTrigger<GetBme280SensorReadingsJob>(GlobalConstants.SecondJobs,
+                //     GlobalConstants.Bme280Trigger,
+                //     _environment.IsDevelopment() ? TimeSpan.FromSeconds(2) : TimeSpan.FromSeconds(10));
+                // q.AddJobAndTrigger<TakePictureJob>(GlobalConstants.SecondJobs, GlobalConstants.PictureTrigger,
+                //     _environment.IsDevelopment() ? TimeSpan.FromSeconds(10) : TimeSpan.FromSeconds(30),
+                //     DateTime.UtcNow.AddMinutes(1));
                 // q.AddJobAndTrigger<TakeVideoJob>(GlobalConstants.SecondJobs, GlobalConstants.VideoRecordingTrigger,
                 //     null, DateTime.UtcNow.AddSeconds(20));
                 q.AddJobAndTrigger<StreamVideoJob>(GlobalConstants.SecondJobs, GlobalConstants.StartVideoStreamTrigger,
                     null, DateTime.UtcNow.AddSeconds(45));
                 // q.AddJobAndTrigger<GetProximityJob>(GlobalConstants.SecondJobs, GlobalConstants.ProximityTrigger,
                 //     TimeSpan.FromSeconds(5));
-                q.AddJobAndTrigger<StartVideoSurveillanceJob>(GlobalConstants.SecondJobs,
-                    GlobalConstants.StartVideSurveillanceTrigger, null, DateTime.UtcNow.AddSeconds(30));
-                q.AddJobAndTrigger<TakeAudioRecordingJob>(GlobalConstants.SecondJobs,
-                    GlobalConstants.AudioRecordingTrigger, null);
-                q.AddJobAndTrigger<AnalyzeAudioRecordingsJob>(GlobalConstants.SecondJobs,
-                    GlobalConstants.AudioAnalyzerTrigger,
-                    _environment.IsDevelopment() ? TimeSpan.FromSeconds(15) : TimeSpan.FromSeconds(60),
-                    DateTime.UtcNow.AddSeconds(60));
-                q.AddJobAndTrigger<UploadAudioRecordingsJob>(GlobalConstants.MinuteJobs,
-                    GlobalConstants.UploadAudioRecordingTrigger, TimeSpan.FromMinutes(1),
-                    DateTime.UtcNow.AddSeconds(10));
+                // q.AddJobAndTrigger<StartVideoSurveillanceJob>(GlobalConstants.SecondJobs,
+                //     GlobalConstants.StartVideSurveillanceTrigger, null, DateTime.UtcNow.AddSeconds(30));
+                // q.AddJobAndTrigger<TakeAudioRecordingJob>(GlobalConstants.SecondJobs,
+                //     GlobalConstants.AudioRecordingTrigger, null);
+                // q.AddJobAndTrigger<AnalyzeAudioRecordingsJob>(GlobalConstants.SecondJobs,
+                //     GlobalConstants.AudioAnalyzerTrigger,
+                //     _environment.IsDevelopment() ? TimeSpan.FromSeconds(15) : TimeSpan.FromSeconds(60),
+                //     DateTime.UtcNow.AddSeconds(60));
+                // q.AddJobAndTrigger<UploadAudioRecordingsJob>(GlobalConstants.MinuteJobs,
+                //     GlobalConstants.UploadAudioRecordingTrigger, TimeSpan.FromMinutes(1),
+                //     DateTime.UtcNow.AddSeconds(10));
             });
 
             services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
