@@ -55,8 +55,8 @@ namespace CameraService
                 var motionConfig = new MotionConfig(new MotionAlgorithmRGBDiff());
 
                 // Duration of the motion-detection operation.
-                var stoppingToken = new CancellationTokenSource(new TimeSpan(0, 5, 0));
-                _logger.LogInformation("Detecting motion for 5 minutes.");
+                var stoppingToken = new CancellationTokenSource(_videoSurveillanceLength);
+                _logger.LogInformation($"Detecting motion for {_videoSurveillanceLength.Seconds} seconds...");
 
                 await cam.WithMotionDetection(
                         motionCaptureHandler,
