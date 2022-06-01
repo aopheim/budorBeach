@@ -15,7 +15,7 @@ namespace CameraService
 {
     public partial class CameraService
     {
-        private readonly TimeSpan _videoSurveillanceLength = TimeSpan.FromMinutes(60);
+        private readonly TimeSpan _videoSurveillanceLength = TimeSpan.FromMinutes(5);
 
         public async Task StartVideoSurveillance(string fullPath, int secondsToRecord,
             CancellationToken jobCancellationToken)
