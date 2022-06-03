@@ -341,13 +341,27 @@ namespace budorWeb.Services
                     Id = "x", Date = new DateTime(2022, 05, 26),
                     Header = "Nytt egg!",
                     Body =
-                        "i dag tidlig kom det et nytt egg i fuglekassa! Og denne gangen ser det ut som det er Fru Fluesnapper som har lagt det. Hun har ikke vært så mye innom de siste dagene, men vannet gikk tydeligvis i dag morges. Vi gratulerer så mye!",
+                        "I dag tidlig kom det et nytt egg i fuglekassa! Og denne gangen ser det ut som det er Fru Fluesnapper som har lagt det. Hun har ikke vært så mye innom de siste dagene, men vannet gikk tydeligvis i dag morges. Vi gratulerer så mye!",
                     ImageUrls = new List<string>
                     {
                         "https://budorbeach.blob.core.windows.net/images/2022-5-26/4-43-39.jpg",
                         "https://budorbeach.blob.core.windows.net/images/2022-5-26/5-23-39.jpg",
                         "https://budorbeach.blob.core.windows.net/images/2022-5-26/4-48-39.jpg",
                         "https://budorbeach.blob.core.windows.net/images/2022-5-26/4-58-39.jpg"
+                    }
+                },
+                new()
+                {
+                    Id = "y",
+                    Date = new DateTime(2022, 06, 03),
+                    Header = "Hektiske dager på fødestua",
+                    Body =
+                        "De siste dagene har vært hektiske for Fru Fluesnapper. Hver morgen har hun måttet haste seg inn i fuglekassa for å legge et nytt egg. Seks egg har hun lagt nå. Det er like mange som hun la i fjor.",
+                    ImageUrls = new List<string>
+                    {
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-6-3/4-21-1.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-6-3/6-41-1.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-6-3/5-31-1.jpg"
                     }
                 }
             }.OrderByDescending(e => e.Date).ToList();
