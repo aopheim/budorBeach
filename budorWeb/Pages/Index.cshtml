@@ -1,19 +1,17 @@
 ﻿@page
+@using global::Shared.Azure
 @using rpiDaemon.DateTimeHelpers
-@using System.Text.Json
 @using Azure.Storage.Blobs.Models
 @using budorWeb.Services
-@using global::Shared.Azure
-@using global::Shared.Models
-@using global::Shared.PiCameraSettings
 @model BudorBeachModel
 @{
     ViewData["Title"] = "Budor Beach";
 }
 
 @section Styles {
-    <link href="@Url.Content("~/css/index.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/css/index.css")" rel="stylesheet" type="text/css"/>
 }
+
 <div class="container my-3">
     <div class="row">
         <div class="col">
@@ -39,6 +37,9 @@
                 <i class="fa fa-humidity"></i>
                 <p id="pressureInhPa">@Math.Round(Model.LatestSensorReadingModel?.PressureInhPa ?? default, 1)hPa</p>
             </div>
+        </div>
+        <div class="alert alert-danger" role="alert">
+            08.06.2022: Vi har for tiden dessverre mistet kontakten med fuglekassa. Kanskje ønsket fluesnapperne seg litt mer privatliv, og har kuttet internett-tilgangen. En fuglekasse-tekniker er varslet, men kan dessverre ikke være på plass før mot slutten av juni
         </div>
         @{
             const int last12 = 12;
@@ -71,7 +72,8 @@
             <div class="card-body">
                 <canvas id="humidityChart"></canvas>
             </div>
-        </div><div class="col-sm-6">
+        </div>
+        <div class="col-sm-6">
             <div class="card-body">
                 <canvas id="pressureChart"></canvas>
             </div>
@@ -80,7 +82,7 @@
 
     <h2>De 5 siste bildene</h2>
     <div class="row">
-        @foreach (var blob in @Model?.LatestImages ?? new List<BlobItem>())
+        @foreach (var blob in Model?.LatestImages ?? new List<BlobItem>())
         {
             <div class="col-md-6">
                 <div class="card my-3">
@@ -94,14 +96,16 @@
             </div>
         }
     </div>
-    <a href="images"><h2>Til dagens bildegalleri</h2></a>
-    <br />
-    <br />
-    <br />
+    <a href="images">
+        <h2>Til dagens bildegalleri</h2>
+    </a>
+    <br/>
+    <br/>
+    <br/>
     <h2>Siste fuglekassenytt</h2>
     <div class="row">
         <div class="col-4">
-            <div id="newsfeed" class="list-group" >
+            <div id="newsfeed" class="list-group">
                 @foreach (var entry in NewsFeedService.GetNewsFeedEntries())
                 {
                     <a class="list-group-item list-group-item-action" href="#@entry.Id">@DateTimeParser.GetLocalDateAsString(entry.Date) - @entry.Header</a>
@@ -114,23 +118,25 @@
                 {
                     var carouselControlsId = "carousel-controls" + entry.Id;
 
-                    <h4 id="@entry.Id">@DateTimeParser.GetLocalDateAsString(@entry.Date) - @entry.Header</h4>
+                    <h4 id="@entry.Id">@DateTimeParser.GetLocalDateAsString(entry.Date) - @entry.Header</h4>
                     <p>@entry.Body</p>
                     @if (entry.ImageUrls?.Count == 1)
                     {
-                        <img class="img-fluid mx-auto d-block" src="@entry.ImageUrls[0]" alt="@entry.ImageUrls[0]" />
+                        <img class="img-fluid mx-auto d-block" src="@entry.ImageUrls[0]" alt="@entry.ImageUrls[0]"/>
                     }
                     else if (entry.ImageUrls?.Count > 1)
                     {
                         <div id="@carouselControlsId" class="carousel slide " data-interval="false">
                             <div class="carousel-inner">
-                                @{ var isActive = "active";}
+                                @{ var isActive = "active"; }
                                 @foreach (var url in entry.ImageUrls)
                                 {
                                     <div class="carousel-item @isActive">
-                                        <img src="@url" class="d-block w-100" alt="@url" />
+                                        <img src="@url" class="d-block w-100" alt="@url"/>
                                     </div>
-                                    { isActive = ""; }
+                                    {
+                                        isActive = "";
+                                    }
                                 }
                             </div>
                             <button class="carousel-control-prev" type="button" data-bs-target="#@carouselControlsId" data-bs-slide="prev">
@@ -143,9 +149,9 @@
                             </button>
                         </div>
                     }
-                    <hr class="my-4" />
+                    <hr class="my-4"/>
                 }
-            </div>            
+            </div>
         </div>
     </div>
     <h2>Kamera-innstillinger</h2>
@@ -165,7 +171,7 @@
                     <h4 id="shutterspeed-slider-val">@Model.ShutterTimeSetting</h4>
                 </div>
             </div>
-            <input type="submit" value="Ta bilde" />
+            <input type="submit" value="Ta bilde"/>
         </div>
     </form>
 </div>
