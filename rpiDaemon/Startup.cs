@@ -57,7 +57,7 @@ namespace rpiDaemon
                     _environment.IsDevelopment() ? TimeSpan.FromSeconds(2) : TimeSpan.FromSeconds(10));
                 q.AddJobAndTrigger<TakePictureJob>(GlobalConstants.SecondJobs, GlobalConstants.PictureTrigger,
                     _environment.IsDevelopment() ? TimeSpan.FromSeconds(10) : TimeSpan.FromMinutes(5),
-                    DateTime.UtcNow.AddMinutes(1));
+                    DateTime.UtcNow.AddSeconds(10));
                 // q.AddJobAndTrigger<TakeVideoJob>(GlobalConstants.SecondJobs, GlobalConstants.VideoRecordingTrigger,
                 //     null, DateTime.UtcNow.AddSeconds(20));
                 // q.AddJobAndTrigger<StreamVideoJob>(GlobalConstants.SecondJobs, GlobalConstants.StartVideoStreamTrigger,
