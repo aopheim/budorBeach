@@ -5,6 +5,7 @@ using CameraService.Interfaces;
 using Microsoft.Extensions.Logging;
 using MMALSharp;
 using MMALSharp.Common;
+using MMALSharp.Common.Utility;
 using MMALSharp.Handlers;
 using Shared.PiCameraSettings;
 
@@ -12,10 +13,10 @@ namespace CameraService
 {
     public partial class CameraService : ICameraService
     {
+        private readonly bool _isWindows;
         private readonly ILogger<CameraService> _logger;
         private MMALCamera _camera;
         private bool _cameraIsInUse;
-        private readonly bool _isWindows;
 
         public CameraService(ILogger<CameraService> logger)
         {
@@ -44,6 +45,7 @@ namespace CameraService
 
             using var imgCaptureHandler = new ImageStreamCaptureHandler(fullPath);
 
+            MMALCameraConfig.Resolution = Resolution.As5MPixel;
             MMALCameraConfig.ISO = settings.Iso;
             MMALCameraConfig.ShutterSpeed = settings.ShutterTime;
             _camera.ConfigureCameraSettings();
