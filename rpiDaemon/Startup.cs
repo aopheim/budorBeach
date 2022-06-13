@@ -66,15 +66,15 @@ namespace rpiDaemon
                 //     TimeSpan.FromSeconds(5));
                 // q.AddJobAndTrigger<StartVideoSurveillanceJob>(GlobalConstants.SecondJobs,
                 //     GlobalConstants.StartVideSurveillanceTrigger, null, DateTime.UtcNow.AddSeconds(30));
-                // q.AddJobAndTrigger<TakeAudioRecordingJob>(GlobalConstants.SecondJobs,
-                //     GlobalConstants.AudioRecordingTrigger, null);
-                // q.AddJobAndTrigger<AnalyzeAudioRecordingsJob>(GlobalConstants.SecondJobs,
-                //     GlobalConstants.AudioAnalyzerTrigger,
-                //     _environment.IsDevelopment() ? TimeSpan.FromSeconds(15) : TimeSpan.FromSeconds(60),
-                //     DateTime.UtcNow.AddSeconds(60));
-                // q.AddJobAndTrigger<UploadAudioRecordingsJob>(GlobalConstants.MinuteJobs,
-                //     GlobalConstants.UploadAudioRecordingTrigger, TimeSpan.FromMinutes(1),
-                //     DateTime.UtcNow.AddSeconds(10));
+                q.AddJobAndTrigger<TakeAudioRecordingJob>(GlobalConstants.SecondJobs,
+                    GlobalConstants.AudioRecordingTrigger, null);
+                q.AddJobAndTrigger<AnalyzeAudioRecordingsJob>(GlobalConstants.SecondJobs,
+                    GlobalConstants.AudioAnalyzerTrigger,
+                    _environment.IsDevelopment() ? TimeSpan.FromSeconds(15) : TimeSpan.FromSeconds(60),
+                    DateTime.UtcNow.AddSeconds(60));
+                q.AddJobAndTrigger<UploadAudioRecordingsJob>(GlobalConstants.MinuteJobs,
+                    GlobalConstants.UploadAudioRecordingTrigger, TimeSpan.FromMinutes(1),
+                    DateTime.UtcNow.AddSeconds(10));
             });
 
             services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
@@ -99,6 +99,7 @@ namespace rpiDaemon
             _container.RegisterSingleton<IBirdRecordingAnalyzer, AudioRecordingRecordingAnalyzer>();
             _container.RegisterSingleton<IAudioService, AudioService.AudioService>();
             _container.RegisterSingleton<IAudioUploader, AudioUploaderService>();
+            _container.RegisterSingleton<IExternalSingletonProcess, ExternalSingletonProcess>();
             _container.Register<IRepositories, Repositories>(Lifestyle.Scoped);
             _container.Register<GetBme280SensorReadingsJob>();
             _container.Register<TakePictureJob>();
@@ -112,6 +113,7 @@ namespace rpiDaemon
             _container.Register<IBirdNetResultConverter, BirdNetResultConverter>();
             _container.Register<IFileSystemService, FileSystemService>();
             _container.Register<IAzureStorageService, AzureStorageService>();
+            _container.Register<IExternalProcess, ExternalProcess>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
