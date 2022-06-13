@@ -34,7 +34,6 @@ namespace AudioService
                 var fileName = isWindows ? "recordAudioWindows.py" : "recordAudioLinux.py";
                 var argumentsWindows = @$"/C cd {filePath} && py {fileName}";
                 var argumentsLinux = $"-c \"cd {filePath} && python {fileName}\"";
-                _logger.LogInformation($"Command to run: {argumentsLinux}");
                 Process process = _externalProcess.StartExternalSingletonProcess(isWindows,
                     isWindows ? argumentsWindows : argumentsLinux, cancellationToken);
 

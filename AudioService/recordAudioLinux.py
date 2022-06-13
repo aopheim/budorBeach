@@ -39,7 +39,6 @@ audio = pyaudio.PyAudio()  # create pyaudio instantiation
 stream = audio.open(format=form_1, rate=samp_rate, channels=chans,
                     input_device_index=dev_index, input=True,
                     frames_per_buffer=chunk)
-print("Recording audio...")
 frames = []
 
 # loop through stream and append audio chunks to frame array
@@ -47,8 +46,6 @@ for ii in range(0, int((samp_rate/chunk)*record_secs)):
     # Ignoring overflow exceptions: https://stackoverflow.com/questions/10733903/pyaudio-input-overflowed
     data = stream.read(chunk, exception_on_overflow=False)
     frames.append(data)
-
-print("Finished recording")
 
 # stop the stream, close it, and terminate the pyaudio instantiation
 stream.stop_stream()
