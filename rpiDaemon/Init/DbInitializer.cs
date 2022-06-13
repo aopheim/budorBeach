@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using DataAccess.EFCore;
+using Microsoft.EntityFrameworkCore;
 using Shared.Models;
 
 namespace rpiDaemon.Init
@@ -10,7 +11,7 @@ namespace rpiDaemon.Init
     {
         public static void Initialize(BudorDbContext context)
         {
-            context.Database.EnsureCreated();
+            context.Database.Migrate();
 
             if (context.SensorReadings.Any()) return;
             var readings = new List<SensorReadingModel>();
