@@ -17,18 +17,19 @@ namespace Services
     public class BirdNetServer : IBirdNetServer
     {
         private static readonly HttpClient Client = new();
+        private readonly IExternalSingletonProcess _externalProcess;
         private readonly ILogger _logger;
         private Process _process;
 
-        public BirdNetServer(ILogger logger)
+        public BirdNetServer(ILogger logger, IExternalSingletonProcess externalProcess)
         {
             _logger = logger;
+            _externalProcess = externalProcess;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
             _logger.LogInformation("Starting up BirdNet server...");
-            _process = new Process();
             var isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
             var birdNetAnalyzerPath = isWindows
                 ? GlobalConstants.BirdNetAnalyzerPathWindows
@@ -36,24 +37,11 @@ namespace Services
             var pythonAbbr = isWindows ? "py" : "python";
             var windowsArguments = @$"/C cd {birdNetAnalyzerPath} && {pythonAbbr} server.py";
             var linuxArguments = $"-c \"cd {birdNetAnalyzerPath} && {pythonAbbr} server.py\"";
-
             _logger.LogInformation($"Running args: {linuxArguments}");
-            var startInfoWindows = new ProcessStartInfo
-            {
-                WindowStyle = ProcessWindowStyle.Hidden,
-                FileName = "cmd.exe",
-                Arguments = windowsArguments
-            };
-            var startInfoLinux = new ProcessStartInfo
-            {
-                WindowStyle = ProcessWindowStyle.Hidden,
-                FileName = "/bin/bash",
-                Arguments = linuxArguments,
-                RedirectStandardOutput = true
-            };
-            _process.StartInfo = isWindows ? startInfoWindows : startInfoLinux;
-
-            return Task.FromResult(_process.Start());
+            _process = _externalProcess.StartExternalSingletonProcess(isWindows,
+                isWindows ? windowsArguments : linuxArguments,
+                cancellationToken);
+            return Task.CompletedTask;
         }
 
         public Task StopAsync(CancellationToken cancellationToken)

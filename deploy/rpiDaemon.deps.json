@@ -2317,6 +2317,7 @@
       "AudioService/1.0.0": {
         "dependencies": {
           "IronPython": "2.7.12",
+          "Services": "1.0.0",
           "Shared": "1.0.0"
         },
         "runtime": {
