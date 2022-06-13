@@ -44,7 +44,8 @@ frames = []
 
 # loop through stream and append audio chunks to frame array
 for ii in range(0, int((samp_rate/chunk)*record_secs)):
-    data = stream.read(chunk)
+    # Ignoring overflow exceptions: https://stackoverflow.com/questions/10733903/pyaudio-input-overflowed
+    data = stream.read(chunk, exception_on_overflow=False)
     frames.append(data)
 
 print("Finished recording")
