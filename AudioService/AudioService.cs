@@ -4,18 +4,21 @@ using System.Threading;
 using System.Threading.Tasks;
 using AudioService.Interfaces;
 using Microsoft.Extensions.Logging;
+using Services.Interfaces;
 using Shared;
 
 namespace AudioService
 {
     public class AudioService : IAudioService
     {
+        private readonly IExternalSingletonProcess _externalProcess;
         private readonly ILogger<AudioService> _logger;
         private bool _isRunning;
 
-        public AudioService(ILogger<AudioService> logger)
+        public AudioService(ILogger<AudioService> logger, IExternalSingletonProcess externalProcess)
         {
             _logger = logger;
+            _externalProcess = externalProcess;
             _isRunning = false;
         }
 
@@ -32,23 +35,9 @@ namespace AudioService
                 var argumentsWindows = @$"/C cd {filePath} && py {fileName}";
                 var argumentsLinux = $"-c \"cd {filePath} && python {fileName}\"";
                 _logger.LogInformation($"Command to run: {argumentsLinux}");
-                Process process = new();
-                ProcessStartInfo windowsStartInfo = new()
-                {
-                    WindowStyle = ProcessWindowStyle.Hidden,
-                    FileName = "cmd.exe",
-                    Arguments = argumentsWindows,
-                    RedirectStandardOutput = true
-                };
-                ProcessStartInfo linuxStartInfo = new()
-                {
-                    FileName = "/bin/bash",
-                    Arguments = argumentsLinux,
-                    RedirectStandardOutput = true
-                };
-                process.StartInfo = isWindows ? windowsStartInfo : linuxStartInfo;
-                _logger.LogInformation($"Beginning recording using {fileName}");
-                process.Start();
+                Process process = _externalProcess.StartExternalSingletonProcess(isWindows,
+                    isWindows ? argumentsWindows : argumentsLinux, cancellationToken);
+
                 await process.WaitForExitAsync(cancellationToken);
                 _logger.LogInformation("Recording finished");
 
