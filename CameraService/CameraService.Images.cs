@@ -46,7 +46,7 @@ namespace CameraService
 
             using var imgCaptureHandler = new ImageStreamCaptureHandler(fullPath);
 
-            MMALCameraConfig.Resolution = Resolution.As5MPixel;
+            MMALCameraConfig.Resolution = Resolution.As4MPixel;
             MMALCameraConfig.ISO = settings.Iso;
             MMALCameraConfig.ShutterSpeed = settings.ShutterTime;
             try

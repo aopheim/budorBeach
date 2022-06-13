@@ -45,7 +45,7 @@ namespace rpiDaemon
                 options.AddAspNetCore();
                 options.AddLogging();
                 options.AddHostedService<BudorHubPiClient>();
-                // options.AddHostedService<BirdNetServer>();
+                options.AddHostedService<BirdNetServer>();
             });
             InitializeContainer();
 
