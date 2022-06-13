@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Shared
+﻿namespace Shared
 {
     public static class GlobalConstants
     {
@@ -32,10 +30,10 @@ namespace Shared
         public const double BudorLatitude = 60.974951;
         public const double BudorLongitude = 11.285140;
 
-        public const string AudioRecordingsFolderLinux = @"$HOME/audioRecordings";
-        public const string VideoRecordingsFolderLinux = @"@HOME/videos";
-        public const string AudioServiceFolderLinux = @"$HOME/budorBeach/AudioService";
-        public const string BirdNetAnalyzerPathLinux = @"$HOME/BirdNET-Analyzer";
+        public const string AudioRecordingsFolderLinux = @"/home/pi/audioRecordings";
+        public const string VideoRecordingsFolderLinux = @"/home/pi/videos";
+        public const string AudioServiceFolderLinux = @"/home/pi/budorBeach/AudioService";
+        public const string BirdNetAnalyzerPathLinux = @"/home/pi/BirdNET-Analyzer";
         public const string AudioServiceFolderWindows = @"C:\repos\budorBeach\AudioService";
         public const string BirdNetAnalyzerPathWindows = @"C:\repos\BirdNET-Analyzer";
     }
