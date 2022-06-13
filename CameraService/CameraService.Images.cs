@@ -40,6 +40,7 @@ namespace CameraService
             catch (Exception e)
             {
                 _logger.LogError(e, "Setting MMALCamera instance throws exception");
+                _cameraIsInUse = false;
                 return;
             }
 
@@ -48,10 +49,18 @@ namespace CameraService
             MMALCameraConfig.Resolution = Resolution.As5MPixel;
             MMALCameraConfig.ISO = settings.Iso;
             MMALCameraConfig.ShutterSpeed = settings.ShutterTime;
-            _camera.ConfigureCameraSettings();
+            try
+            {
+                _camera.ConfigureCameraSettings();
+                await _camera.TakePicture(imgCaptureHandler, MMALEncoding.JPEG, MMALEncoding.I420);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError("Error while configuring camera or taking picture. Error: {error}", e.Message);
+                _cameraIsInUse = false;
+                throw;
+            }
 
-            _logger.LogInformation("Taking picture");
-            await _camera.TakePicture(imgCaptureHandler, MMALEncoding.JPEG, MMALEncoding.I420);
             _cameraIsInUse = false;
         }
 
