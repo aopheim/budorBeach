@@ -13,7 +13,7 @@ namespace Services
         public BirdNetOutputDto ConvertJson(string json)
         {
             var tmpDto = JsonSerializer.Deserialize<BirdNetOutputTmpDto>(json);
-            if (tmpDto == null || tmpDto.Results.Any() && tmpDto.Results.First().Count != 2)
+            if (tmpDto?.Results == null || tmpDto.Results.Any() && tmpDto.Results.First().Count != 2)
                 throw new ArgumentException("Received BirdNetOutput with more than two elements. Api has changed!");
 
             var result = new List<ClassificationResultDto>();
