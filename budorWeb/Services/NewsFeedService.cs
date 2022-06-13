@@ -363,6 +363,14 @@ namespace budorWeb.Services
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-6-3/6-41-1.jpg",
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-6-3/5-31-1.jpg"
                     }
+                },
+                new NewsFeedEntry
+                {
+                    Id = "z",
+                    Date = new DateTime(2022, 06, 13),
+                    Header = "Ruging pågår",
+                    Body =
+                        "Fru Fluesnapper har nå lagt et egg nesten hver eneste morgen, og har fått syv fine egg. Hun ligger nå betydelig mer og ruger enn tidligere, da hun ofte lot eggene ligge for seg selv. Forhåpentligvis betyr det at det nærmer seg klekking! Vi har dessverre hatt ustabil forbindelse til fuglekassa i det siste. Dels har dette vært på grunn av at internett-tilgangen har falt ut, og dels er det fordi en litt for ivrig fuglekasse-tekniker har prøvd å få til direktesendt video fra fuglekassa, og i den forbindelse har måttet deaktivere kamera-funkjsonen for å teste det ut. Pr nå har vi ikke lenger kontakt med fuglekassa, men vi krysser fingrene for at vi får den tilbake. "
                 }
             }.OrderByDescending(e => e.Date).ToList();
         }
