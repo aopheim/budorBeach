@@ -38,9 +38,9 @@
                 <p id="pressureInhPa">@Math.Round(Model.LatestSensorReadingModel?.PressureInhPa ?? default, 1)hPa</p>
             </div>
         </div>
-        <div class="alert alert-danger" role="alert">
-            13.06.2022: Vi har for tiden dessverre mistet kontakten med fuglekassa. Kanskje ønsket fluesnapperne seg litt mer privatliv, og har kuttet internett-tilgangen. En fuglekasse-tekniker er varslet, men kan dessverre ikke være på plass før mot slutten av juni
-        </div>
+        @* <div class="alert alert-danger" role="alert"> *@
+        @*     En info-tekst *@
+        @* </div> *@
         @{
             const int last12 = 12;
             const int lastDay = 24;
