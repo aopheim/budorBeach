@@ -376,6 +376,22 @@ namespace budorWeb.Services
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-6-13/10-26-23.jpg",
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-6-13/9-19-46.jpg"
                     }
+                },
+                new NewsFeedEntry
+                {
+                    Id = "za",
+                    Date = new DateTime(2022, 06, 21),
+                    Header = "Småsnapper-livet har startet",
+                    Body =
+                        "Etter en uke uten kontakt med fuglekassa har den våknet til liv igjen, og fluesnapper-familien har blitt en ordentlig storfamilie i mellomtiden. Alle eggene er nå klekket, og Herr og Fru Fluesnapper er travelt opptatt med å ruge og fine mat til sine små håpefulle.",
+                    ImageUrls = new List<string>
+                    {
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-6-21/5-22-33.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-6-21/4-47-33.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-6-21/4-57-33.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-6-21/4-37-33.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-6-21/4-22-33.jpg"
+                    }
                 }
             }.OrderByDescending(e => e.Date).ToList();
         }
