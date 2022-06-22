@@ -36,7 +36,22 @@ namespace Services
         public async Task StartUpload(CancellationToken cancellationToken)
         {
             _isRunning = true;
-            using var scope = AsyncScopedLifestyle.BeginScope(_container);
+            try
+            {
+                await StartUploadInternal(cancellationToken);
+            }
+            catch (Exception e)
+            {
+                _isRunning = false;
+                _logger.LogError(e, "Uploading audio files failed");
+            }
+
+            _isRunning = false;
+        }
+
+        private async Task StartUploadInternal(CancellationToken cancellationToken)
+        {
+            await using var scope = AsyncScopedLifestyle.BeginScope(_container);
             var repos = scope.GetRequiredService<IRepositories>();
             var azureStorageService = scope.GetRequiredService<IAzureStorageService>();
             var fileSystemService = scope.GetRequiredService<IFileSystemService>();
@@ -72,8 +87,6 @@ namespace Services
                 _logger.LogInformation($"Deleting local recording {recordingId}.wav");
                 fileSystemService.DeleteFile(filePath);
             }
-
-            _isRunning = false;
         }
     }
 }
