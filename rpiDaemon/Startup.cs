@@ -52,12 +52,12 @@ namespace rpiDaemon
             services.AddQuartz(q =>
             {
                 q.UseJobFactory<JobFactory>();
-                q.AddJobAndTrigger<GetBme280SensorReadingsJob>(GlobalConstants.SecondJobs,
-                    GlobalConstants.Bme280Trigger,
-                    _environment.IsDevelopment() ? TimeSpan.FromSeconds(2) : TimeSpan.FromSeconds(10));
-                q.AddJobAndTrigger<TakePictureJob>(GlobalConstants.SecondJobs, GlobalConstants.PictureTrigger,
-                    _environment.IsDevelopment() ? TimeSpan.FromSeconds(10) : TimeSpan.FromMinutes(5),
-                    DateTime.UtcNow.AddSeconds(10));
+                // q.AddJobAndTrigger<GetBme280SensorReadingsJob>(GlobalConstants.SecondJobs,
+                //     GlobalConstants.Bme280Trigger,
+                //     _environment.IsDevelopment() ? TimeSpan.FromSeconds(2) : TimeSpan.FromSeconds(10));
+                // q.AddJobAndTrigger<TakePictureJob>(GlobalConstants.SecondJobs, GlobalConstants.PictureTrigger,
+                //     _environment.IsDevelopment() ? TimeSpan.FromSeconds(10) : TimeSpan.FromMinutes(5),
+                //     DateTime.UtcNow.AddSeconds(10));
                 // q.AddJobAndTrigger<TakeVideoJob>(GlobalConstants.SecondJobs, GlobalConstants.VideoRecordingTrigger,
                 //     null, DateTime.UtcNow.AddSeconds(20));
                 // q.AddJobAndTrigger<StreamVideoJob>(GlobalConstants.SecondJobs, GlobalConstants.StartVideoStreamTrigger,
@@ -66,7 +66,7 @@ namespace rpiDaemon
                 //     TimeSpan.FromSeconds(5));
                 // q.AddJobAndTrigger<StartVideoSurveillanceJob>(GlobalConstants.SecondJobs,
                 //     GlobalConstants.StartVideSurveillanceTrigger, null, DateTime.UtcNow.AddSeconds(30));
-                q.AddJobAndTrigger<TakeAudioRecordingJob>(GlobalConstants.SecondJobs,
+                q.AddJobAndTrigger<CaptureAudioContinuouslyJob>(GlobalConstants.SecondJobs,
                     GlobalConstants.AudioRecordingTrigger, null);
                 q.AddJobAndTrigger<AnalyzeAudioRecordingsJob>(GlobalConstants.SecondJobs,
                     GlobalConstants.AudioAnalyzerTrigger,
@@ -104,7 +104,7 @@ namespace rpiDaemon
             _container.Register<GetBme280SensorReadingsJob>();
             _container.Register<TakePictureJob>();
             _container.Register<GetProximityJob>();
-            _container.Register<TakeAudioRecordingJob>();
+            _container.Register<CaptureAudioContinuouslyJob>();
             _container.Register<TakeVideoJob>();
             _container.Register<StreamVideoJob>();
             _container.Register<UploadAudioRecordingsJob>();

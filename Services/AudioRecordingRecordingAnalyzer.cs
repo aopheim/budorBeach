@@ -51,7 +51,21 @@ namespace Services
         public async Task RunAnalyzer(CancellationToken cancellationToken)
         {
             _isRunning = true;
+            try
+            {
+                await RunAnalyzerInternal(cancellationToken);
+            }
+            catch (Exception e)
+            {
+                _isRunning = false;
+                _logger.LogError(e, "Audio recording analyzer failed");
+            }
 
+            _isRunning = false;
+        }
+
+        private async Task RunAnalyzerInternal(CancellationToken cancellationToken)
+        {
             using var scope = AsyncScopedLifestyle.BeginScope(_container);
             var repos = scope.GetRequiredService<IRepositories>();
             var resultConverter = scope.GetRequiredService<IBirdNetResultConverter>();
@@ -115,8 +129,6 @@ namespace Services
                 repos.SpeciesRecognitions?.AddRange(speciesRecognitionsToAddToDb);
                 await repos.SaveChangesAsync();
             }
-
-            _isRunning = false;
         }
 
         private bool BirdNetOutputContainsSensoredSpecies(BirdNetOutputDto dto)
