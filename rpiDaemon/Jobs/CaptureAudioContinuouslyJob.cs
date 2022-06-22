@@ -5,12 +5,12 @@ using Quartz;
 
 namespace rpiDaemon.Jobs
 {
-    public class TakeAudioRecordingJob : IJob
+    public class CaptureAudioContinuouslyJob : IJob
     {
         private readonly IAudioService _audioService;
-        private readonly ILogger<TakeAudioRecordingJob> _logger;
+        private readonly ILogger<CaptureAudioContinuouslyJob> _logger;
 
-        public TakeAudioRecordingJob(IAudioService audioService, ILogger<TakeAudioRecordingJob> logger)
+        public CaptureAudioContinuouslyJob(IAudioService audioService, ILogger<CaptureAudioContinuouslyJob> logger)
         {
             _audioService = audioService;
             _logger = logger;
