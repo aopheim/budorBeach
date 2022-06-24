@@ -5,6 +5,8 @@ import uuid
 import wave
 import pyaudio
 
+# Following this guide: https://makersportal.com/blog/2018/8/23/recording-audio-on-the-raspberry-pi-with-python-and-a-usb-microphone
+
 # Suppressing error messages as suggested here: https://stackoverflow.com/questions/7088672/pyaudio-working-but-spits-out-error-messages-each-time
 # From alsa-lib Git 3fd4ab9be0db7c7430ebd258f2717a976381715d
 # $ grep -rn snd_lib_error_handler_t
