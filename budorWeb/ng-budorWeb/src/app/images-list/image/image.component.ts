@@ -8,7 +8,5 @@ import { BirdImage, IBirdImage } from '../images-list.component';
 })
 
 export class ImageComponent  {
-  @Input() birdImage?: BirdImage
-
-
+  @Input() birdImage?: BirdImageDto
 }

@@ -1,5 +1,5 @@
 import { Component, Input } from "@angular/core";
-import { BirdImage, IBirdImage } from "../images-list.component";
+import { BirdImageDto } from "src/services";
 
 @Component({
   selector: "bird-image",
@@ -7,5 +7,5 @@ import { BirdImage, IBirdImage } from "../images-list.component";
   styleUrls: ["./image.component.scss"],
 })
 export class ImageComponent {
-  @Input() birdImage?: BirdImage;
+  @Input() birdImage?: BirdImageDto;
 }

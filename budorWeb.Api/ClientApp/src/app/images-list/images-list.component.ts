@@ -1,4 +1,6 @@
-import { Component, ModuleWithComponentFactories, OnInit } from "@angular/core";
+import { Component } from "@angular/core";
+import { from, Observable } from "rxjs";
+import { BirdImageDto, Client } from "src/services";
 
 @Component({
   selector: "app-images-list",
@@ -7,44 +9,9 @@ import { Component, ModuleWithComponentFactories, OnInit } from "@angular/core";
 })
 export class ImagesListComponent {
   constructor() {
-    this.birdImages = [
-      new BirdImage(
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Eopsaltria_australis_-_Mogo_Campground.jpg/1200px-Eopsaltria_australis_-_Mogo_Campground.jpg",
-        "06.11.2021, 08:30:43"
-      ),
-      new BirdImage(
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Eopsaltria_australis_-_Mogo_Campground.jpg/1200px-Eopsaltria_australis_-_Mogo_Campground.jpg",
-        "06.11.2021, 08:30:43"
-      ),
-      new BirdImage(
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Eopsaltria_australis_-_Mogo_Campground.jpg/1200px-Eopsaltria_australis_-_Mogo_Campground.jpg",
-        "06.11.2021, 08:30:43"
-      ),
-      new BirdImage(
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Eopsaltria_australis_-_Mogo_Campground.jpg/1200px-Eopsaltria_australis_-_Mogo_Campground.jpg",
-        "06.11.2021, 08:30:43"
-      ),
-      new BirdImage(
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Eopsaltria_australis_-_Mogo_Campground.jpg/1200px-Eopsaltria_australis_-_Mogo_Campground.jpg",
-        "06.11.2021, 08:30:43"
-      ),
-      new BirdImage(
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Eopsaltria_australis_-_Mogo_Campground.jpg/1200px-Eopsaltria_australis_-_Mogo_Campground.jpg",
-        "06.11.2021, 08:30:43"
-      ),
-    ];
+    // this.birdImages$ = from(.getLatestBirdImages(6));
   }
 
-  ngOnInit(): void {}
-
-  public birdImages: IBirdImage[];
+  public birdImages$: Observable<BirdImageDto[]>;
 }
 
-export class BirdImage implements IBirdImage {
-  constructor(public url: string, public date: string) {}
-}
-
-export interface IBirdImage {
-  url: string;
-  date: string;
-}

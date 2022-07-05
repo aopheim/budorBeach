@@ -23,7 +23,7 @@ namespace TSGenerator
             {
                 TypeScriptGeneratorSettings =
                 {
-                    TypeStyle = TypeScriptTypeStyle.Class
+                    TypeStyle = TypeScriptTypeStyle.Interface,
                 }
             };
 
@@ -32,7 +32,7 @@ namespace TSGenerator
             var code = generator.GenerateFile();
             await File.WriteAllTextAsync(typeScriptServicesPath, code);
 
-            Console.WriteLine("Generated TypeScript client at budorWeb.Api/ClientApp/src/services.ts");
+            Console.WriteLine($"Generated TypeScript client at {typeScriptServicesPath}");
         }
     }
 }

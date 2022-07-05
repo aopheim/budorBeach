@@ -12,7 +12,7 @@ namespace budorWeb.Api.Controllers
     {
         [HttpGet(nameof(GetLatestBirdImages))]
         public List<BirdImageDto> GetLatestBirdImages(int numberOfImages = 5,
-            CancellationToken cancellationToken = default)
+            CancellationToken cancellationToken = default )
         {
             var dtos = Fixture.CreateMany<BirdImageDto>(5).ToList();
             foreach (var dto in dtos)
