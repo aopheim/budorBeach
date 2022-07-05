@@ -5,42 +5,37 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
+using DataAccess.EFCore;
 using Iot.Device.Bmxx80;
 using Iot.Device.Bmxx80.PowerMode;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Quartz;
-using Shared;
 using Shared.Models;
 using Shared.SignalR;
 
 namespace rpiDaemon.Jobs
 {
+    [DisallowConcurrentExecution]
     [UsedImplicitly]
     public class GetBme280SensorReadingsJob : IJob
     {
-        private readonly HubConnection _connection;
-        private readonly ApplicationDbContext _context;
+        private readonly BudorDbContext _context;
         private readonly IWebHostEnvironment _environment;
         private readonly Fixture _fixture;
         private readonly ILogger<GetBme280SensorReadingsJob> _logger;
+        private readonly ISignalRService _signalRService;
 
-        public GetBme280SensorReadingsJob(ApplicationDbContext context, ILogger<GetBme280SensorReadingsJob> logger,
-            IWebHostEnvironment environment)
+        public GetBme280SensorReadingsJob(BudorDbContext context, ILogger<GetBme280SensorReadingsJob> logger,
+            IWebHostEnvironment environment, ISignalRService signalRService)
         {
             _context = context;
             _logger = logger;
             _environment = environment;
+            _signalRService = signalRService;
             _fixture = new Fixture();
-
-            var urlToUse = environment.IsProduction()
-                ? GlobalConstants.ProductionHubUrl
-                : GlobalConstants.DevelopmentHubUrl;
-            _connection = SignalRHelper.GetHubConnection(urlToUse);
-            SignalRHelper.SetupEventsForDebuggingConnection(logger, _connection);
         }
 
         private static TimeSpan DbPushInterval => TimeSpan.FromMinutes(2);
@@ -60,18 +55,9 @@ namespace rpiDaemon.Jobs
                 await _context.SaveChangesAsync(jobExecutionContext.CancellationToken);
             }
 
-            await PushReadingsToBudorHub(sensorReadingModel, jobExecutionContext.CancellationToken);
-            await _connection.StopAsync(jobExecutionContext.CancellationToken);
-            await _connection.DisposeAsync();
-        }
-
-        private async Task PushReadingsToBudorHub(SensorReadingModel model, CancellationToken cancellationToken)
-        {
-            await SignalRHelper.StartWithRetryAsync(_connection, cancellationToken);
-            await _connection.InvokeAsync(nameof(BudorHub.SendSensorReadingModelToWebClient), model,
-                cancellationToken);
-            await _connection.InvokeAsync(nameof(BudorHub.SendMessageToAllClients),
-                $"{JsonSerializer.Serialize(model)}", cancellationToken);
+            await _signalRService.SendSensorReading(sensorReadingModel, jobExecutionContext.CancellationToken);
+            await _signalRService.ConsoleLogMessage($"{JsonSerializer.Serialize(sensorReadingModel)}",
+                jobExecutionContext.CancellationToken);
         }
 
         private SensorReadingModel GetCurrentSensorReadings()

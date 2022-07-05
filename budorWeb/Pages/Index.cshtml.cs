@@ -6,19 +6,17 @@ using System.Threading;
 using System.Threading.Tasks;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
+using DataAccess.EFCore;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using rpiDaemon;
 using rpiDaemon.DateTimeHelpers;
 using Shared;
 using Shared.Azure;
-using Shared.Interfaces;
 using Shared.Models;
 using Shared.PiCameraSettings;
 using Shared.SignalR;
@@ -28,27 +26,24 @@ namespace budorWeb.Pages
     public class BudorBeachModel : PageModel
     {
         private readonly IConfiguration _config;
-        private readonly HubConnection _connection;
-        private readonly ApplicationDbContext _context;
+        private readonly BudorDbContext _context;
         private readonly ILogger<BudorBeachModel> _logger;
+        private readonly ISignalRService _signalRService;
 
-        public BudorBeachModel(ILogger<BudorBeachModel> logger, IConfiguration config, ApplicationDbContext context,
-            IWebHostEnvironment environment)
+        public BudorBeachModel(ILogger<BudorBeachModel> logger, IConfiguration config, BudorDbContext context,
+            IWebHostEnvironment environment, ISignalRService signalRService)
         {
             _context = context;
+            _signalRService = signalRService;
             _logger = logger;
             _config = config;
-            _currentCameraSettings = PiCameraSettingsHelper.GetCurrentCameraSettingsFromFile();
-            IsoSetting = _currentCameraSettings.Iso;
-            ShutterTimeSetting = _currentCameraSettings.ShutterTime;
-
-            _connection = SignalRHelper.GetHubConnection(environment.IsProduction()
-                ? GlobalConstants.ProductionHubUrl
-                : GlobalConstants.DevelopmentHubUrl);
-            SignalRHelper.SetupEventsForDebuggingConnection(logger, _connection);
+            CurrentCameraSettings = PiCameraSettingsHelper.GetCurrentCameraSettingsFromFile();
+            IsoSetting = CurrentCameraSettings.Iso;
+            ShutterTimeSetting = CurrentCameraSettings.ShutterTime;
+            SetupWebClientMethods();
         }
 
-        private PiCameraSettings _currentCameraSettings { get; }
+        private PiCameraSettings CurrentCameraSettings { get; }
 
 
         public List<BlobItem> LatestImages { get; set; }
@@ -58,12 +53,17 @@ namespace budorWeb.Pages
         [BindProperty] public int IsoSetting { get; set; }
         [BindProperty] public int ShutterTimeSetting { get; set; }
 
+        private void SetupWebClientMethods()
+        {
+            _signalRService.RegisterClientMethod<PiCameraSettings>(nameof(ISignalRService.TakeImage),
+                settings => { _logger.LogInformation(JsonSerializer.Serialize(settings)); });
+            _signalRService.RegisterClientMethod<SensorReadingModel>(nameof(ISignalRService.SendSensorReading),
+                model => { _logger.LogInformation(JsonSerializer.Serialize(model)); });
+        }
+
         public async Task OnGetAsync(CancellationToken cancellationToken)
         {
-            SetupWebClientMethods();
-            await SignalRHelper.StartWithRetryAsync(_connection, cancellationToken);
-            await _connection.InvokeAsync(nameof(BudorHub.SendMessageToAllClients), ".NET Web Client connected!",
-                cancellationToken);
+            await _signalRService.ConsoleLogMessage(".NET Web Client connected!", cancellationToken);
 
             LatestSensorReadingModel = _context.SensorReadings.OrderByDescending(m => m.MeasuredAtUtc).FirstOrDefault();
 
@@ -79,12 +79,10 @@ namespace budorWeb.Pages
 
         public async Task<IActionResult> OnPostAsync(CancellationToken cancellationToken)
         {
-            await SignalRHelper.StartWithRetryAsync(_connection, cancellationToken);
-
-            _currentCameraSettings.Iso = IsoSetting;
-            _currentCameraSettings.ShutterTime = ShutterTimeSetting;
-            PiCameraSettingsHelper.SetCameraSettingsToFile(_currentCameraSettings);
-            await _connection.InvokeAsync(nameof(BudorHub.TakeImage), _currentCameraSettings, cancellationToken);
+            CurrentCameraSettings.Iso = IsoSetting;
+            CurrentCameraSettings.ShutterTime = ShutterTimeSetting;
+            PiCameraSettingsHelper.SetCameraSettingsToFile(CurrentCameraSettings);
+            await _signalRService.TakeImage(CurrentCameraSettings, cancellationToken);
 
             return RedirectToPage("Index");
         }
@@ -119,13 +117,6 @@ namespace budorWeb.Pages
                     .ToList()
             };
             return new JsonResult(chartModel);
-        }
-
-        private void SetupWebClientMethods()
-        {
-            _connection.On<string>(nameof(IBudorHubClient.TakeImage), message => { _logger.LogInformation(message); });
-            _connection.On<SensorReadingModel>(nameof(IBudorHubClient.ReceiveCurrentSensorReading),
-                model => { _logger.LogInformation(JsonSerializer.Serialize(model)); });
         }
     }
 

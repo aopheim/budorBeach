@@ -1,0 +1,19 @@
+using System;
+using Shared.Models;
+
+namespace Shared.Interfaces
+{
+    public interface ISensorReadingRepo : IRepository<SensorReadingModel>
+    {
+    }
+
+    public interface IBirdPresenceRepo : IRepository<BirdPresenceRegistration>
+    {
+        BirdPresenceRegistration GetLatestRegistration();
+    }
+
+    public interface ISpeciesRecognitionRepo : IRepository<SpeciesRecognitionModel>
+    {
+        bool Exists(Guid recordingId);
+    }
+}

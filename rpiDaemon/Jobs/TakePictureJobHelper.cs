@@ -1,14 +1,13 @@
 ﻿using System;
 using System.IO;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using Azure.Storage.Blobs;
+using CameraService.Interfaces;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using MMALSharp;
-using MMALSharp.Common;
-using MMALSharp.Handlers;
 using rpiDaemon.DateTimeHelpers;
 using Shared.Azure;
 using Shared.PiCameraSettings;
@@ -19,7 +18,7 @@ namespace rpiDaemon.Jobs
 {
     public static class TakePictureJobHelper
     {
-        public static async Task TakeImageAndUploadAsync(IWebHostEnvironment environment, MMALCamera camera,
+        public static async Task TakeImageAndUploadAsync(IWebHostEnvironment environment, ICameraService cameraService,
             ILogger logger, BlobContainerClient containerClient, BlobContainerClient thumbnailContainerClient,
             PiCameraSettings settings)
         {
@@ -30,21 +29,20 @@ namespace rpiDaemon.Jobs
             }
             else
             {
+                if (cameraService.CameraIsInUse())
+                {
+                    logger.LogInformation("Camera is in use. Skipping taking image");
+                    return;
+                }
                 var now = DateTime.UtcNow;
                 var folderName = DateTimeParser.GetFolderName(now);
                 var fileName = DateTimeParser.GetFileName(now);
                 var folderPath = $"/home/pi/images/{folderName}";
                 var fullPath = folderPath + $"/{fileName}.jpg";
+                    
                 try
                 {
-                    using var imgCaptureHandler = new ImageStreamCaptureHandler(fullPath);
-
-                    MMALCameraConfig.ISO = settings.Iso;
-                    MMALCameraConfig.ShutterSpeed = settings.ShutterTime;
-
-                    camera.ConfigureCameraSettings();
-
-                    await camera.TakePicture(imgCaptureHandler, MMALEncoding.JPEG, MMALEncoding.I420);
+                    await cameraService.TakeImage(fullPath, settings);
                 }
                 catch (Exception e)
                 {
@@ -82,7 +80,8 @@ namespace rpiDaemon.Jobs
         {
             var blobClient = containerClient.GetBlobClient($"{folderName}/{fileName}.jpg");
             await using var uploadFileStream = File.OpenRead(fullPath);
-            await blobClient.UploadAsync(uploadFileStream, true);
+            var cTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+            await blobClient.UploadAsync(uploadFileStream, true, cTokenSource.Token);
             uploadFileStream.Close();
             await AzureStorageHelper.SetBlobPropertiesAsync(blobClient);
         }
