@@ -68,13 +68,13 @@ namespace rpiDaemon
                 //     GlobalConstants.StartVideSurveillanceTrigger, null, DateTime.UtcNow.AddSeconds(30));
                 q.AddJobAndTrigger<CaptureAudioContinuouslyJob>(GlobalConstants.SecondJobs,
                     GlobalConstants.AudioRecordingTrigger, null);
-                // q.AddJobAndTrigger<AnalyzeAudioRecordingsJob>(GlobalConstants.SecondJobs,
-                //     GlobalConstants.AudioAnalyzerTrigger,
-                //     _environment.IsDevelopment() ? TimeSpan.FromSeconds(15) : TimeSpan.FromSeconds(60),
-                //     DateTime.UtcNow.AddSeconds(60));
-                // q.AddJobAndTrigger<UploadAudioRecordingsJob>(GlobalConstants.MinuteJobs,
-                //     GlobalConstants.UploadAudioRecordingTrigger, TimeSpan.FromMinutes(1),
-                //     DateTime.UtcNow.AddSeconds(10));
+                q.AddJobAndTrigger<AnalyzeAudioRecordingsJob>(GlobalConstants.SecondJobs,
+                    GlobalConstants.AudioAnalyzerTrigger,
+                    _environment.IsDevelopment() ? TimeSpan.FromSeconds(15) : TimeSpan.FromSeconds(60),
+                    DateTime.UtcNow.AddSeconds(60));
+                q.AddJobAndTrigger<UploadAudioRecordingsJob>(GlobalConstants.MinuteJobs,
+                    GlobalConstants.UploadAudioRecordingTrigger, TimeSpan.FromMinutes(1),
+                    DateTime.UtcNow.AddSeconds(10));
             });
 
             services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
