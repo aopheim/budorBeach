@@ -34,7 +34,7 @@ namespace Services
             var birdNetAnalyzerPath = isWindows
                 ? GlobalConstants.BirdNetAnalyzerPathWindows
                 : GlobalConstants.BirdNetAnalyzerPathLinux;
-            var pythonAbbr = isWindows ? "py" : "python";
+            var pythonAbbr = isWindows ? "py" : "python3";
             var windowsArguments = @$"/C cd {birdNetAnalyzerPath} && {pythonAbbr} server.py";
             var linuxArguments = $"-c \"cd {birdNetAnalyzerPath} && {pythonAbbr} server.py\"";
             _logger.LogInformation($"Running args: {linuxArguments}");
