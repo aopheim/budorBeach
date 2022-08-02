@@ -1,6 +1,4 @@
-#!/usr/bin/env python
 from ctypes import *
-import pyaudio
 import uuid
 import wave
 import pyaudio
