@@ -34,7 +34,7 @@ namespace AudioService
                     : GlobalConstants.AudioServiceFolderLinux;
                 var fileName = isWindows ? "recordAudioWindows.py" : "recordAudioLinux.py";
                 var argumentsWindows = @$"/C cd {filePath} && py {fileName}";
-                var argumentsLinux = $"-c \"cd {filePath} && python {fileName}\"";
+                var argumentsLinux = $"-c \"cd {filePath} && python3 {fileName}\"";
                 try
                 {
                     Process process = _externalProcess.StartExternalSingletonProcess(isWindows,
@@ -47,8 +47,6 @@ namespace AudioService
                     _isRunning = false;
                     continue;
                 }
-
-                _logger.LogInformation("Recording finished");
 
                 _isRunning = false;
             }
