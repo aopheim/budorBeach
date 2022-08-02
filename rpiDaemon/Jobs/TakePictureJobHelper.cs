@@ -80,7 +80,7 @@ namespace rpiDaemon.Jobs
         {
             var blobClient = containerClient.GetBlobClient($"{folderName}/{fileName}.jpg");
             await using var uploadFileStream = File.OpenRead(fullPath);
-            var cTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+            var cTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(30));
             await blobClient.UploadAsync(uploadFileStream, true, cTokenSource.Token);
             uploadFileStream.Close();
             await AzureStorageHelper.SetBlobPropertiesAsync(blobClient);
