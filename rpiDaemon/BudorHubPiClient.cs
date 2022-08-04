@@ -52,8 +52,6 @@ namespace rpiDaemon
 
         public Task SendSensorReading(SensorReadingModel model, CancellationToken cancellationToken)
         {
-            _logger.LogInformation(model.ToString());
-
             return Task.CompletedTask;
         }
 
