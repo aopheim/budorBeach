@@ -392,6 +392,19 @@ namespace budorWeb.Services
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-6-21/4-37-33.jpg",
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-6-21/4-22-33.jpg"
                     }
+                },
+                new NewsFeedEntry
+                {
+                    Id = "zb",
+                    Date = new DateTime(2022, 08, 05),
+                    Header = "Rapport fra fuglekasse-teknikeren",
+                    Body =
+                        "På grunn av diverse tekniske problemer var dessverre forbindelsen til fuglekassa nede da årets mini-fluesnappere vokste opp og forlot redet. Nå har vi endelig fått en fuglekasse-tekniker på plass for å få fuglekassa på beina, og den er nå oppe og går igjen. Igjen lå bare et ensomt egg som aldri ble klekt. Kanskje det var egget fra Herr Fluesnappers jomfrufødsel? Egget er i hvert fall mye mindre i virkeligheten enn det ser ut som på bildet. Nå er også fuglekassa oppdatert med nytt og bedre kamera. Se så fine bilder det blir nå! Fluesnapper-entusiast-miljøet gleder seg allerede til neste sesong!",
+                    ImageUrls = new List<string>
+                    {
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-8-5/egg.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-8-5/9-31-36.jpg"
+                    }
                 }
             }.OrderByDescending(e => e.Date).ToList();
         }
