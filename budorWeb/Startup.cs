@@ -1,11 +1,6 @@
-using System;
-using Azure.Core.Extensions;
-using Azure.Storage.Blobs;
-using Azure.Storage.Queues;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -33,13 +28,15 @@ namespace budorWeb
             services.AddSignalR();
 
             var connectionString = _hostingEnvironment.IsProduction()
-                ? Configuration["ProductionDb"]
-                : Configuration["DevelopmentDb"];
+                ? Configuration[GlobalConstants.ProductionDb]
+                : Configuration[GlobalConstants.DevelopmentDb];
             services.AddDbContext<ApplicationDbContext>(options =>
             {
                 options.UseSqlServer(connectionString);
                 options.EnableSensitiveDataLogging();
             });
+            if (_hostingEnvironment.IsProduction())
+                services.AddApplicationInsightsTelemetry(Configuration[GlobalConstants.AppInsightsConnectionString]);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
