@@ -47,13 +47,15 @@ namespace budorWeb
 
             services.AddLogging(loggingBuilder => loggingBuilder.AddSeq());
             var connectionString = _hostingEnvironment.IsProduction()
-                ? Configuration["ProductionDb"]
-                : Configuration["DevelopmentDb"];
+                ? Configuration[GlobalConstants.ProductionDb]
+                : Configuration[GlobalConstants.DevelopmentDb];
             services.AddDbContext<BudorDbContext>(options =>
             {
                 options.UseSqlServer(connectionString);
                 options.EnableSensitiveDataLogging();
             });
+            if (_hostingEnvironment.IsProduction())
+                services.AddApplicationInsightsTelemetry(Configuration[GlobalConstants.AppInsightsConnectionString]);
         }
 
         private void InitializeContainer()
