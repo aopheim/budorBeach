@@ -2,6 +2,7 @@
 {
     public static class GlobalConstants
     {
+        public const string AppInsightsConnectionString = "AppInsightsConnectionString";
         public const string ImagesContainerName = "images";
         public const string ThumbnailImagesContainerName = "images-thumbnails";
         public const string AudioRecordingsContainerName = "audio-recordings";
@@ -36,5 +37,7 @@
         public const string BirdNetAnalyzerPathLinux = @"/home/pi/BirdNET-Analyzer/";
         public const string AudioServiceFolderWindows = @"C:\repos\budorBeach\AudioService";
         public const string BirdNetAnalyzerPathWindows = @"C:\repos\BirdNET-Analyzer";
+        public const string ProductionDb = "ProductionDb";
+        public const string DevelopmentDb = "DevelopmentDb";
     }
 }

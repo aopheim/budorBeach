@@ -81,7 +81,7 @@ namespace rpiDaemon
             services.AddSignalR();
             services.AddLogging(loggingBuilder => loggingBuilder.AddSeq());
             if (_environment.IsProduction())
-                services.AddApplicationInsightsTelemetry(Configuration["ApplicationInsightsConnectionString"]);
+                services.AddApplicationInsightsTelemetry(Configuration[GlobalConstants.AppInsightsConnectionString]);
 
             services.AddDbContext<BudorDbContext>(options => options.UseSqlServer(_environment.IsDevelopment()
                 ? Configuration["DevelopmentDb"]

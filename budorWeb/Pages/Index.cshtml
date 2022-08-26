@@ -1,23 +1,21 @@
 ﻿@page
+@using global::Shared.Azure
 @using rpiDaemon.DateTimeHelpers
-@using System.Text.Json
 @using Azure.Storage.Blobs.Models
 @using budorWeb.Services
-@using global::Shared.Azure
-@using global::Shared.Models
-@using global::Shared.PiCameraSettings
 @model BudorBeachModel
 @{
     ViewData["Title"] = "Budor Beach";
 }
 
 @section Styles {
-    <link href="@Url.Content("~/css/index.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/css/index.css")" rel="stylesheet" type="text/css"/>
 }
+
 <div class="container my-3">
     <div class="row">
         <div class="col">
-            <p>Sist oppdatert</p>
+            <p>Værdata sist oppdatert</p>
             <p id="lastUpdatedAt">@DateTimeParser.GetLocalDateTimeAsString(Model.LatestSensorReadingModel?.MeasuredAtUtc)</p>
         </div>
     </div>
@@ -39,6 +37,9 @@
                 <i class="fa fa-humidity"></i>
                 <p id="pressureInhPa">@Math.Round(Model.LatestSensorReadingModel?.PressureInhPa ?? default, 1)hPa</p>
             </div>
+        </div>
+        <div class="alert alert-danger" role="alert">
+            Det ser dessverre ut som kameraet i fuglekassa har falt ned. En fuglekassetekniker er på vei for å feste det bedre. Værdata-sensorene har dessverre også streiket i det siste. Sannsynligvis har en ledning blitt røsket ut av august-regnværet. Vi håper å få dette på beina igjen så fort som mulig.
         </div>
         @{
             const int last12 = 12;
@@ -71,7 +72,8 @@
             <div class="card-body">
                 <canvas id="humidityChart"></canvas>
             </div>
-        </div><div class="col-sm-6">
+        </div>
+        <div class="col-sm-6">
             <div class="card-body">
                 <canvas id="pressureChart"></canvas>
             </div>
@@ -80,7 +82,7 @@
 
     <h2>De 5 siste bildene</h2>
     <div class="row">
-        @foreach (var blob in @Model?.LatestImages ?? new List<BlobItem>())
+        @foreach (var blob in Model?.LatestImages ?? new List<BlobItem>())
         {
             <div class="col-md-6">
                 <div class="card my-3">
@@ -94,14 +96,16 @@
             </div>
         }
     </div>
-    <a href="images"><h2>Til dagens bildegalleri</h2></a>
-    <br />
-    <br />
-    <br />
+    <a href="images">
+        <h2>Til dagens bildegalleri</h2>
+    </a>
+    <br/>
+    <br/>
+    <br/>
     <h2>Siste fuglekassenytt</h2>
     <div class="row">
         <div class="col-4">
-            <div id="newsfeed" class="list-group" >
+            <div id="newsfeed" class="list-group">
                 @foreach (var entry in NewsFeedService.GetNewsFeedEntries())
                 {
                     <a class="list-group-item list-group-item-action" href="#@entry.Id">@DateTimeParser.GetLocalDateAsString(entry.Date) - @entry.Header</a>
@@ -114,23 +118,25 @@
                 {
                     var carouselControlsId = "carousel-controls" + entry.Id;
 
-                    <h4 id="@entry.Id">@DateTimeParser.GetLocalDateAsString(@entry.Date) - @entry.Header</h4>
+                    <h4 id="@entry.Id">@DateTimeParser.GetLocalDateAsString(entry.Date) - @entry.Header</h4>
                     <p>@entry.Body</p>
                     @if (entry.ImageUrls?.Count == 1)
                     {
-                        <img class="img-fluid mx-auto d-block" src="@entry.ImageUrls[0]" alt="@entry.ImageUrls[0]" />
+                        <img class="img-fluid mx-auto d-block" src="@entry.ImageUrls[0]" alt="@entry.ImageUrls[0]"/>
                     }
                     else if (entry.ImageUrls?.Count > 1)
                     {
                         <div id="@carouselControlsId" class="carousel slide " data-interval="false">
                             <div class="carousel-inner">
-                                @{ var isActive = "active";}
+                                @{ var isActive = "active"; }
                                 @foreach (var url in entry.ImageUrls)
                                 {
                                     <div class="carousel-item @isActive">
-                                        <img src="@url" class="d-block w-100" alt="@url" />
+                                        <img src="@url" class="d-block w-100" alt="@url"/>
                                     </div>
-                                    { isActive = ""; }
+                                    {
+                                        isActive = "";
+                                    }
                                 }
                             </div>
                             <button class="carousel-control-prev" type="button" data-bs-target="#@carouselControlsId" data-bs-slide="prev">
@@ -143,31 +149,31 @@
                             </button>
                         </div>
                     }
-                    <hr class="my-4" />
+                    <hr class="my-4"/>
                 }
-            </div>            
+            </div>
         </div>
     </div>
-    <h2>Kamera-innstillinger</h2>
-    <form method="post">
-        <div class="row">
-            <div class="col-sm-6">
-                <div class="text-center">
-                    <h5>ISO (0 = auto)</h5>
-                    <input type="range" asp-for="IsoSetting" id="iso-slider" value="@Model.IsoSetting" min="0" max="800" step="100" onclick="showValue('iso-slider', 'iso-slider-val')">
-                    <h4 id="iso-slider-val">@Model.IsoSetting</h4>
-                </div>
-            </div>
-            <div class="col-sm-6">
-                <div class="text-center">
-                    <h5>Lukkerhastighet (0 = auto)</h5>
-                    <input type="range" asp-for="ShutterTimeSetting" id="shutterspeed-slider" value="@Model.ShutterTimeSetting" min="0" max="6000" step="10" onclick="showValue('shutterspeed-slider', 'shutterspeed-slider-val')">
-                    <h4 id="shutterspeed-slider-val">@Model.ShutterTimeSetting</h4>
-                </div>
-            </div>
-            <input type="submit" value="Ta bilde" />
-        </div>
-    </form>
+    @* <h2>Kamera-innstillinger</h2> *@
+    @* <form method="post"> *@
+    @*     <div class="row"> *@
+    @*         <div class="col-sm-6"> *@
+    @*             <div class="text-center"> *@
+    @*                 <h5>ISO (0 = auto)</h5> *@
+    @*                 <input type="range" asp-for="IsoSetting" id="iso-slider" value="@Model.IsoSetting" min="0" max="800" step="100" onclick="showValue('iso-slider', 'iso-slider-val')"> *@
+    @*                 <h4 id="iso-slider-val">@Model.IsoSetting</h4> *@
+    @*             </div> *@
+    @*         </div> *@
+    @*         <div class="col-sm-6"> *@
+    @*             <div class="text-center"> *@
+    @*                 <h5>Lukkerhastighet (0 = auto)</h5> *@
+    @*                 <input type="range" asp-for="ShutterTimeSetting" id="shutterspeed-slider" value="@Model.ShutterTimeSetting" min="0" max="6000" step="10" onclick="showValue('shutterspeed-slider', 'shutterspeed-slider-val')"> *@
+    @*                 <h4 id="shutterspeed-slider-val">@Model.ShutterTimeSetting</h4> *@
+    @*             </div> *@
+    @*         </div> *@
+    @*         <input type="submit" value="Ta bilde"/> *@
+    @*     </div> *@
+    @* </form> *@
 </div>
 
 <script src="~/js/signalr/dist/browser/signalr.min.js"></script>
