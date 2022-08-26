@@ -40,4 +40,7 @@ Global
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {91072C21-3714-4F3A-86EB-F64518CC20DD}
 	EndGlobalSection
+	GlobalSection(RiderSharedRunConfigurations) = postSolution
+		File = rpiDaemon\Publish rpiDaemon to folder.run.xml
+	EndGlobalSection
 EndGlobal
