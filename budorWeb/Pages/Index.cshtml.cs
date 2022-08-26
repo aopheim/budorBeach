@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text.Json;
 using System.Threading;
@@ -35,6 +36,8 @@ namespace budorWeb.Pages
         public BudorBeachModel(ILogger<BudorBeachModel> logger, IConfiguration config, ApplicationDbContext context,
             IWebHostEnvironment environment)
         {
+            var stopWatch = new Stopwatch();
+            stopWatch.Start();
             _context = context;
             _logger = logger;
             _config = config;
@@ -46,6 +49,8 @@ namespace budorWeb.Pages
                 ? GlobalConstants.ProductionHubUrl
                 : GlobalConstants.DevelopmentHubUrl);
             SignalRHelper.SetupEventsForDebuggingConnection(logger, _connection);
+            stopWatch.Stop();
+            _logger.LogInformation($"Constructor in Index.cshtml ran in {stopWatch.Elapsed.Milliseconds} ms");
         }
 
         private PiCameraSettings _currentCameraSettings { get; }
@@ -60,12 +65,15 @@ namespace budorWeb.Pages
 
         public async Task OnGetAsync(CancellationToken cancellationToken)
         {
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
             SetupWebClientMethods();
             await SignalRHelper.StartWithRetryAsync(_connection, cancellationToken);
             await _connection.InvokeAsync(nameof(BudorHub.SendMessageToAllClients), ".NET Web Client connected!",
                 cancellationToken);
-
+            _logger.LogInformation($"Before SQL: {stopwatch.Elapsed.Milliseconds} ms");
             LatestSensorReadingModel = _context.SensorReadings.OrderByDescending(m => m.MeasuredAtUtc).FirstOrDefault();
+            _logger.LogInformation($"After SQL: {stopwatch.Elapsed.Milliseconds} ms");
 
             ThumbnailsContainerClient =
                 AzureStorageHelper.GetBlobContainerClient(_config, GlobalConstants.ThumbnailImagesContainerName);
@@ -73,6 +81,8 @@ namespace budorWeb.Pages
                 AzureStorageHelper.GetBlobContainerClient(_config, GlobalConstants.ImagesContainerName);
             var blobs = ThumbnailsContainerClient.GetBlobs()
                 .OrderByDescending(blob => DateTimeParser.GetDateTimeFromFolderAndFileName(blob.Name)).Take(5).ToList();
+            stopwatch.Stop();
+            _logger.LogInformation($"Performed OnGetAsync in {stopwatch.Elapsed.Milliseconds} ms");
 
             LatestImages = blobs;
         }
