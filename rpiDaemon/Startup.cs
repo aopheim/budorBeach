@@ -50,7 +50,7 @@ namespace rpiDaemon
             services.AddSignalR();
             services.AddHostedService<BudorHubPiClient>();
             if (_environment.IsProduction())
-                services.AddApplicationInsightsTelemetry(Configuration["ApplicationInsightsConnectionString"]);
+                services.AddApplicationInsightsTelemetry(Configuration[GlobalConstants.AppInsightsConnectionString]);
 
             if (_environment.IsProduction())
                 services.AddDbContext<ApplicationDbContext>(options =>
