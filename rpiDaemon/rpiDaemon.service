@@ -5,7 +5,7 @@ Wants=network.target
 [Service]
 Type=notify
 WorkingDirectory=/home/pi/budorBeach/deploy
-ExecStart=/home/pi/dotnet-arm32/dotnet /home/pi/budorBeach/deploy/rpiDaemon.dll
+ExecStart=/home/pi/.dotnet/dotnet /home/pi/budorBeach/deploy/rpiDaemon.dll
 Restart=always
 # Restart service after 10 seconds if the dotnet service crashes:
 RestartSec=10
