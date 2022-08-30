@@ -81,11 +81,15 @@ namespace rpiDaemon
             services.AddSignalR();
             services.AddLogging(loggingBuilder => loggingBuilder.AddSeq());
             if (_environment.IsProduction())
-                services.AddApplicationInsightsTelemetry(Configuration[GlobalConstants.AppInsightsConnectionString]);
+            {
+                var instrumentationKey = Configuration[GlobalConstants.AppInsightsConnectionString];
+                Console.WriteLine($"Set up application insights with instrumentation key {instrumentationKey}");
+                services.AddApplicationInsightsTelemetry(instrumentationKey);
+            }
 
             services.AddDbContext<BudorDbContext>(options => options.UseSqlServer(_environment.IsDevelopment()
-                ? Configuration["DevelopmentDb"]
-                : Configuration["ProductionDb"]));
+                ? Configuration[GlobalConstants.DevelopmentDb]
+                : Configuration[GlobalConstants.ProductionDb]));
         }
 
         private void InitializeContainer()
