@@ -1,0 +1,1 @@
+- recordAudioLinux.py bruker pyAudio. Dette kjører på Python 3.7, 3.8 og 3.9.
