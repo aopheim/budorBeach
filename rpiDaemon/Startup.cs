@@ -101,10 +101,10 @@ public class Startup
         _container.RegisterSingleton<IBirdPresenceRegistrator, BirdPresenceRegistrator>();
         _container.RegisterSingleton<IBirdNetServer, BirdNetServer>();
         _container.RegisterSingleton<IBirdRecordingAnalyzer, AudioRecordingRecordingAnalyzer>();
-        _container.RegisterSingleton<IAudioService, AudioService.AudioService>();
         _container.RegisterSingleton<IAudioUploader, AudioUploaderService>();
         _container.RegisterSingleton<IExternalSingletonProcess, ExternalSingletonProcess>();
         _container.Register<CaptureAudioContinuouslyJob>();
+        _container.Register<IAudioService, AudioService.AudioService>();
         _container.Register<IRepositories, Repositories>(Lifestyle.Scoped);
         _container.Register<GetBme280SensorReadingsJob>();
         _container.Register<TakePictureJob>();
