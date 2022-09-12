@@ -104,11 +104,11 @@ namespace rpiDaemon
             _container.RegisterSingleton<IAudioService, AudioService.AudioService>();
             _container.RegisterSingleton<IAudioUploader, AudioUploaderService>();
             _container.RegisterSingleton<IExternalSingletonProcess, ExternalSingletonProcess>();
+            _container.RegisterSingleton<CaptureAudioContinuouslyJob>();
             _container.Register<IRepositories, Repositories>(Lifestyle.Scoped);
             _container.Register<GetBme280SensorReadingsJob>();
             _container.Register<TakePictureJob>();
             _container.Register<GetProximityJob>();
-            _container.Register<CaptureAudioContinuouslyJob>();
             _container.Register<TakeVideoJob>();
             _container.Register<StreamVideoJob>();
             _container.Register<UploadAudioRecordingsJob>();
