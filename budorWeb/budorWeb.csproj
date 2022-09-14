@@ -4,6 +4,7 @@
     <TargetFramework>net6.0-windows10.0.17763</TargetFramework>
     <CopyRefAssembliesToPublishDirectory>false</CopyRefAssembliesToPublishDirectory>
     <UserSecretsId>7a7d43a7-4a55-45c9-b915-7c7aec6d1751</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
 
   <ItemGroup>
