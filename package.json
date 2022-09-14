@@ -1,0 +1,6 @@
+{
+	"scripts": {
+		"docker:build:rpidaemon": "docker build -t rpidaemon .",
+		"docker:run:rpidaemon": "docker run -p 8080:80 --name rpidaemon rpidaemon"
+	}
+}
