@@ -38,9 +38,9 @@
                 <p id="pressureInhPa">@Math.Round(Model.LatestSensorReadingModel?.PressureInhPa ?? default, 1)hPa</p>
             </div>
         </div>
-        <div class="alert alert-danger" role="alert">
-            Det ser dessverre ut som kameraet i fuglekassa har falt ned. En fuglekassetekniker er på vei for å feste det bedre. Værdata-sensorene har dessverre også streiket i det siste. Sannsynligvis har en ledning blitt røsket ut av august-regnværet. Vi håper å få dette på beina igjen så fort som mulig.
-        </div>
+        @* <div class="alert alert-danger" role="alert"> *@
+        @*     Det ser dessverre ut som kameraet i fuglekassa har falt ned. En fuglekassetekniker er på vei for å feste det bedre. Værdata-sensorene har dessverre også streiket i det siste. Sannsynligvis har en ledning blitt røsket ut av august-regnværet. Vi håper å få dette på beina igjen så fort som mulig. *@
+        @* </div> *@
         @{
             const int last12 = 12;
             const int lastDay = 24;
