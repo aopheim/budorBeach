@@ -16,7 +16,7 @@ namespace TSGenerator
             const string swaggerFileName = "swagger.json";
             var workingDir = Environment.CurrentDirectory;
             var projectDirectory = Directory.GetParent(workingDir)?.FullName ?? "";
-            
+
             var swaggerJsonPath = $"{projectDirectory}\\budorWeb.Api\\{swaggerFileName}";
             var openApiDocument = await OpenApiDocument.FromFileAsync(swaggerJsonPath);
             var settings = new TypeScriptClientGeneratorSettings
@@ -24,7 +24,10 @@ namespace TSGenerator
                 TypeScriptGeneratorSettings =
                 {
                     TypeStyle = TypeScriptTypeStyle.Interface,
-                }
+                },
+                Template = TypeScriptTemplate.Angular,
+                InjectionTokenType = InjectionTokenType.InjectionToken,
+                HttpClass = HttpClass.HttpClient,
             };
 
             var generator = new TypeScriptClientGenerator(openApiDocument, settings);
