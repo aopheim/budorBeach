@@ -14,6 +14,10 @@ using Shared;
 
 namespace Services
 {
+    /// <summary>
+    /// BirdNetServer uses BirdNET-Analyzer: https://github.com/kahst/BirdNET-Analyzer
+    /// Needs to be run on 64-bit version of Python 3.8, as this is what librosa and tensorflow packages demand.
+    /// </summary>
     public class BirdNetServer : IBirdNetServer
     {
         private static readonly HttpClient Client = new();
