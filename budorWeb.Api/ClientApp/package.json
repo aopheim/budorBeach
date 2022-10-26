@@ -21,7 +21,6 @@
     "@angular/platform-browser-dynamic": "11.2.14",
     "@angular/platform-server": "11.2.14",
     "@angular/router": "11.2.14",
-    "@nguniversal/module-map-ngfactory-loader": "8.1.1",
     "bootstrap": "^5.0.1",
     "core-js": "^3.20.2",
     "jquery": "^3.6.0",
