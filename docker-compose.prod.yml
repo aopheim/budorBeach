@@ -9,7 +9,19 @@ services:
       - /root/.microsoft/usersecrets/7a7d43a7-4a55-45c9-b915-7c7aec6d1751:/root/.microsoft/usersecrets/7a7d43a7-4a55-45c9-b915-7c7aec6d1751
     depends_on:
       - birdnetserver
+      - audiorecorderlinux
   birdnetserver:
     extends:
       file: docker-compose.yml
       service: birdnetserver
+  audiorecorderlinux:
+    build:
+      context: /AudioService
+      dockerfile: Dockerfile
+    ports:
+      - 4000
+    devices:
+      - /dev/snd:/dev/snd
+    restart: unless-stopped
+    volumes:
+      - home\pi\audioRecordings:/audioRecordings

@@ -14,6 +14,8 @@ public static class GlobalConstants
     public const string ProductionHubUrl = ProductionUrl + HubEndpoint;
     public const string BirdNetServerWindowsUrl = "http://localhost:8080/analyze";
     public const string BirdNetServerDockerUrl = "http://birdnetserver:8080/analyze";
+    public const string AudioRecorderWindowsUrl = "http://audiorecorderwindows:4000/record";
+    public const string AudioRecorderLinuxUrl = "http://audiorecorderlinux:4000/record";
 
     public const string SecondJobs = "secondJobs";
     public const string MinuteJobs = "minuteJobs";
