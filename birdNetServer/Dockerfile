@@ -7,9 +7,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends ffmpeg  && rm -
 # Install required Python packages
 RUN pip3 install numpy scipy librosa bottle tensorflow
 
-# # Install Tensforflow
-# RUN pip3 install tensorflow 
-
 # Import all scripts
 COPY . ./
 
