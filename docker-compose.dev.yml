@@ -1,0 +1,24 @@
+services:
+  rpidaemon:
+    extends:
+      file: docker-compose.yml
+      service: rpidaemon
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    volumes:
+      - $APPDATA\Microsoft\UserSecrets\7a7d43a7-4a55-45c9-b915-7c7aec6d1751:/root/.microsoft/usersecrets/7a7d43a7-4a55-45c9-b915-7c7aec6d1751
+      - $APPDATA\budorBeach\audioRecordings:/audioRecordings
+    depends_on:
+      - dev-db
+      - birdnetserver
+  dev-db:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    environment:
+      - SA_PASSWORD=Dev-Password-123
+      - ACCEPT_EULA=Y
+    ports:
+      - 1433:1433
+  birdnetserver:
+    extends:
+      file: docker-compose.yml
+      service: birdnetserver
