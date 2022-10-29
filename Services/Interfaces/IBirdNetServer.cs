@@ -5,7 +5,7 @@ using Microsoft.Extensions.Hosting;
 
 namespace Services.Interfaces
 {
-    public interface IBirdNetServer : IHostedService
+    public interface IBirdNetServer 
     {
         Task<string> PostAsync(string filePathToAudioFile, CancellationToken cancellationToken);
     }
