@@ -16,12 +16,15 @@ public class Program
         var host = CreateHostBuilder(args)
             .UseSystemd()
             .Build();
+        var logger = host.Services.GetRequiredService<ILogger<Program>>();
+        Console.WriteLine(
+            $"Starting up! Environment: {Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}");
         CreateDbIfNotExists(host);
 
         host.Run();
     }
 
-    public static IHostBuilder CreateHostBuilder(string[] args)
+    private static IHostBuilder CreateHostBuilder(string[] args)
     {
         return Host.CreateDefaultBuilder(args)
             .ConfigureWebHostDefaults(webBuilder =>
@@ -36,14 +39,15 @@ public class Program
         using (var scope = host.Services.CreateScope())
         {
             var services = scope.ServiceProvider;
+            var logger = services.GetRequiredService<ILogger<Program>>();
+            logger.LogInformation("Creating db if not exists...");
             try
             {
                 var context = services.GetRequiredService<BudorDbContext>();
-                DbInitializer.Initialize(context);
+                DbInitializer.Initialize(context, logger);
             }
             catch (Exception ex)
             {
-                var logger = services.GetRequiredService<ILogger<Program>>();
                 logger.LogError(ex, "An error occurred creating the DB.");
             }
         }
