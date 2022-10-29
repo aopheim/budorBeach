@@ -11,6 +11,7 @@ services:
     depends_on:
       - dev-db
       - birdnetserver
+      - audiorecorderwindows
   dev-db:
     image: mcr.microsoft.com/mssql/server:2019-latest
     environment:
@@ -22,3 +23,12 @@ services:
     extends:
       file: docker-compose.yml
       service: birdnetserver
+  audiorecorderwindows:
+    build:
+      context: /AudioService
+      dockerfile: Dockerfile
+    ports:
+      - 4000
+    restart: unless-stopped
+    volumes:
+      - $APPDATA\budorBeach\audioRecordings:/audioRecordings
