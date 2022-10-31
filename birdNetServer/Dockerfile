@@ -5,7 +5,7 @@ FROM python:3.8-slim
 RUN apt-get update && apt-get install -y --no-install-recommends ffmpeg  && rm -rf /var/lib/apt/lists/*
 
 # Install required Python packages
-RUN pip3 install numpy scipy librosa bottle tensorflow
+RUN pip3 install numpy scipy librosa bottle tflite-runtime --no-cache-dir --compile
 
 # Import all scripts
 COPY . ./
