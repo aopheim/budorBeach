@@ -24,4 +24,4 @@ services:
       - /dev/snd:/dev/snd
     restart: unless-stopped
     volumes:
-      - home\pi\audioRecordings:/audioRecordings
+      - /home/pi/audioRecordings:/audioRecordings
