@@ -16,7 +16,7 @@ services:
       service: birdnetserver
   audiorecorderlinux:
     build:
-      context: /AudioService
+      context: ./AudioService
       dockerfile: Dockerfile
     ports:
       - 4000
