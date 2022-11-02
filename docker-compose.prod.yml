@@ -15,9 +15,9 @@ services:
       file: docker-compose.yml
       service: birdnetserver
   audiorecorderlinux:
-    build:
-      context: ./AudioService
-      dockerfile: Dockerfile
+    # build:
+    #   context: ./AudioService
+    #   dockerfile: Dockerfile
     image: aopheim/budorbeach:audiorecorderlinux
     ports:
       - 4000
