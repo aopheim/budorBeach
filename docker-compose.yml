@@ -1,14 +1,14 @@
 services:
   rpidaemon:
-    build: .
+    # build: .
     image: aopheim/budorbeach:rpidaemon
     ports:
       - 80
     restart: unless-stopped
   birdnetserver:
-    build:
-      context: ./birdNetServer
-      dockerfile: Dockerfile
+    # build:
+    #   context: ./birdNetServer
+    #   dockerfile: Dockerfile
     image: aopheim/budorbeach:birdnetserver
     ports:
       - 8080
