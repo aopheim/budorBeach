@@ -18,7 +18,7 @@ services:
     # build:
     #   context: ./AudioService
     #   dockerfile: Dockerfile
-    image: aopheim/budorbeach:audiorecorderlinux
+    image: aopheim/audiorecorderlinux:latest
     ports:
       - 4000
     devices:
