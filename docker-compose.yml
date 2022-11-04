@@ -9,6 +9,6 @@ services:
     # build:
     #   context: ./birdNetServer
     #   dockerfile: Dockerfile
-    image: aopheim/budorbeach:birdnetserver
+    image: aopheim/birdnetserver:latest
     ports:
       - 8080
