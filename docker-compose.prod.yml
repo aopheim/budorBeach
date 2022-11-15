@@ -10,6 +10,12 @@ services:
     depends_on:
       # - birdnetserver
       - audiorecorderlinux
+    devices:
+      # Camera
+      - "/dev/vchiq:/dev/vchiq"
+      # GPIO
+      - "/sys/class/gpio:/sys/class/gpio"
+    privileged: true
   birdnetserver:
     extends:
       file: docker-compose.yml
