@@ -10,10 +10,10 @@ services:
     depends_on:
       # - birdnetserver
       - audiorecorderlinux
-  # birdnetserver:
-  #   extends:
-  #     file: docker-compose.yml
-  #     service: birdnetserver
+  birdnetserver:
+    extends:
+      file: docker-compose.yml
+      service: birdnetserver
   audiorecorderlinux:
     # build:
     #   context: ./AudioService
