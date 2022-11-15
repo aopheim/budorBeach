@@ -85,7 +85,4 @@ if __name__ == '__main__':
     host = '0.0.0.0'
     port = '4000'
     print('UP AND RUNNING! LISTENING ON {}:{}'.format(host, port), flush=True)
-    try:
-        bottle.run(host=host, port=port, quiet=True)
-    finally:
-        os.unlink(output_file.name)
+    bottle.run(host=host, port=port, quiet=True)
