@@ -6,7 +6,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
     volumes:
-      - ~/.microsoft/usersecrets/7a7d43a7-4a55-45c9-b915-7c7aec6d1751:~/.microsoft/usersecrets/7a7d43a7-4a55-45c9-b915-7c7aec6d1751
+      - /home/pi/.microsoft/usersecrets/7a7d43a7-4a55-45c9-b915-7c7aec6d1751:/root/.microsoft/usersecrets/7a7d43a7-4a55-45c9-b915-7c7aec6d1751
     depends_on:
       # - birdnetserver
       - audiorecorderlinux
