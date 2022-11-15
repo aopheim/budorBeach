@@ -1,7 +1,7 @@
 services:
   rpidaemon:
     # build: .
-    image: aopheim/budorbeach:rpidaemon
+    image: aopheim/rpidaemon:latest
     ports:
       - 80
     restart: unless-stopped
