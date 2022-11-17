@@ -16,16 +16,15 @@ namespace rpiDaemon.Jobs
             _logger = logger;
         }
 
-        public Task Execute(IJobExecutionContext context)
+        public async Task Execute(IJobExecutionContext context)
         {
             if (_audioService.IsRunning())
             {
                 _logger.LogInformation("Audio recording already running. Skipping");
-                return Task.CompletedTask;
+                return;
             }
 
-            _audioService.CaptureAudio(context.CancellationToken);
-            return Task.CompletedTask;
+            await _audioService.CaptureAudioContinuously(context.CancellationToken);
         }
     }
 }

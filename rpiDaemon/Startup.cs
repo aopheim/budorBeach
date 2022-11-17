@@ -67,7 +67,9 @@ public class Startup
             // q.AddJobAndTrigger<StartVideoSurveillanceJob>(GlobalConstants.SecondJobs,
             //     GlobalConstants.StartVideSurveillanceTrigger, null, DateTime.UtcNow.AddSeconds(30));
             q.AddJobAndTrigger<CaptureAudioContinuouslyJob>(GlobalConstants.SecondJobs,
-                GlobalConstants.AudioRecordingTrigger, null);
+                GlobalConstants.AudioRecordingTrigger,
+                // Adding trigger interval in order to trigger restart if recording has stopped
+                TimeSpan.FromMinutes(5));
             // q.AddJobAndTrigger<AnalyzeAudioRecordingsJob>(GlobalConstants.SecondJobs,
             //     GlobalConstants.AudioAnalyzerTrigger,
             //     _environment.IsDevelopment() ? TimeSpan.FromSeconds(15) : TimeSpan.FromSeconds(60),
