@@ -5,7 +5,7 @@ namespace AudioService.Interfaces
 {
     public interface IAudioService
     {
-        Task<bool> CaptureAudio(CancellationToken cancellationToken);
+        Task CaptureAudioContinuously(CancellationToken cancellationToken);
         bool IsRunning();
     }
 }

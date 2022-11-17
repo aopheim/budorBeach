@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using AudioService.Interfaces;
 using Microsoft.AspNetCore.Hosting;
@@ -18,7 +19,9 @@ public class AudioService : IAudioService
     private readonly bool _isLinux;
     private readonly bool _isWindows;
     private readonly ILogger<AudioService> _logger;
+    private readonly TimeSpan MinRecordingLength = TimeSpan.FromSeconds(1);
     private bool _isRunning;
+    private bool _shouldExit;
 
     public AudioService(ILogger<AudioService> logger, IExternalSingletonProcess externalProcess,
         IFileSystemService fileSystemService, IWebHostEnvironment environment)
@@ -31,12 +34,13 @@ public class AudioService : IAudioService
         _isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
         _isLinux = RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
         _httpClient = _isWindows ? null : new HttpClient();
+        _shouldExit = false;
     }
 
-    public async Task<bool> CaptureAudio(CancellationToken cancellationToken)
+    public async Task CaptureAudioContinuously(CancellationToken cancellationToken)
     {
         _logger.LogInformation($"Starting audio capture... IsWindows? {_isWindows}");
-        while (!cancellationToken.IsCancellationRequested && !RecordingFolderIsFull())
+        while (!cancellationToken.IsCancellationRequested && !RecordingFolderIsFull() && !_shouldExit)
         {
             _isRunning = true;
             try
@@ -48,10 +52,11 @@ public class AudioService : IAudioService
             {
                 _logger.LogError(e, "Error while recording audio");
                 _isRunning = false;
+                return;
             }
         }
 
-        return true;
+        _isRunning = false;
     }
 
 
@@ -62,6 +67,8 @@ public class AudioService : IAudioService
 
     private async Task CaptureAudioLinux(CancellationToken cancellationToken)
     {
+        var stopWatch = new Stopwatch();
+        stopWatch.Start();
         if (_httpClient == null)
         {
             _logger.LogError("HttpClient not instantiated");
@@ -72,13 +79,24 @@ public class AudioService : IAudioService
             ? GlobalConstants.AudioRecorderWindowsUrl
             : GlobalConstants.AudioRecorderLinuxUrl;
         _logger.LogInformation($"Posting request to {url}");
-        var res = await _httpClient.PostAsync(url, new StringContent("test"),
+        var res = await _httpClient.PostAsync(url, new StringContent(""),
             cancellationToken);
         _logger.LogInformation($"Received status code {res.StatusCode}");
+        stopWatch.Stop();
+        if (stopWatch.Elapsed < MinRecordingLength)
+        {
+            _logger.LogInformation($"Recorded shorter than {MinRecordingLength}. Exiting");
+            _shouldExit = true;
+        }
+
+        _isRunning = false;
     }
 
     private async Task CaptureAudioWindows(CancellationToken cancellationToken)
     {
+        var stopWatch = new Stopwatch();
+        stopWatch.Start();
+
         var filePath = GlobalConstants.AudioServiceFolderWindows;
         var fileName = "recordAudioWindows.py";
         var argumentsWindows = @$"/C cd {filePath} && py {fileName}";
@@ -86,6 +104,12 @@ public class AudioService : IAudioService
         var process = _externalProcess.StartExternalSingletonProcess(_isWindows,
             argumentsWindows, cancellationToken);
         await process.WaitForExitAsync(cancellationToken);
+
+        if (stopWatch.Elapsed < MinRecordingLength)
+        {
+            _logger.LogInformation($"Recorded shorter than {MinRecordingLength}. Exiting");
+            _shouldExit = true;
+        }
 
         _isRunning = false;
     }
@@ -96,6 +120,10 @@ public class AudioService : IAudioService
             .GetFileNamesWithoutExtensionInFolder(_isWindows
                 ? Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "/BudorBeach/audioRecordings"
                 : GlobalConstants.AudioRecordingsFolderLinux).ToList();
-        return audioFiles.Count > MaxNumberOfAudioFiles;
+        var result = audioFiles.Count > MaxNumberOfAudioFiles;
+        if (result)
+            _logger.LogInformation(
+                $"Recording folder is full: Contains {MaxNumberOfAudioFiles} audio files. Exiting audio recorder...");
+        return result;
     }
 }
