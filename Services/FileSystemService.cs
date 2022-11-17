@@ -18,7 +18,7 @@ public class FileSystemService : IFileSystemService
     public IEnumerable<string> GetFileNamesWithoutExtensionInFolder(string folderFilePath)
     {
         var fullFileNames = Directory.GetFiles(folderFilePath);
-        var recordingFileNames = fullFileNames.Select(Path.GetFileNameWithoutExtension).ToList();
+        var recordingFileNames = fullFileNames?.Select(Path.GetFileNameWithoutExtension).ToList() ?? new List<string>();
 
         return recordingFileNames.Where(r => r != null);
     }
