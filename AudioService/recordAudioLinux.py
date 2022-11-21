@@ -32,7 +32,7 @@ def makeRecording():
     return json.dumps(data)
 
 def record():
-    print('Received request')
+    print('Starting recording...')
     c_error_handler = ERROR_HANDLER_FUNC(py_error_handler)
 
     asound = cdll.LoadLibrary('libasound.so')
