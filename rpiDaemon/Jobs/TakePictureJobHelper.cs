@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using rpiDaemon.DateTimeHelpers;
+using Shared;
 using Shared.Azure;
 using Shared.PiCameraSettings;
 using SixLabors.ImageSharp;
@@ -37,7 +38,7 @@ namespace rpiDaemon.Jobs
                 var now = DateTime.UtcNow;
                 var folderName = DateTimeParser.GetFolderName(now);
                 var fileName = DateTimeParser.GetFileName(now);
-                var folderPath = $"/home/pi/images/{folderName}";
+                var folderPath = $"{GlobalConstants.ImagesFolder} + {folderName}";
                 var fullPath = folderPath + $"/{fileName}.jpg";
                     
                 try
