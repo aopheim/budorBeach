@@ -35,6 +35,7 @@ public static class GlobalConstants
     public const double BudorLongitude = 11.285140;
 
     public const string AudioRecordingsFolderLinux = @"/audioRecordings/";
+    public const string ImagesFolder = @"/images/";
     public const string AudioRecordingsFolderWindows = @"%APPDATA%/budorBeach/audioRecordings";
     public const string VideoRecordingsFolderLinux = @"/home/pi/videos/";
     public const string AudioServiceFolderLinux = @"/home/pi/budorBeach/AudioService/";

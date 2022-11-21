@@ -55,9 +55,9 @@ public class Startup
             // q.AddJobAndTrigger<GetBme280SensorReadingsJob>(GlobalConstants.SecondJobs,
             //     GlobalConstants.Bme280Trigger,
             //     _environment.IsDevelopment() ? TimeSpan.FromSeconds(2) : TimeSpan.FromSeconds(10));
-            // q.AddJobAndTrigger<TakePictureJob>(GlobalConstants.SecondJobs, GlobalConstants.PictureTrigger,
-            //     _environment.IsDevelopment() ? TimeSpan.FromSeconds(10) : TimeSpan.FromHours(4),
-            //     DateTime.UtcNow.AddSeconds(10));
+            q.AddJobAndTrigger<TakePictureJob>(GlobalConstants.SecondJobs, GlobalConstants.PictureTrigger,
+                _environment.IsDevelopment() ? TimeSpan.FromSeconds(10) : TimeSpan.FromHours(4),
+                DateTime.UtcNow.AddSeconds(10));
             // q.AddJobAndTrigger<TakeVideoJob>(GlobalConstants.SecondJobs, GlobalConstants.VideoRecordingTrigger,
             //     null, DateTime.UtcNow.AddSeconds(20));
             // q.AddJobAndTrigger<StreamVideoJob>(GlobalConstants.SecondJobs, GlobalConstants.StartVideoStreamTrigger,
