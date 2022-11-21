@@ -1,9 +1,10 @@
 {
   "scripts": {
-    "docker:build": "yarn docker:build:rpidaemon && yarn docker:build:birdnetserver && yarn docker:build:audiorecorderlinux",
+    // Note: Removed building birdnetserver here, because docker downloads its newest image (~500MB) even though there are now changes
+    "docker:build": "yarn docker:build:rpidaemon && yarn docker:build:audiorecorderlinux",
     "docker:build:rpidaemon": "docker buildx build --file ./rpiDaemon/Dockerfile -t aopheim/rpidaemon --push .",
     "docker:build:birdnetserver": "docker buildx build --file ./birdnetserver/Dockerfile -t aopheim/birdnetserver --platform linux/arm32 --push . --progress plain",
-    "docker:build:audiorecorderlinux": "docker buildx build --file ./AudioService/Dockerfile -t aopheim/audiorecorderlinux --platform linux/arm32 --push .",
+    "docker:build:audiorecorderlinux": "cd AudioService && docker buildx build -t aopheim/audiorecorderlinux --platform linux/arm32 --push .",
     "docker:compose:dev": "docker compose -f docker-compose.dev.yml up -d --force-recreate --build rpidaemon dev-db audiorecorderwindows",
     "docker:compose:prod": "sudo docker compose -f docker-compose.prod.yml up -d --force-recreate --build rpidaemon audiorecorderlinux birdnetserver",
     "docker:compose:pull": "sudo docker compose -f docker-compose.prod.yml pull",
