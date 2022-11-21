@@ -23,7 +23,7 @@ FROM build AS publish
 RUN dotnet publish "rpiDaemon.csproj" -c Release -o /app/publish -r linux-arm --self-contained
 
 FROM base AS final
-RUN mkdir audioRecordings
+RUN cd .. && mkdir audioRecordings
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "rpiDaemon.dll"]
