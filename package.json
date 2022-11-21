@@ -1,6 +1,5 @@
 {
   "scripts": {
-    // Note: Removed building birdnetserver here, because docker downloads its newest image (~500MB) even though there are now changes
     "docker:build": "yarn docker:build:rpidaemon && yarn docker:build:audiorecorderlinux",
     "docker:build:rpidaemon": "docker buildx build --file ./rpiDaemon/Dockerfile -t aopheim/rpidaemon --push .",
     "docker:build:birdnetserver": "docker buildx build --file ./birdnetserver/Dockerfile -t aopheim/birdnetserver --platform linux/arm32 --push . --progress plain",
