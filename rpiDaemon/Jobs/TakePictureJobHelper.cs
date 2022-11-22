@@ -38,7 +38,7 @@ namespace rpiDaemon.Jobs
                 var now = DateTime.UtcNow;
                 var folderName = DateTimeParser.GetFolderName(now);
                 var fileName = DateTimeParser.GetFileName(now);
-                var folderPath = $"{GlobalConstants.ImagesFolder} + {folderName}";
+                var folderPath = $"{GlobalConstants.ImagesFolder}{folderName}";
                 var fullPath = folderPath + $"/{fileName}.jpg";
                     
                 try
