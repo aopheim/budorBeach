@@ -10,6 +10,7 @@ services:
       - /home/pi/audioRecordings:/audioRecordings
       - /home/pi/images:/images
       - /opt/vc/lib:/opt/vc/lib
+      - /opt/vc/bin:/opt/vc/bin
     depends_on:
       # - birdnetserver
       - audiorecorderlinux
