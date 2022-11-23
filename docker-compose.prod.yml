@@ -6,7 +6,6 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - LD_LIBRARY_PATH=/opt/vc/lib
-      - LD_DEBUG=all
     volumes:
       - /home/pi/.microsoft/usersecrets/7a7d43a7-4a55-45c9-b915-7c7aec6d1751:/root/.microsoft/usersecrets/7a7d43a7-4a55-45c9-b915-7c7aec6d1751
       - /home/pi/audioRecordings:/audioRecordings
