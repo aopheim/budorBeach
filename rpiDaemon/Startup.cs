@@ -54,7 +54,9 @@ public class Startup
             q.UseJobFactory<JobFactory>();
             q.AddJobAndTrigger<GetBme280SensorReadingsJob>(GlobalConstants.SecondJobs,
                 GlobalConstants.Bme280Trigger,
-                _environment.IsDevelopment() ? TimeSpan.FromSeconds(2) : TimeSpan.FromSeconds(10));
+                _environment.IsDevelopment()
+                    ? TimeSpan.FromSeconds(2)
+                    : GetBme280SensorReadingsJob.ActiveStateTriggerInterval);
             q.AddJobAndTrigger<TakePictureJob>(GlobalConstants.SecondJobs, GlobalConstants.PictureTrigger,
                 _environment.IsDevelopment() ? TimeSpan.FromSeconds(10) : TimeSpan.FromHours(4),
                 DateTime.UtcNow.AddSeconds(10));
