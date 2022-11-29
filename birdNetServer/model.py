@@ -13,12 +13,14 @@ import config as cfg
 # import Keras if protobuf model; 
 # NOTE: we have to use TFLite if we want to use 
 # the metadata model or want to extract embeddings
-try:
-    import tflite_runtime.interpreter as tflite
-except ModuleNotFoundError:
-    from tensorflow import lite as tflite
-if not cfg.MODEL_PATH.endswith('.tflite'):
-   from tensorflow import keras
+# try:
+#     import tflite_runtime.interpreter as tflite
+# except ModuleNotFoundError:
+#     from tensorflow import lite as tflite
+# if not cfg.MODEL_PATH.endswith('.tflite'):
+#    from tensorflow import keras
+
+import tflite
 
 INTERPRETER = None
 M_INTERPRETER = None
