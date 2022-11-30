@@ -72,13 +72,13 @@ public class Startup
                 GlobalConstants.AudioRecordingTrigger,
                 // Adding trigger interval in order to trigger restart if recording has stopped
                 TimeSpan.FromMinutes(5));
-            // q.AddJobAndTrigger<AnalyzeAudioRecordingsJob>(GlobalConstants.SecondJobs,
-            //     GlobalConstants.AudioAnalyzerTrigger,
-            //     _environment.IsDevelopment() ? TimeSpan.FromSeconds(15) : TimeSpan.FromSeconds(60),
-            //     _environment.IsDevelopment() ? DateTime.UtcNow.AddSeconds(15) : DateTime.UtcNow.AddSeconds(60));
-            // q.AddJobAndTrigger<UploadAudioRecordingsJob>(GlobalConstants.MinuteJobs,
-            //     GlobalConstants.UploadAudioRecordingTrigger, TimeSpan.FromMinutes(1),
-            //     DateTime.UtcNow.AddSeconds(10));
+            q.AddJobAndTrigger<AnalyzeAudioRecordingsJob>(GlobalConstants.SecondJobs,
+                GlobalConstants.AudioAnalyzerTrigger,
+                _environment.IsDevelopment() ? TimeSpan.FromSeconds(15) : TimeSpan.FromSeconds(60),
+                _environment.IsDevelopment() ? DateTime.UtcNow.AddSeconds(15) : DateTime.UtcNow.AddSeconds(60));
+            q.AddJobAndTrigger<UploadAudioRecordingsJob>(GlobalConstants.MinuteJobs,
+                GlobalConstants.UploadAudioRecordingTrigger, TimeSpan.FromMinutes(1),
+                DateTime.UtcNow.AddSeconds(10));
         });
 
         services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
