@@ -20,7 +20,7 @@ import config as cfg
 # if not cfg.MODEL_PATH.endswith('.tflite'):
 #    from tensorflow import keras
 
-import tflite
+import tflite_runtime.interpreter as tflite
 
 INTERPRETER = None
 M_INTERPRETER = None
