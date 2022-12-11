@@ -31,36 +31,41 @@ namespace Services
             _externalProcess = externalProcess;
         }
 
-        public Task StartAsync(CancellationToken cancellationToken)
-        {
-            _logger.LogInformation("Starting up BirdNet server...");
-            var isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
-            var birdNetAnalyzerPath = isWindows
-                ? GlobalConstants.BirdNetAnalyzerPathWindows
-                : GlobalConstants.BirdNetAnalyzerPathLinux;
-            var pythonAbbr = isWindows ? "py" : "python";
-            var windowsArguments = @$"/C cd {birdNetAnalyzerPath} && {pythonAbbr} server.py";
-            var linuxArguments = $"-c \"cd {birdNetAnalyzerPath} && {pythonAbbr} server.py\"";
-            _logger.LogInformation($"Running args: {linuxArguments}");
-            _process = _externalProcess.StartExternalSingletonProcess(isWindows,
-                isWindows ? windowsArguments : linuxArguments,
-                cancellationToken);
-            return Task.CompletedTask;
-        }
+        // public Task StartAsync(CancellationToken cancellationToken)
+        // {
+        //     _logger.LogInformation("Starting up BirdNet server...");
+        //     var isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+        //     var birdNetAnalyzerPath = isWindows
+        //         ? GlobalConstants.BirdNetAnalyzerPathWindows
+        //         : GlobalConstants.BirdNetAnalyzerPathLinux;
+        //     // BirdNET-Analyzer's server.py can be ran on Python3.9
+        //     var pythonAbbr = isWindows ? "py" : "python3.9";
+        //     var windowsArguments = @$"/C cd {birdNetAnalyzerPath} && {pythonAbbr} server.py";
+        //     var linuxArguments = $"-c \"cd {birdNetAnalyzerPath} && {pythonAbbr} server.py\"";
+        //     _logger.LogInformation($"Running args: {linuxArguments}");
+        //     _process = _externalProcess.StartExternalSingletonProcess(isWindows,
+        //         isWindows ? windowsArguments : linuxArguments,
+        //         cancellationToken);
+        //     return Task.CompletedTask;
+        // }
 
-        public Task StopAsync(CancellationToken cancellationToken)
-        {
-            _logger.LogInformation("Shutting down BirdNetServer...");
-            return Task.FromResult(_process.WaitForExit(1));
-        }
+        // public Task StopAsync(CancellationToken cancellationToken)
+        // {
+        //     _logger.LogInformation("Shutting down BirdNetServer...");
+        //     return Task.FromResult(_process.WaitForExit(1));
+        // }
 
         public async Task<string> PostAsync(string filePath, CancellationToken cancellationToken)
         {
             await using var audioFileAsStream = new FileStream(filePath, FileMode.Open,
                 FileAccess.Read);
             var form = GetMultipartForm(audioFileAsStream);
+            var birdNetServerUrl = RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
+                ? GlobalConstants.BirdNetServerWindowsUrl
+                : GlobalConstants.BirdNetServerDockerUrl;
+            _logger.LogInformation($"Sending recording on path {filePath} to BirdNetServer on {birdNetServerUrl}");
             var responseMessage =
-                await Client.PostAsync(GlobalConstants.BirdNetServerUrl, form, cancellationToken);
+                await Client.PostAsync(birdNetServerUrl, form, cancellationToken);
             return await responseMessage.Content.ReadAsStringAsync(cancellationToken);
         }
 

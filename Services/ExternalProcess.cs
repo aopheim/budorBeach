@@ -51,7 +51,11 @@ namespace Services
                 RedirectStandardOutput = true
             };
             process.StartInfo = startInfo;
-            process.OutputDataReceived += (sender, args) => { logger.LogInformation(args.Data); };
+            process.OutputDataReceived += (sender, args) =>
+            {
+                if (args?.Data != null)
+                    logger.LogInformation(args.Data);
+            };
             process.Start();
             process.BeginOutputReadLine();
             return process;

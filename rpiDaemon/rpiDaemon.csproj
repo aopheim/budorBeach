@@ -4,11 +4,12 @@
         <TargetFramework>net6.0</TargetFramework>
         <UserSecretsId>7a7d43a7-4a55-45c9-b915-7c7aec6d1751</UserSecretsId>
         <EnableDefaultContentItems>false</EnableDefaultContentItems>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="AutoFixture" Version="4.17.0" />
-        <PackageReference Include="Azure.Storage.Blobs" Version="12.8.4" />
+        <PackageReference Include="Azure.Storage.Blobs" Version="12.13.1" />
         <PackageReference Include="Iot.Device.Bindings" Version="2.0.0" />
         <PackageReference Include="JetBrains.Annotations" Version="2021.1.0" />
         <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.20.0" />
