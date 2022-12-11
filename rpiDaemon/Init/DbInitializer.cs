@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using DataAccess.EFCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Shared.Models;
 
 namespace rpiDaemon.Init
 {
     public class DbInitializer
     {
-        public static void Initialize(BudorDbContext context)
+        public static void Initialize(BudorDbContext context, ILogger<Program> logger)
         {
             context.Database.Migrate();
 
@@ -26,6 +27,7 @@ namespace rpiDaemon.Init
             foreach (var reading in readings) context.SensorReadings.Add(reading);
 
             context.SaveChanges();
+            logger.LogInformation("Db successfully initialized");
         }
     }
 }

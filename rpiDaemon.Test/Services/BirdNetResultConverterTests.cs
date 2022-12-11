@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using FluentAssertions;
 using NUnit.Framework;
@@ -39,6 +40,15 @@ namespace rpiDaemon.Test.Services
 
             res.Results.First().LatinName.Should().Be("Poecile atricapillus");
             res.Results.First().EnglishName.Should().Be("Black-capped Chickadee");
+        }
+        
+        [Test]
+        public void NotSuccess_ShouldThrow()
+        {
+            var json =
+                "{\"msg\": \"fail\", \"results\": []}";
+
+            Assert.Throws<ArgumentException>(() =>Converter.ConvertJson(json));
         }
     }
 }
