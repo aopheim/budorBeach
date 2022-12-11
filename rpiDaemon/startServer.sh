@@ -1,1 +1,0 @@
-cd home\pi\BirdNET-Analyzer && python server.py

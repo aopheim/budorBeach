@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Device.I2c;
+using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Threading;
@@ -22,6 +23,8 @@ namespace rpiDaemon.Jobs
     [UsedImplicitly]
     public class GetBme280SensorReadingsJob : IJob
     {
+        public static readonly TimeSpan ActiveStateTriggerInterval = TimeSpan.FromSeconds(5);
+        private static readonly TimeSpan FailedStateTriggerInterval = TimeSpan.FromHours(1);
         private readonly BudorDbContext _context;
         private readonly IWebHostEnvironment _environment;
         private readonly Fixture _fixture;
@@ -42,7 +45,21 @@ namespace rpiDaemon.Jobs
 
         public async Task Execute(IJobExecutionContext jobExecutionContext)
         {
-            var sensorReadingModel = GetCurrentSensorReadings();
+            SensorReadingModel sensorReadingModel = null;
+            try
+            {
+                sensorReadingModel = GetCurrentSensorReadings();
+            }
+            catch (IOException)
+            {
+                _logger.LogWarning(
+                    $"Failed to read bme280 sensor. Setting trigger interval to {FailedStateTriggerInterval}");
+                SetTriggerToHaveInterval(jobExecutionContext, FailedStateTriggerInterval);
+            }
+
+            if (sensorReadingModel == null)
+                return;
+            SetTriggerToHaveInterval(jobExecutionContext, ActiveStateTriggerInterval);
             _logger.LogInformation($"{JsonSerializer.Serialize(sensorReadingModel)}");
 
             var lastDbPushInUtc = _context.SensorReadings.OrderByDescending(m => m.MeasuredAtUtc).FirstOrDefault()
@@ -58,6 +75,31 @@ namespace rpiDaemon.Jobs
             await _signalRService.SendSensorReading(sensorReadingModel, jobExecutionContext.CancellationToken);
             await _signalRService.ConsoleLogMessage($"{JsonSerializer.Serialize(sensorReadingModel)}",
                 jobExecutionContext.CancellationToken);
+        }
+
+        private void SetTriggerToHaveInterval(IJobExecutionContext context, TimeSpan newInterval)
+        {
+            var oldTrigger = context.Trigger;
+            var builder = oldTrigger.GetTriggerBuilder();
+            var nextFireTime = oldTrigger.GetNextFireTimeUtc();
+            if (nextFireTime.HasValue &&
+                DatesAreClose(nextFireTime.Value.UtcDateTime, DateTime.UtcNow.Add(newInterval))) return;
+
+            var firstNewTriggerTime = DateTimeOffset.UtcNow.Add(newInterval);
+            var newTrigger = builder.StartAt(firstNewTriggerTime)
+                .WithSimpleSchedule(s => s.WithInterval(newInterval).RepeatForever())
+                .Build();
+            context.Scheduler.RescheduleJob(oldTrigger.Key, newTrigger);
+        }
+
+        private static bool DatesAreClose(DateTimeOffset original, DateTimeOffset toCompare,
+            TimeSpan errorMargin = default)
+        {
+            if (errorMargin == default)
+                errorMargin = TimeSpan.FromSeconds(5);
+
+            var differenceInSeconds = Math.Abs(original.Subtract(toCompare).Seconds);
+            return +differenceInSeconds < errorMargin.Seconds;
         }
 
         private SensorReadingModel GetCurrentSensorReadings()

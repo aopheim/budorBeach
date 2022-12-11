@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Dtos;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Services.Interfaces;
@@ -24,6 +25,8 @@ namespace Services
         private readonly List<string> _englishNamesToExcludeFromUpload =
             new() { "human", "human vocal", "human non-vocal", "human whistle" };
 
+        private readonly IWebHostEnvironment _environment;
+
         private readonly List<string> _latinNamesToExcludeFromUpload =
             new() { "homo sapiens" };
 
@@ -33,11 +36,12 @@ namespace Services
 
 
         public AudioRecordingRecordingAnalyzer(ILogger<AudioRecordingRecordingAnalyzer> logger,
-            IBirdNetServer birdNetServer, Container container)
+            IBirdNetServer birdNetServer, Container container, IWebHostEnvironment environment)
         {
             _logger = logger;
             _birdNetServer = birdNetServer;
             _container = container;
+            _environment = environment;
             _isRunning = false;
         }
 
@@ -71,9 +75,13 @@ namespace Services
             var resultConverter = scope.GetRequiredService<IBirdNetResultConverter>();
             var fileSystemService = scope.GetRequiredService<IFileSystemService>();
 
+            var windowsPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) +
+                              @"\BudorBeach\audioRecordings\";
+            var linuxPath = GlobalConstants.AudioRecordingsFolderLinux;
             var recordingsFolderName = RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
-                ? Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\BudorBeach\"
-                : GlobalConstants.AudioRecordingsFolderLinux;
+                ? windowsPath
+                : linuxPath;
+
             var recordingIds = fileSystemService.GetFileNamesWithoutExtensionInFolder(recordingsFolderName).ToList();
 
             var speciesRecognitionsToAddToDb = new List<SpeciesRecognitionModel>();
@@ -95,7 +103,7 @@ namespace Services
 
                 var result = resultConverter.ConvertJson(response);
                 if (!result.Results?.Any(r =>
-                    r?.Confidence > MinConfidenceLevel) ?? true)
+                        r?.Confidence > MinConfidenceLevel) ?? true)
                 {
                     _logger.LogInformation(
                         $"No results with higher confidence than {MinConfidenceLevel}. Deleting recording");

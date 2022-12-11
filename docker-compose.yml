@@ -1,9 +1,10 @@
-version: "3.9"
 services:
-    db:
-        image: "mcr.microsoft.com/mssql/server"
-        ports:
-            - "1430:1430"
-        environment:
-            SA_PASSWORD: "Dev-Password-123"
-            ACCEPT_EULA: "Y"
+  rpidaemon:
+    image: aopheim/rpidaemon:latest
+    ports:
+      - 80
+    restart: unless-stopped
+  birdnetserver:
+    image: aopheim/birdnetserver:latest
+    ports:
+      - 8080
