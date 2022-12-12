@@ -86,7 +86,7 @@ public class Startup
         services.AddLogging(loggingBuilder => loggingBuilder.AddSeq());
         if (_environment.IsProduction())
         {
-            var instrumentationKey = Configuration[GlobalConstants.AppInsightsConnectionString];
+            var instrumentationKey = Configuration[GlobalConstants.AppInsightsInstrumentationKey];
             Console.WriteLine($"Set up application insights with instrumentation key {instrumentationKey}");
             services.AddApplicationInsightsTelemetry(instrumentationKey);
         }
