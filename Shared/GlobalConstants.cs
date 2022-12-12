@@ -3,6 +3,7 @@
 public static class GlobalConstants
 {
     public const string AppInsightsConnectionString = "AppInsightsConnectionString";
+    public const string AppInsightsInstrumentationKey = "AppInsightsInstrumentationKey";
     public const string ImagesContainerName = "images";
     public const string ThumbnailImagesContainerName = "images-thumbnails";
     public const string AudioRecordingsContainerName = "audio-recordings";

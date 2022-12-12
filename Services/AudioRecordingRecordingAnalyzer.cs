@@ -45,7 +45,7 @@ namespace Services
             _isRunning = false;
         }
 
-        private static double MinConfidenceLevel => 0.5;
+        private double MinConfidenceLevel => DateTime.UtcNow < new DateTime(2022, 12, 12, 13, 00, 00) ? 0.15 : 0.5;
 
         public bool IsRunning()
         {

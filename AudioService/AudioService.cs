@@ -14,39 +14,35 @@ public class AudioService : IAudioService
     private const int MaxNumberOfAudioFiles = 100;
     private static HttpClient? _httpClient;
     private readonly IWebHostEnvironment _environment;
-    private readonly IExternalSingletonProcess _externalProcess;
     private readonly IFileSystemService _fileSystemService;
-    private readonly bool _isLinux;
     private readonly bool _isWindows;
     private readonly ILogger<AudioService> _logger;
     private readonly TimeSpan MinRecordingLength = TimeSpan.FromSeconds(1);
     private bool _isRunning;
     private bool _shouldExit;
 
-    public AudioService(ILogger<AudioService> logger, IExternalSingletonProcess externalProcess,
+    public AudioService(ILogger<AudioService> logger,
         IFileSystemService fileSystemService, IWebHostEnvironment environment)
     {
         _logger = logger;
-        _externalProcess = externalProcess;
         _fileSystemService = fileSystemService;
         _environment = environment;
         _isRunning = false;
         _isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
-        _isLinux = RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
-        _httpClient = _isWindows ? null : new HttpClient();
+        _httpClient = new HttpClient();
         _shouldExit = false;
     }
 
     public async Task CaptureAudioContinuously(CancellationToken cancellationToken)
     {
-        _logger.LogInformation($"Starting audio capture... IsWindows? {_isWindows}");
+        _logger.LogInformation("Starting audio capture...");
         while (!cancellationToken.IsCancellationRequested && !RecordingFolderIsFull() && !_shouldExit)
         {
             _isRunning = true;
             try
             {
-                if (_isWindows) await CaptureAudioWindows(cancellationToken);
-                if (_isLinux) await CaptureAudioLinux(cancellationToken);
+                await CaptureAudio(cancellationToken);
+                Thread.Sleep(500);
             }
             catch (Exception e)
             {
@@ -65,7 +61,7 @@ public class AudioService : IAudioService
         return _isRunning;
     }
 
-    private async Task CaptureAudioLinux(CancellationToken cancellationToken)
+    private async Task CaptureAudio(CancellationToken cancellationToken)
     {
         var stopWatch = new Stopwatch();
         stopWatch.Start();
@@ -83,28 +79,6 @@ public class AudioService : IAudioService
             cancellationToken);
         _logger.LogInformation($"Received status code {res.StatusCode}");
         stopWatch.Stop();
-        if (stopWatch.Elapsed < MinRecordingLength)
-        {
-            _logger.LogInformation($"Recorded shorter than {MinRecordingLength}. Exiting");
-            _shouldExit = true;
-        }
-
-        _isRunning = false;
-    }
-
-    private async Task CaptureAudioWindows(CancellationToken cancellationToken)
-    {
-        var stopWatch = new Stopwatch();
-        stopWatch.Start();
-
-        var filePath = GlobalConstants.AudioServiceFolderWindows;
-        var fileName = "recordAudioWindows.py";
-        var argumentsWindows = @$"/C cd {filePath} && py {fileName}";
-        _logger.LogInformation("Starting audio capture on Windows...");
-        var process = _externalProcess.StartExternalSingletonProcess(_isWindows,
-            argumentsWindows, cancellationToken);
-        await process.WaitForExitAsync(cancellationToken);
-
         if (stopWatch.Elapsed < MinRecordingLength)
         {
             _logger.LogInformation($"Recorded shorter than {MinRecordingLength}. Exiting");
