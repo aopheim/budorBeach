@@ -38,9 +38,9 @@
                 <p id="pressureInhPa">@Math.Round(Model.LatestSensorReadingModel?.PressureInhPa ?? default, 1)hPa</p>
             </div>
         </div>
-        <div class="alert alert-danger" role="alert">
-            Det ser dessverre ut som kameraet i fuglekassa har falt ned. En fuglekassetekniker er på vei for å feste det bedre. Værdata-sensorene har dessverre også streiket i det siste. Sannsynligvis har en ledning blitt røsket ut av august-regnværet. Vi håper å få dette på beina igjen så fort som mulig.
-        </div>
+        @* <div class="alert alert-danger" role="alert"> *@
+        @*     Det ser dessverre ut som kameraet i fuglekassa har falt ned. En fuglekassetekniker er på vei for å feste det bedre. Værdata-sensorene har dessverre også streiket i det siste. Sannsynligvis har en ledning blitt røsket ut av august-regnværet. Vi håper å få dette på beina igjen så fort som mulig. *@
+        @* </div> *@
         @{
             const int last12 = 12;
             const int lastDay = 24;
@@ -154,26 +154,26 @@
             </div>
         </div>
     </div>
-    @* <h2>Kamera-innstillinger</h2> *@
-    @* <form method="post"> *@
-    @*     <div class="row"> *@
-    @*         <div class="col-sm-6"> *@
-    @*             <div class="text-center"> *@
-    @*                 <h5>ISO (0 = auto)</h5> *@
-    @*                 <input type="range" asp-for="IsoSetting" id="iso-slider" value="@Model.IsoSetting" min="0" max="800" step="100" onclick="showValue('iso-slider', 'iso-slider-val')"> *@
-    @*                 <h4 id="iso-slider-val">@Model.IsoSetting</h4> *@
-    @*             </div> *@
-    @*         </div> *@
-    @*         <div class="col-sm-6"> *@
-    @*             <div class="text-center"> *@
-    @*                 <h5>Lukkerhastighet (0 = auto)</h5> *@
-    @*                 <input type="range" asp-for="ShutterTimeSetting" id="shutterspeed-slider" value="@Model.ShutterTimeSetting" min="0" max="6000" step="10" onclick="showValue('shutterspeed-slider', 'shutterspeed-slider-val')"> *@
-    @*                 <h4 id="shutterspeed-slider-val">@Model.ShutterTimeSetting</h4> *@
-    @*             </div> *@
-    @*         </div> *@
-    @*         <input type="submit" value="Ta bilde"/> *@
-    @*     </div> *@
-    @* </form> *@
+    <h2>Kamera-innstillinger</h2>
+    <form method="post">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="text-center">
+                    <h5>ISO (0 = auto)</h5>
+                    <input type="range" asp-for="IsoSetting" id="iso-slider" value="@Model.IsoSetting" min="0" max="800" step="100" onclick="showValue('iso-slider', 'iso-slider-val')">
+                    <h4 id="iso-slider-val">@Model.IsoSetting</h4>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="text-center">
+                    <h5>Lukkerhastighet (0 = auto)</h5>
+                    <input type="range" asp-for="ShutterTimeSetting" id="shutterspeed-slider" value="@Model.ShutterTimeSetting" min="0" max="6000" step="10" onclick="showValue('shutterspeed-slider', 'shutterspeed-slider-val')">
+                    <h4 id="shutterspeed-slider-val">@Model.ShutterTimeSetting</h4>
+                </div>
+            </div>
+            <input type="submit" value="Ta bilde"/>
+        </div>
+    </form>
 </div>
 
 <script src="~/js/signalr/dist/browser/signalr.min.js"></script>
