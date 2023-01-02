@@ -403,7 +403,7 @@ namespace budorWeb.Services
                     ImageUrls = new List<string>
                     {
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-8-5/egg.jpg",
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-8-5/9-31-36.jpg"
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2023-1-2/11-50-43.jpg"
                     }
                 }
             }.OrderByDescending(e => e.Date).ToList();
