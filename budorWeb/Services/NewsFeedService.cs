@@ -19,8 +19,8 @@ namespace budorWeb.Services
                         "Fuglekassen er nå satt opp. I overetasjen er det satt opp et lite kamera som tar bilder med faste mellomrom. Nå er det bare å vente på besøk!",
                     ImageUrls = new List<string>
                     {
-                        "https://budorbeach.blob.core.windows.net/images/2021-4-1/kassa.JPG",
-                        "https://budorbeach.blob.core.windows.net/images/2021-4-1/8-37-40.jpg"
+                        "https://budorbeach.blob.core.windows.net/images/2021-4-1/kassa.jpg",
+                        "https://budorbeach.blob.core.windows.net/images/2021-4-1/8-37-40.webp"
                     }
                 },
                 new()
@@ -31,7 +31,7 @@ namespace budorWeb.Services
                     Body = "Etter en måned er det dessverre fortsatt ingen besøkende i fuglekassa. ",
                     ImageUrls = new List<string>
                     {
-                        "https://budorbeach.blob.core.windows.net/images/2021-5-1/9-39-33.jpg"
+                        "https://budorbeach.blob.core.windows.net/images/2021-5-1/9-39-33.webp"
                     }
                 },
                 new()
@@ -43,8 +43,8 @@ namespace budorWeb.Services
                         "Rett før kl 14 fikk fuglekassa sitt første besøk! Det ser ut som det var en vellykket visning - etter bare noen timer har det allerede kommet mye inventar på plass.",
                     ImageUrls = new List<string>
                     {
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-5-30/11-51-48.jpg",
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-5-31/5-52-4.jpg"
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-5-30/11-51-48.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-5-31/5-52-4.webp"
                     }
                 },
                 new()
@@ -56,8 +56,8 @@ namespace budorWeb.Services
                         "Nå flyttes det inn for harde livet! Det ser ut som det er to forskjellige fugler som flytter inn i samme fuglekasse! Én grå og en mindre, svart.",
                     ImageUrls = new List<string>
                     {
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-1/4-45-5.jpg",
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-1/7-50-5.jpg"
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-1/4-45-5.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-1/7-50-5.webp"
                     }
                 },
                 new()
@@ -77,7 +77,7 @@ namespace budorWeb.Services
                         "Akkurat i den mest intense innflyttingsperioden får vi plutselig ikke lenger kontakt med fuglekassa. Sannsynligvis har strømmen gått i løpet av natten, og datamaskinen i fuglekassa har ikke greid å få kontakt med internettet igjen. Krise! " +
                         "Fuglekasseteknikeren gjør det han kan for å få reddet situasjonen. Herr og fru fluesnapper har nå bygget seg et fint rede og er nok straks klare for å legge egg",
                     ImageUrls = new List<string>
-                        { "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-4/10-30-6.jpg" }
+                        { "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-4/10-30-6.webp" }
                 },
                 new()
                 {
@@ -89,8 +89,8 @@ namespace budorWeb.Services
                         "ligger nå for det meste og ruger på eggene. Herr Fluesnapper har vi ikke sett på lenge. Kameraet er nå skrudd til å ta bilder hvert 5.minutt for å få med seg dramatikken.",
                     ImageUrls = new List<string>
                     {
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-14/12-53-28.jpg",
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-14/18-43-28.jpg"
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-14/12-53-28.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-14/18-43-28.webp"
                     }
                 },
                 new()
@@ -102,9 +102,9 @@ namespace budorWeb.Services
                         "Det kan se ut som det nærmer seg klekking! Se på bildene hvordan det har dannet seg en liten sprekk i de øverste eggene på bare en drøy time. Kan Fru Fluesnapper være i gang med klekking?",
                     ImageUrls = new List<string>
                     {
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-21/8-32-32.jpg",
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-21/9-7-32.jpg",
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-21/9-2-32.jpg"
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-21/8-32-32.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-21/9-7-32.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-21/9-2-32.webp"
                     }
                 },
                 new()
@@ -118,13 +118,13 @@ namespace budorWeb.Services
                         "Men vi håper det står bra til med alle sammen. Fru Fluesnapper ser veldig stolt ut. Herr Fluesnapper, derimot, er det fortsatt ingen tegn til.",
                     ImageUrls = new List<string>
                     {
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-23/4-7-32.jpg",
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-23/4-32-32.jpg",
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-23/6-27-32.jpg",
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-23/7-7-32.jpg",
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-23/12-12-32.jpg",
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-23/13-57-32.jpg",
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-23/14-12-32.jpg"
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-23/4-7-32.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-23/4-32-32.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-23/6-27-32.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-23/7-7-32.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-23/12-12-32.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-23/13-57-32.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-23/14-12-32.webp"
                     }
                 },
                 new()
@@ -138,9 +138,9 @@ namespace budorWeb.Services
                         "adressen det var vanskelig å huske.",
                     ImageUrls = new List<string>
                     {
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-24/5-32-32.jpg",
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-24/8-20-18.jpg",
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-24/8-30-18.jpg"
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-24/5-32-32.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-24/8-20-18.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-24/8-30-18.webp"
                     }
                 },
                 new()
@@ -153,9 +153,9 @@ namespace budorWeb.Services
                         "men forsvant raskt etter det. Baby-fluesnapperne har vokst mye på bare noen dager, og man kan nå blant annet se at de har fått tydelige nebb",
                     ImageUrls = new List<string>
                     {
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-26/12-28-55.jpg",
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-26/15-28-55.jpg",
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-26/13-38-55.jpg"
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-26/12-28-55.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-26/15-28-55.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-26/13-38-55.webp"
                     }
                 },
                 new()
@@ -168,9 +168,9 @@ namespace budorWeb.Services
                     Date = new DateTime(2021, 06, 27),
                     ImageUrls = new List<string>
                     {
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-27/15-53-55.jpg",
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-27/8-28-55.jpg",
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-27/13-3-55.jpg"
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-27/15-53-55.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-27/8-28-55.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-27/13-3-55.webp"
                     }
                 },
                 new()
@@ -183,9 +183,9 @@ namespace budorWeb.Services
                         "ligger nå mye mindre og ruger, og er mye frem og tilbake for å mate sine håpefulle",
                     ImageUrls = new List<string>
                     {
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-29/2-23-55.jpg",
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-29/4-58-55.jpg",
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-29/6-13-55.jpg"
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-29/2-23-55.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-29/4-58-55.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-6-29/6-13-55.webp"
                     }
                 },
                 new()
@@ -197,8 +197,8 @@ namespace budorWeb.Services
                         "Baby-fluesnapperne har nå fått en tydelig fjærdrakt, og det er nesten ikke plass til hele familien Fluesnapper i fuglekassa lenger. Kommer de snart til å forlate redet? ",
                     ImageUrls = new List<string>
                     {
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-7-5/5-42-44.jpg",
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-7-5/9-32-44.jpg"
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-7-5/5-42-44.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-7-5/9-32-44.webp"
                     }
                 },
                 new()
@@ -211,10 +211,10 @@ namespace budorWeb.Services
                         "heller å prøve ut vingene sine. Kanskje første flytur skjer i løpet av uka?",
                     ImageUrls = new List<string>
                     {
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-7-7/9-12-44.jpg",
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-7-7/10-47-44.jpg",
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-7-7/7-57-44.jpg",
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-7-7/8-22-44.jpg"
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-7-7/9-12-44.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-7-7/10-47-44.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-7-7/7-57-44.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-7-7/8-22-44.webp"
                     }
                 },
                 new()
@@ -226,13 +226,13 @@ namespace budorWeb.Services
                         "I går og i dag tidlig forlot fluesnapperne redet én etter én. Hvordan den første flyveturen gikk vet vi ikke, men vi håper det gikk bra. Nå håper vi de finner veien tilbake neste år også.",
                     ImageUrls = new List<string>
                     {
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-7-9/4-52-23.jpg",
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-7-9/5-17-23.jpg",
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-7-9/5-27-23.jpg",
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-7-9/6-17-23.jpg",
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-7-9/6-27-23.jpg",
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-7-9/6-32-23.jpg",
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-7-9/6-37-23.jpg"
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-7-9/4-52-23.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-7-9/5-17-23.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-7-9/5-27-23.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-7-9/6-17-23.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-7-9/6-27-23.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-7-9/6-32-23.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2021-7-9/6-37-23.webp"
                     }
                 },
                 new()
@@ -244,7 +244,7 @@ namespace budorWeb.Services
                         "Påsken er kommet, og fuglekassa har våknet til liv igjen etter å ha vært skrudd ned i noen måneder. Fuglekassa er nå tømt og innflyttingsklar. Vi håper å få et gjensyn med Herr og Fru Fluesnapper etter hvert som det blir varmere i været.",
                     ImageUrls = new List<string>
                     {
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-4-13/11-25-56.jpg"
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-4-13/11-25-56.webp"
                     }
                 },
                 new()
@@ -256,8 +256,8 @@ namespace budorWeb.Services
                         "I dag har fluesnapperne kommet tilbake! Dette er mye tidligere enn i fjor, da de kom først i starten av juni. Men tydeligvis har de startet å gå på fuglekasse-visning tidligere i år. Håper de finner seg til rette og har finansieringsbeviset i orden",
                     ImageUrls = new List<string>
                     {
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-4-26/11-14-11.jpg",
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-4-26/9-29-11.jpg"
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-4-26/11-14-11.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-4-26/9-29-11.webp"
                     }
                 },
                 new()
@@ -270,11 +270,11 @@ namespace budorWeb.Services
                         "Det ble en rask budrunde, og Herr Fluesnapper er nå stolt eier av fuglekassa i Størigardsvegen. Nå flyttes det inn for harde livet, og på bare noen timer har han laget til en myk og fin madrass til Fru Fluesnapper",
                     ImageUrls = new List<string>
                     {
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-4-27/6-29-11.jpg",
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-4-27/6-44-11.jpg",
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-4-27/8-59-11.jpg",
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-4-27/9-29-11.jpg",
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-4-27/15-14-11.jpg"
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-4-27/6-29-11.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-4-27/6-44-11.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-4-27/8-59-11.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-4-27/9-29-11.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-4-27/15-14-11.webp"
                     }
                 },
                 new()
@@ -286,11 +286,11 @@ namespace budorWeb.Services
                         "De siste dagene har Herr Fluesnapper virkelig stått på. Se hvordan han har bygget et lunt og godt rede for sin fremtidige Fluesnapperkone: Først et lag med det som ser ut som lyng, deretter ser det ut som han har nappet av fjær for ekstra isolering",
                     ImageUrls = new List<string>
                     {
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-4-29/9-44-11.jpg",
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-4-30/9-44-11.jpg",
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-4-30/13-44-11.jpg",
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-5-3/9-14-11.jpg",
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-5-3/3-44-11.jpg"
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-4-29/9-44-11.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-4-30/9-44-11.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-4-30/13-44-11.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-5-3/9-14-11.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-5-3/3-44-11.webp"
                     }
                 },
                 new()
@@ -302,8 +302,8 @@ namespace budorWeb.Services
                         "Nå ser det ut som Herr Fluesnapper er fornøyd med redet sitt. Det ser veldig mykt og fint ut. Så nå mangler bare en Fru Fluesnapper. Herr Fluesnapper er nå mye sjeldnere innom fuglekassa, så alt tyder på at han er på sjekkern langs Størigardsvegen.",
                     ImageUrls = new List<string>
                     {
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-5-8/11-59-34.jpg",
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-5-10/6-59-34.jpg"
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-5-8/11-59-34.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-5-10/6-59-34.webp"
                     }
                 },
                 new()
@@ -315,9 +315,9 @@ namespace budorWeb.Services
                         "I dag kom det egg i fuglekassa! Men hvem som har lagt egget er et mysterium. Vi har ikke sett noe til besøk fra Fru Fluesnapper, og selve fødselen må ha skjedd veldig fort i morgentimene. Kameraet har bare greid å plukke opp det svart-hvite hodet til Herr Fluesnapper, så sannsynligvis må dette være verdens første dokumenterte jomfrufødsel fra enn mannlig fluesnapper. Sensasjon!",
                     ImageUrls = new List<string>
                     {
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-5-12/3-29-34.jpg",
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-5-12/2-59-34.jpg",
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-5-12/3-14-34.jpg"
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-5-12/3-29-34.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-5-12/2-59-34.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-5-12/3-14-34.webp"
                     }
                 },
                 new()
@@ -329,11 +329,11 @@ namespace budorWeb.Services
                         "På selveste nasjonaldagen  dukket det opp en Fru Fluesnapper i fuglekassa! Det ser ut som hun ispiserer redebyggingen til Herr Fluesnapper, men har så langt kommet tilbake flere ganger, så det ser ut som hun lar seg sjarmere. Det ene egget som på uforklarig vis hadde havnet i fuglekassa har ligget uten tilsyn i mange dager. Vi begynner å tro at det er en gjøk som har vært innom. Det ser ut som det nå ligger nedgravd under litt ekstra kvist som har kommet til.",
                     ImageUrls = new List<string>
                     {
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-5-17/8-18-39.jpg",
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-5-17/7-23-39.jpg",
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-5-18/3-53-39.jpg",
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-5-17/7-43-39.jpg",
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-5-17/14-53-39.jpg"
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-5-17/8-18-39.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-5-17/7-23-39.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-5-18/3-53-39.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-5-17/7-43-39.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-5-17/14-53-39.webp"
                     }
                 },
                 new()
@@ -344,10 +344,10 @@ namespace budorWeb.Services
                         "I dag tidlig kom det et nytt egg i fuglekassa! Og denne gangen ser det ut som det er Fru Fluesnapper som har lagt det. Hun har ikke vært så mye innom de siste dagene, men vannet gikk tydeligvis i dag morges. Vi gratulerer så mye!",
                     ImageUrls = new List<string>
                     {
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-5-26/4-43-39.jpg",
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-5-26/5-23-39.jpg",
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-5-26/4-48-39.jpg",
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-5-26/4-58-39.jpg"
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-5-26/4-43-39.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-5-26/5-23-39.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-5-26/4-48-39.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-5-26/4-58-39.webp"
                     }
                 },
                 new()
@@ -359,9 +359,9 @@ namespace budorWeb.Services
                         "De siste dagene har vært hektiske for Fru Fluesnapper. Hver morgen har hun måttet haste seg inn i fuglekassa for å legge et nytt egg. Seks egg har hun lagt nå. Det er like mange som hun la i fjor.",
                     ImageUrls = new List<string>
                     {
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-6-3/4-21-1.jpg",
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-6-3/6-41-1.jpg",
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-6-3/5-31-1.jpg"
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-6-3/4-21-1.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-6-3/6-41-1.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-6-3/5-31-1.webp"
                     }
                 },
                 new NewsFeedEntry
@@ -373,8 +373,8 @@ namespace budorWeb.Services
                         "Fru Fluesnapper har nå lagt et egg nesten hver eneste morgen, og har fått syv fine egg. Hun ligger nå betydelig mer og ruger enn tidligere, da hun ofte lot eggene ligge for seg selv. Forhåpentligvis betyr det at det nærmer seg klekking! Vi har dessverre hatt ustabil forbindelse til fuglekassa i det siste. Dels har dette vært på grunn av at internett-tilgangen har falt ut, og dels er det fordi en litt for ivrig fuglekasse-tekniker har prøvd å få til direktesendt video fra fuglekassa, og derfor har måttet deaktivere kamera-funkjsonen for å teste det ut. Pr nå har vi ikke lenger kontakt med fuglekassa, men vi krysser fingrene for at vi får den tilbake. ",
                     ImageUrls = new List<string>
                     {
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-6-13/10-26-23.jpg",
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-6-13/9-19-46.jpg"
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-6-13/10-26-23.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-6-13/9-19-46.webp"
                     }
                 },
                 new NewsFeedEntry
@@ -386,11 +386,11 @@ namespace budorWeb.Services
                         "Etter en uke uten kontakt med fuglekassa har den våknet til liv igjen, og fluesnapper-familien har blitt en ordentlig storfamilie i mellomtiden. Alle eggene er nå klekket, og Herr og Fru Fluesnapper er travelt opptatt med å ruge og fine mat til sine små håpefulle.",
                     ImageUrls = new List<string>
                     {
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-6-21/5-22-33.jpg",
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-6-21/4-47-33.jpg",
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-6-21/4-57-33.jpg",
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-6-21/4-37-33.jpg",
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-6-21/4-22-33.jpg"
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-6-21/5-22-33.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-6-21/4-47-33.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-6-21/4-57-33.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-6-21/4-37-33.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-6-21/4-22-33.webp"
                     }
                 },
                 new NewsFeedEntry
@@ -402,8 +402,8 @@ namespace budorWeb.Services
                         "På grunn av diverse tekniske problemer var dessverre forbindelsen til fuglekassa nede da årets mini-fluesnappere vokste opp og forlot redet. Nå har vi endelig fått en fuglekasse-tekniker på plass for å få fuglekassa på beina, og den er nå oppe og går igjen. Igjen lå bare et ensomt egg som aldri ble klekt. Kanskje det var egget fra Herr Fluesnappers jomfrufødsel? Egget er i hvert fall mye mindre i virkeligheten enn det ser ut som på bildet. Nå er også fuglekassa oppdatert med nytt og bedre kamera. Se så fine bilder det blir nå! Fluesnapper-entusiast-miljøet gleder seg allerede til neste sesong!",
                     ImageUrls = new List<string>
                     {
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-8-5/egg.jpg",
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-8-5/9-31-36.jpg"
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-8-5/egg.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-8-5/9-31-36.webp"
                     }
                 }
             }.OrderByDescending(e => e.Date).ToList();
