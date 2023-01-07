@@ -15,8 +15,8 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using rpiDaemon.DateTimeHelpers;
+using Services.Interfaces;
 using Shared;
-using Shared.Azure;
 using Shared.Models;
 using Shared.PiCameraSettings;
 using Shared.SignalR;
@@ -25,6 +25,7 @@ namespace budorWeb.Pages
 {
     public class BudorBeachModel : PageModel
     {
+        private readonly IAzureStorageService _azureStorageService;
         private readonly IConfiguration _config;
         private readonly BudorDbContext _context;
         private readonly PiCameraSettings _currentCameraSettings;
@@ -32,17 +33,16 @@ namespace budorWeb.Pages
         private readonly ISignalRService _signalRService;
 
         public BudorBeachModel(ILogger<BudorBeachModel> logger, IConfiguration config, BudorDbContext context,
-            IWebHostEnvironment environment, ISignalRService signalRService)
+            IWebHostEnvironment environment, ISignalRService signalRService, IAzureStorageService azureStorageService)
         {
             var stopWatch = new Stopwatch();
             stopWatch.Start();
-            
+
             _context = context;
             _signalRService = signalRService;
+            _azureStorageService = azureStorageService;
             _logger = logger;
             _config = config;
-            IsoSetting = CurrentCameraSettings.Iso;
-            ShutterTimeSetting = CurrentCameraSettings.ShutterTime;
             _currentCameraSettings = PiCameraSettingsHelper.GetCurrentCameraSettingsFromFile();
             IsoSetting = _currentCameraSettings.Iso;
             ShutterTimeSetting = _currentCameraSettings.ShutterTime;
@@ -73,7 +73,7 @@ namespace budorWeb.Pages
         public async Task OnGetAsync(CancellationToken cancellationToken)
         {
             await _signalRService.ConsoleLogMessage(".NET Web Client connected!", cancellationToken);
-            
+
             var stopwatch = new Stopwatch();
             stopwatch.Start();
             _logger.LogInformation($"Before SQL: {stopwatch.Elapsed.Milliseconds} ms");
@@ -81,9 +81,9 @@ namespace budorWeb.Pages
             _logger.LogInformation($"After SQL: {stopwatch.Elapsed.Milliseconds} ms");
 
             ThumbnailsContainerClient =
-                AzureStorageHelper.GetBlobContainerClient(_config, GlobalConstants.ThumbnailImagesContainerName);
+                _azureStorageService.GetBlobContainerClient(GlobalConstants.ThumbnailImagesContainerName);
             ImagesContainerClient =
-                AzureStorageHelper.GetBlobContainerClient(_config, GlobalConstants.ImagesContainerName);
+                _azureStorageService.GetBlobContainerClient(GlobalConstants.ImagesContainerName);
             var blobs = ThumbnailsContainerClient.GetBlobs()
                 .OrderByDescending(blob => DateTimeParser.GetDateTimeFromFolderAndFileName(blob.Name)).Take(5).ToList();
             stopwatch.Stop();

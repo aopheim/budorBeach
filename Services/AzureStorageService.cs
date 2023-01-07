@@ -7,15 +7,16 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Services.Interfaces;
+using Shared;
 
 namespace Services
 {
     public class AzureStorageService : IAzureStorageService
     {
+        private static readonly TimeSpan UploadTimeOut = TimeSpan.FromSeconds(15);
         private readonly BlobServiceClient _blobServiceClient;
         private readonly IConfiguration _config;
-        private static readonly TimeSpan UploadTimeOut = TimeSpan.FromSeconds(15);
-        private CancellationTokenSource _timeOutTokenSource = new CancellationTokenSource(UploadTimeOut);
+        private readonly CancellationTokenSource _timeOutTokenSource = new CancellationTokenSource(UploadTimeOut);
 
         public AzureStorageService(IConfiguration config, IWebHostEnvironment environment)
         {
@@ -26,9 +27,14 @@ namespace Services
                     : config[AzureStorageConnectionString]);
         }
 
-        private static string AzureStorageConnectionString => "AzureStorageConnectionString";
-        private static string AzuriteStorageConnectionString => "AzuriteStorageConnectionString";
+        private static string AzureStorageConnectionString => GlobalConstants.AzureStorageConnectionString;
+        private static string AzuriteStorageConnectionString => GlobalConstants.AzuriteStorageConnectionString;
 
+
+        public BlobContainerClient GetBlobContainerClient(string containerName)
+        {
+            return _blobServiceClient.GetBlobContainerClient(containerName);
+        }
 
         public async Task<bool> UploadFileFromPath(string containerName, string filePath, string fileNameWithExtension,
             CancellationToken cancellationToken)
@@ -42,6 +48,13 @@ namespace Services
             return true;
         }
 
+        public async Task UploadFileFromStream(Stream inputStream, string containerName, string fileNameWithExtension,
+            CancellationToken cancellationToken)
+        {
+            var client = GetBlobClient(containerName, fileNameWithExtension);
+            await client.UploadAsync(inputStream, true, cancellationToken);
+        }
+
         public async Task<bool> ExistsAsync(string containerName, string fileNameWithExtension,
             CancellationToken cancellationToken)
         {
@@ -50,7 +63,7 @@ namespace Services
             return await blobClient.ExistsAsync(cancellationToken);
         }
 
-        private BlobClient GetBlobClient(string containerName, string fileNameWithExtension)
+        public BlobClient GetBlobClient(string containerName, string fileNameWithExtension)
         {
             var containerClient = _blobServiceClient.GetBlobContainerClient(containerName);
             containerClient.CreateIfNotExists();

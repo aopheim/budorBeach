@@ -9,8 +9,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using MMALSharp;
 using Quartz;
+using Services.Interfaces;
 using Shared;
-using Shared.Azure;
 using Shared.PiCameraSettings;
 
 namespace rpiDaemon.Jobs
@@ -26,14 +26,14 @@ namespace rpiDaemon.Jobs
         private readonly BlobContainerClient _thumbnailsContainerClient;
 
         public TakePictureJob(ILogger<TakePictureJob> logger, IConfiguration config, IWebHostEnvironment environment,
-            ICameraService cameraService)
+            ICameraService cameraService, IAzureStorageService azureStorageService)
         {
             _logger = logger;
             _environment = environment;
             _cameraService = cameraService;
-            _containerClient = AzureStorageHelper.GetBlobContainerClient(config, GlobalConstants.ImagesContainerName);
+            _containerClient = azureStorageService.GetBlobContainerClient(GlobalConstants.ImagesContainerName);
             _thumbnailsContainerClient =
-                AzureStorageHelper.GetBlobContainerClient(config, GlobalConstants.ThumbnailImagesContainerName);
+                azureStorageService.GetBlobContainerClient(GlobalConstants.ThumbnailImagesContainerName);
             MMALCameraConfig.Debug = true;
         }
 
