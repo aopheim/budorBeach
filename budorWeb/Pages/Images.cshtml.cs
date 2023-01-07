@@ -6,18 +6,20 @@ using Azure.Storage.Blobs.Models;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Configuration;
 using rpiDaemon.DateTimeHelpers;
+using Services.Interfaces;
 using Shared;
-using Shared.Azure;
 
 namespace budorWeb.Pages
 {
     public class ImagesModel : PageModel
     {
+        private readonly IAzureStorageService _azureStorageService;
         private readonly IConfiguration _config;
 
-        public ImagesModel(IConfiguration config)
+        public ImagesModel(IConfiguration config, IAzureStorageService azureStorageService)
         {
             _config = config;
+            _azureStorageService = azureStorageService;
         }
 
         public List<BlobItem> ImageBlobsForDay { get; set; }
@@ -30,12 +32,12 @@ namespace budorWeb.Pages
             var folderName = DateTimeParser.GetFolderName(today);
 
             var thumbnailContainerClient =
-                AzureStorageHelper.GetBlobContainerClient(_config, GlobalConstants.ThumbnailImagesContainerName);
+                _azureStorageService.GetBlobContainerClient(GlobalConstants.ThumbnailImagesContainerName);
             ImageBlobsForDay = thumbnailContainerClient.GetBlobs().Where(blob => blob.Name.Contains(folderName))
                 .OrderBy(blob => DateTimeParser.GetDateTimeFromFolderAndFileName(blob.Name)).ToList();
             ThumbnailContainerClient = thumbnailContainerClient;
             FullSizeImageContainerClient =
-                AzureStorageHelper.GetBlobContainerClient(_config, GlobalConstants.ImagesContainerName);
+                _azureStorageService.GetBlobContainerClient(GlobalConstants.ImagesContainerName);
         }
 
         public void OnGetImagesForDay(string selectedDateAsString)

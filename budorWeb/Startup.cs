@@ -1,4 +1,3 @@
-using System;
 using DataAccess.EFCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -8,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Services;
+using Services.Interfaces;
 using Shared;
 using Shared.SignalR;
 using SimpleInjector;
@@ -61,6 +61,9 @@ namespace budorWeb
         private void InitializeContainer()
         {
             _container.RegisterSingleton<ISignalRService, SignalRService>();
+            _container.Register<IAzureStorageService, AzureStorageService>();
+            _container.Register<IMigrationService, MigrationService>();
+            _container.Register<IImageConverter, ImageConverter>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

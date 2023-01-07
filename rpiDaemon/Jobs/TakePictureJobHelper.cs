@@ -84,7 +84,7 @@ namespace rpiDaemon.Jobs
             var cTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(30));
             await blobClient.UploadAsync(uploadFileStream, true, cTokenSource.Token);
             uploadFileStream.Close();
-            await AzureStorageHelper.SetBlobPropertiesAsync(blobClient);
+            await AzureStorageHelper.SetJpgBlobPropertiesAsync(blobClient);
         }
     }
 }

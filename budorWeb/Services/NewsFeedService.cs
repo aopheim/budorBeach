@@ -344,10 +344,10 @@ namespace budorWeb.Services
                         "I dag tidlig kom det et nytt egg i fuglekassa! Og denne gangen ser det ut som det er Fru Fluesnapper som har lagt det. Hun har ikke vært så mye innom de siste dagene, men vannet gikk tydeligvis i dag morges. Vi gratulerer så mye!",
                     ImageUrls = new List<string>
                     {
-                        "https://budorbeach.blob.core.windows.net/images/2022-5-26/4-43-39.jpg",
-                        "https://budorbeach.blob.core.windows.net/images/2022-5-26/5-23-39.jpg",
-                        "https://budorbeach.blob.core.windows.net/images/2022-5-26/4-48-39.jpg",
-                        "https://budorbeach.blob.core.windows.net/images/2022-5-26/4-58-39.jpg"
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-5-26/4-43-39.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-5-26/5-23-39.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-5-26/4-48-39.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-5-26/4-58-39.jpg"
                     }
                 },
                 new()

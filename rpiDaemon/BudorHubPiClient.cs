@@ -9,8 +9,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using rpiDaemon.Jobs;
+using Services.Interfaces;
 using Shared;
-using Shared.Azure;
 using Shared.Interfaces;
 using Shared.Models;
 using Shared.PiCameraSettings;
@@ -21,6 +21,7 @@ namespace rpiDaemon
     [UsedImplicitly]
     public class BudorHubPiClient : IBudorHubClient, IHostedService
     {
+        private readonly IAzureStorageService _azureStorageService;
         private readonly ICameraService _cameraService;
         private readonly IWebHostEnvironment _environment;
         private readonly BlobContainerClient _imagesContainerClient;
@@ -30,17 +31,18 @@ namespace rpiDaemon
 
         public BudorHubPiClient(ILogger<BudorHubPiClient> logger, IWebHostEnvironment environment,
             IConfiguration config,
-            ICameraService cameraService, ISignalRService signalRService
+            ICameraService cameraService, ISignalRService signalRService, IAzureStorageService azureStorageService
         )
         {
             _logger = logger;
             _environment = environment;
             _cameraService = cameraService;
             _signalRService = signalRService;
+            _azureStorageService = azureStorageService;
             _imagesContainerClient =
-                AzureStorageHelper.GetBlobContainerClient(config, GlobalConstants.ImagesContainerName);
+                azureStorageService.GetBlobContainerClient(GlobalConstants.ImagesContainerName);
             _thumbnailsContainerClient =
-                AzureStorageHelper.GetBlobContainerClient(config, GlobalConstants.ThumbnailImagesContainerName);
+                azureStorageService.GetBlobContainerClient(GlobalConstants.ThumbnailImagesContainerName);
             RegisterClientMethods();
         }
 
