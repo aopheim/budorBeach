@@ -5,7 +5,6 @@ using CameraService.Interfaces;
 using Microsoft.Extensions.Logging;
 using MMALSharp;
 using MMALSharp.Common;
-using MMALSharp.Common.Utility;
 using MMALSharp.Handlers;
 using Shared.PiCameraSettings;
 

@@ -1,7 +1,5 @@
 ﻿@page
-@using rpiDaemon.DateTimeHelpers
-@using budorWeb.Helpers
-@using global::Shared.Azure
+@using global::Shared.DateTimeHelpers
 @model budorWeb.Pages.ImagesModel
 @{
 }
@@ -12,15 +10,15 @@
 </select>*@
 
 <div class="row">
-    @foreach (var blob in @Model.ImageBlobsForDay)
+    @foreach (var image in Model.ImagesForDay)
     {
         <div class="col-md-6">
             <div class="card my-3">
-                <a href="@blob.GetUrlForBlob(Model.FullSizeImageContainerClient)">
-                    <img class="card-img-top" src="@blob.GetUrlForBlob(Model.ThumbnailContainerClient)" alt="@blob.Name">
+                <a href="@image.ImageUrl">
+                    <img class="card-img-top" src="@image.ThumbnailUrl" alt="@image.Name">
                 </a>
                 <div class="card-body">
-                    <h4 class="card-text">@DateTimeParser.GetLocalDateTimeAsString(DateTimeParser.GetDateTimeFromFolderAndFileName(blob.Name))</h4>
+                    <h4 class="card-text">@DateTimeParser.GetLocalDateTimeAsString(DateTimeParser.GetDateTimeFromFolderAndFileName(image.Name))</h4>
                 </div>
             </div>
         </div>

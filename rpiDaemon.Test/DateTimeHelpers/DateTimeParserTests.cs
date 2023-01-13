@@ -1,6 +1,6 @@
 ﻿using FluentAssertions;
 using NUnit.Framework;
-using rpiDaemon.DateTimeHelpers;
+using Shared.DateTimeHelpers;
 
 namespace rpiDaemon.Test.DateTimeHelpers
 {

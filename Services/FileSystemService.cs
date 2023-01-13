@@ -27,4 +27,14 @@ public class FileSystemService : IFileSystemService
     {
         File.Delete(path);
     }
+
+    public FileStream GetFileStream(string fullPath)
+    {
+        return File.OpenRead(fullPath);
+    }
+
+    public void DeleteDirectory(string path, bool recursive)
+    {
+        Directory.Delete(path, true);
+    }
 }

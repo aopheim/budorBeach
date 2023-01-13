@@ -6,7 +6,6 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Azure.Storage.Blobs;
-using Azure.Storage.Blobs.Models;
 using DataAccess.EFCore;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Hosting;
@@ -14,9 +13,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using rpiDaemon.DateTimeHelpers;
 using Services.Interfaces;
 using Shared;
+using Shared.Azure;
+using Shared.DateTimeHelpers;
 using Shared.Models;
 using Shared.PiCameraSettings;
 using Shared.SignalR;
@@ -35,9 +35,6 @@ namespace budorWeb.Pages
         public BudorBeachModel(ILogger<BudorBeachModel> logger, IConfiguration config, BudorDbContext context,
             IWebHostEnvironment environment, ISignalRService signalRService, IAzureStorageService azureStorageService)
         {
-            var stopWatch = new Stopwatch();
-            stopWatch.Start();
-
             _context = context;
             _signalRService = signalRService;
             _azureStorageService = azureStorageService;
@@ -47,15 +44,12 @@ namespace budorWeb.Pages
             IsoSetting = _currentCameraSettings.Iso;
             ShutterTimeSetting = _currentCameraSettings.ShutterTime;
             SetupWebClientMethods();
-
-            stopWatch.Stop();
-            _logger.LogInformation($"Constructor in Index.cshtml ran in {stopWatch.Elapsed.Milliseconds} ms");
         }
 
         private PiCameraSettings CurrentCameraSettings { get; }
 
 
-        public List<BlobItem> LatestImages { get; set; }
+        public List<ImageDto> LatestImages { get; set; }
         public BlobContainerClient ThumbnailsContainerClient { get; set; }
         public BlobContainerClient ImagesContainerClient { get; set; }
         [CanBeNull] public SensorReadingModel LatestSensorReadingModel { get; set; }
@@ -76,20 +70,28 @@ namespace budorWeb.Pages
 
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            _logger.LogInformation($"Before SQL: {stopwatch.Elapsed.Milliseconds} ms");
-            LatestSensorReadingModel = _context.SensorReadings.OrderByDescending(m => m.MeasuredAtUtc).FirstOrDefault();
-            _logger.LogInformation($"After SQL: {stopwatch.Elapsed.Milliseconds} ms");
+            _logger.LogInformation($"Before SensorReading SQL: {stopwatch.Elapsed.TotalMilliseconds} ms");
+            var latestTime = _context.SensorReadings.Max(s => s.MeasuredAtUtc);
+            LatestSensorReadingModel = _context.SensorReadings.FirstOrDefault(s => s.MeasuredAtUtc == latestTime);
+            _logger.LogInformation($"After SensorReading SQL: {stopwatch.Elapsed.TotalMilliseconds} ms");
 
             ThumbnailsContainerClient =
                 _azureStorageService.GetBlobContainerClient(GlobalConstants.ThumbnailImagesContainerName);
             ImagesContainerClient =
                 _azureStorageService.GetBlobContainerClient(GlobalConstants.ImagesContainerName);
-            var blobs = ThumbnailsContainerClient.GetBlobs()
-                .OrderByDescending(blob => DateTimeParser.GetDateTimeFromFolderAndFileName(blob.Name)).Take(5).ToList();
-            stopwatch.Stop();
-            _logger.LogInformation($"Performed OnGetAsync in {stopwatch.Elapsed.Milliseconds} ms");
+            _logger.LogInformation($"Blob query started at {stopwatch.Elapsed.TotalMilliseconds} ms");
+            var blobs = ImagesContainerClient.GetBlobs()
+                .OrderByDescending(blob => blob.Properties.CreatedOn).Take(5).ToList();
+            _logger.LogInformation($"Blob query returned at {stopwatch.Elapsed.TotalMilliseconds} ms");
 
-            LatestImages = blobs;
+            LatestImages = blobs.Select(b => new ImageDto
+            {
+                ImageUrl = b.GetUrlForBlob(ImagesContainerClient, ".jpg"),
+                ThumbnailUrl = b.GetUrlForBlob(ThumbnailsContainerClient, ".webp"),
+                Name = b.Name
+            }).ToList();
+            stopwatch.Stop();
+            _logger.LogInformation($"Performed OnGetAsync in total {stopwatch.Elapsed.TotalMilliseconds} ms");
         }
 
         public async Task<IActionResult> OnPostAsync(CancellationToken cancellationToken)
@@ -141,5 +143,12 @@ namespace budorWeb.Pages
         public List<double> PressureReadings { get; set; }
         public List<double> HumidityReadings { get; set; }
         public List<DateTime> MeasuredAt { get; set; }
+    }
+
+    public class ImageDto
+    {
+        public string ThumbnailUrl { get; set; }
+        public string ImageUrl { get; set; }
+        public string Name { get; set; }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace rpiDaemon.DateTimeHelpers
+namespace Shared.DateTimeHelpers
 {
     public static class DateTimeParser
     {

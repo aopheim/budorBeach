@@ -1,48 +1,38 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Azure.Storage.Blobs;
-using CameraService.Interfaces;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using rpiDaemon.Jobs;
 using Services.Interfaces;
-using Shared;
 using Shared.Interfaces;
 using Shared.Models;
 using Shared.PiCameraSettings;
 using Shared.SignalR;
+using SimpleInjector;
 
 namespace rpiDaemon
 {
     [UsedImplicitly]
     public class BudorHubPiClient : IBudorHubClient, IHostedService
     {
-        private readonly IAzureStorageService _azureStorageService;
-        private readonly ICameraService _cameraService;
-        private readonly IWebHostEnvironment _environment;
-        private readonly BlobContainerClient _imagesContainerClient;
+        private readonly Container _container;
         private readonly ILogger<BudorHubPiClient> _logger;
         private readonly ISignalRService _signalRService;
-        private readonly BlobContainerClient _thumbnailsContainerClient;
 
-        public BudorHubPiClient(ILogger<BudorHubPiClient> logger, IWebHostEnvironment environment,
+        public BudorHubPiClient(ILogger<BudorHubPiClient> logger,
+            IWebHostEnvironment environment,
             IConfiguration config,
-            ICameraService cameraService, ISignalRService signalRService, IAzureStorageService azureStorageService
+            ISignalRService signalRService,
+            // Anti-pattern, but have currently no other solution
+            Container container
         )
         {
             _logger = logger;
-            _environment = environment;
-            _cameraService = cameraService;
             _signalRService = signalRService;
-            _azureStorageService = azureStorageService;
-            _imagesContainerClient =
-                azureStorageService.GetBlobContainerClient(GlobalConstants.ImagesContainerName);
-            _thumbnailsContainerClient =
-                azureStorageService.GetBlobContainerClient(GlobalConstants.ThumbnailImagesContainerName);
+            _container = container;
             RegisterClientMethods();
         }
 
@@ -59,9 +49,8 @@ namespace rpiDaemon
 
         public async Task TakeImage(PiCameraSettings settings, CancellationToken cancellationToken)
         {
-            await TakePictureJobHelper.TakeImageAndUploadAsync(_environment, _cameraService, _logger,
-                _imagesContainerClient,
-                _thumbnailsContainerClient, settings);
+            var pictureService = GetPictureService();
+            await pictureService.TakeImageAndUploadAsync(settings, cancellationToken);
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
@@ -82,6 +71,11 @@ namespace rpiDaemon
                 async settings => await TakeImage(settings, standardCToken));
             _signalRService.RegisterClientMethod<string>(nameof(ISignalRService.ConsoleLogMessage),
                 message => ConsoleLogMessage(message, standardCToken));
+        }
+
+        private IPictureService GetPictureService()
+        {
+            return _container.GetInstance<IPictureService>();
         }
     }
 }

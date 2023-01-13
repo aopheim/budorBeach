@@ -8,12 +8,11 @@ using CameraService.Interfaces;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using rpiDaemon.DateTimeHelpers;
 using Shared;
 using Shared.Azure;
+using Shared.DateTimeHelpers;
 using Shared.PiCameraSettings;
 using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Processing;
 
 namespace rpiDaemon.Jobs
 {
@@ -35,12 +34,13 @@ namespace rpiDaemon.Jobs
                     logger.LogInformation("Camera is in use. Skipping taking image");
                     return;
                 }
+
                 var now = DateTime.UtcNow;
                 var folderName = DateTimeParser.GetFolderName(now);
                 var fileName = DateTimeParser.GetFileName(now);
                 var folderPath = $"{GlobalConstants.ImagesFolder}{folderName}";
                 var fullPath = folderPath + $"/{fileName}.jpg";
-                    
+
                 try
                 {
                     await cameraService.TakeImage(fullPath, settings);
@@ -55,23 +55,20 @@ namespace rpiDaemon.Jobs
                 logger.LogInformation(
                     $"Picture taken at {DateTime.UtcNow}. Camera settings: {JsonSerializer.Serialize(settings)}");
                 await UploadImageToContainerClient(containerClient, folderName, fileName, fullPath);
-                var compressedImagePath = await CompressJpgImage(fullPath);
+                var compressedImagePath = await CompressToWebPFormat(fullPath);
                 await UploadImageToContainerClient(thumbnailContainerClient, folderName, fileName, compressedImagePath);
 
                 Directory.Delete(folderPath, true);
             }
         }
 
-        private static async Task<string> CompressJpgImage(string fullInputPath)
+        private static async Task<string> CompressToWebPFormat(string fullInputPath)
         {
-            var outputPath = fullInputPath.Replace(".jpg", "-resized.jpg");
+            var outputPath = fullInputPath.Replace(".jpg", ".webp");
 
             await using var input = File.OpenRead(fullInputPath);
             var image = await Image.LoadAsync(input);
-            var newWidth = image.Width / 4;
-            var newHeight = image.Height / 4;
-            image.Mutate(img => img.Resize(newWidth, newHeight));
-            await image.SaveAsync(outputPath);
+            await image.SaveAsWebpAsync(outputPath);
 
             return outputPath;
         }
