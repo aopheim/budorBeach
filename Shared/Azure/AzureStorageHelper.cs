@@ -8,9 +8,10 @@ namespace Shared.Azure
 {
     public static class AzureStorageHelper
     {
-        public static string GetUrlForBlob(this BlobItem blob, BlobContainerClient containerClient)
+        public static string GetUrlForBlob(this BlobItem blob, BlobContainerClient containerClient,
+            string fileExtension)
         {
-            return new Uri(containerClient.Uri, $"{containerClient.Name}/{blob.Name}")
+            return new Uri(containerClient.Uri, $"{containerClient.Name}/{blob.Name.Replace(".jpg", fileExtension)}")
                 .ToString();
         }
 

@@ -18,5 +18,7 @@ namespace Services.Interfaces
 
         Task<bool> ExistsAsync(string containerName, string fileNameWithExtension,
             CancellationToken cancellationToken);
+
+         Task SetJpgBlobPropertiesAsync(BlobClient blob);
     }
 }

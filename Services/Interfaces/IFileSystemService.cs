@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 
 namespace Services.Interfaces
 {
@@ -6,5 +7,7 @@ namespace Services.Interfaces
     {
         IEnumerable<string> GetFileNamesWithoutExtensionInFolder(string folderFilePath);
         void DeleteFile(string path);
+        FileStream GetFileStream(string fullPath);
+        void DeleteDirectory(string path, bool recursive);
     }
 }

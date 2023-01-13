@@ -1,7 +1,5 @@
 ﻿@page
-@using global::Shared.Azure
-@using rpiDaemon.DateTimeHelpers
-@using Azure.Storage.Blobs.Models
+@using global::Shared.DateTimeHelpers
 @using budorWeb.Services
 @model BudorBeachModel
 @{
@@ -82,15 +80,15 @@
 
     <h2>De 5 siste bildene</h2>
     <div class="row">
-        @foreach (var blob in Model?.LatestImages ?? new List<BlobItem>())
+        @foreach (var image in Model?.LatestImages ?? new List<ImageDto>())
         {
             <div class="col-md-6">
                 <div class="card my-3">
-                    <a href="@blob.GetUrlForBlob(Model.ImagesContainerClient)">
-                        <img class="card-img-top" src="@blob.GetUrlForBlob(Model.ThumbnailsContainerClient)" alt="@blob.Name">
+                    <a href="@image.ImageUrl">
+                        <img class="card-img-top" src="@image.ImageUrl" alt="@image.Name">
                     </a>
                     <div class="card-body">
-                        <h4 class="card-text">@DateTimeParser.GetLocalDateTimeAsString(DateTimeParser.GetDateTimeFromFolderAndFileName(blob.Name))</h4>
+                        <h4 class="card-text">@DateTimeParser.GetLocalDateTimeAsString(DateTimeParser.GetDateTimeFromFolderAndFileName(image.Name))</h4>
                     </div>
                 </div>
             </div>

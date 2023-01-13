@@ -126,6 +126,8 @@ public class Startup
         _container.Register<IFileSystemService, FileSystemService>();
         _container.Register<IAzureStorageService, AzureStorageService>();
         _container.Register<IExternalProcess, ExternalProcess>();
+        _container.Register<IPictureService, PictureService>();
+        _container.Register<IPictureEditService, PictureEditService>();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

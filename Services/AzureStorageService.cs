@@ -2,7 +2,9 @@ using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Azure;
 using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -61,6 +63,39 @@ namespace Services
             var blobClient = GetBlobClient(containerName, fileNameWithExtension);
 
             return await blobClient.ExistsAsync(cancellationToken);
+        }
+
+        public async Task SetJpgBlobPropertiesAsync(BlobClient blob)
+        {
+            try
+            {
+                // Get the existing properties
+                BlobProperties properties = await blob.GetPropertiesAsync();
+
+                var headers = new BlobHttpHeaders
+                {
+                    // Set the MIME ContentType every time the properties 
+                    // are updated or the field will be cleared
+                    ContentType = "image/jpeg",
+                    ContentLanguage = "en-us",
+
+                    // Populate remaining headers with 
+                    // the pre-existing properties
+                    CacheControl = properties.CacheControl,
+                    ContentDisposition = properties.ContentDisposition,
+                    ContentEncoding = properties.ContentEncoding,
+                    ContentHash = properties.ContentHash
+                };
+
+                // Set the blob's properties.
+                await blob.SetHttpHeadersAsync(headers);
+            }
+            catch (RequestFailedException e)
+            {
+                Console.WriteLine($"HTTP error code {e.Status}: {e.ErrorCode}");
+                Console.WriteLine(e.Message);
+                Console.ReadLine();
+            }
         }
 
         public BlobClient GetBlobClient(string containerName, string fileNameWithExtension)

@@ -2,8 +2,9 @@ using System;
 using NSubstitute;
 using NUnit.Framework;
 using SimpleInjector;
+using Container = SimpleInjector.Container;
 
-namespace rpiDaemon.Test
+namespace BaseUnitTests
 {
     public abstract class UnitTestBase
     {
