@@ -8,8 +8,8 @@ import { BirdImageDto, Client } from "src/services";
   styleUrls: ["./images-list.component.scss"],
 })
 export class ImagesListComponent {
-  constructor() {
-    // this.birdImages$ = from(.getLatestBirdImages(6));
+  constructor(private api: Client) {
+    this.birdImages$ = api.getLatestBirdImages(6);
   }
 
   public birdImages$: Observable<BirdImageDto[]>;
