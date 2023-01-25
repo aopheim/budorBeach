@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using Services;
 using Services.Interfaces;
 using Shared;
+using Shared.Interfaces;
 using Shared.SignalR;
 using SimpleInjector;
 using SimpleInjector.Lifestyles;
@@ -64,6 +65,7 @@ namespace budorWeb
             _container.Register<IAzureStorageService, AzureStorageService>();
             _container.Register<IMigrationService, MigrationService>();
             _container.Register<IImageConverter, ImageConverter>();
+            _container.Register<IRepositories, Repositories>(Lifestyle.Scoped);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

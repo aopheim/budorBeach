@@ -5,9 +5,7 @@ using Azure.Storage.Blobs;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Configuration;
 using Services.Interfaces;
-using Shared;
-using Shared.Azure;
-using Shared.DateTimeHelpers;
+using Shared.Interfaces;
 
 namespace budorWeb.Pages
 {
@@ -15,11 +13,13 @@ namespace budorWeb.Pages
     {
         private readonly IAzureStorageService _azureStorageService;
         private readonly IConfiguration _config;
+        private readonly IRepositories _repos;
 
-        public ImagesModel(IConfiguration config, IAzureStorageService azureStorageService)
+        public ImagesModel(IConfiguration config, IAzureStorageService azureStorageService, IRepositories repos)
         {
             _config = config;
             _azureStorageService = azureStorageService;
+            _repos = repos;
         }
 
         public List<ImageDto> ImagesForDay { get; set; }
@@ -28,21 +28,11 @@ namespace budorWeb.Pages
 
         public void OnGet()
         {
-            var today = DateTime.UtcNow;
-            var folderName = DateTimeParser.GetFolderName(today);
-
-            ThumbnailContainerClient =
-                _azureStorageService.GetBlobContainerClient(GlobalConstants.ThumbnailImagesContainerName);
-            FullSizeImageContainerClient =
-                _azureStorageService.GetBlobContainerClient(GlobalConstants.ImagesContainerName);
-
-            ImagesForDay = ThumbnailContainerClient.GetBlobs().Where(blob => blob.Name.Contains(folderName))
-                .OrderBy(blob => DateTimeParser.GetDateTimeFromFolderAndFileName(blob.Name)).Select(b => new ImageDto
-                {
-                    Name = b.Name,
-                    ImageUrl = b.GetUrlForBlob(FullSizeImageContainerClient, ".jpg"),
-                    ThumbnailUrl = b.GetUrlForBlob(ThumbnailContainerClient, ".webp")
-                }).ToList();
+            var today = DateTime.UtcNow.Date;
+            ImagesForDay = _repos.ImageUploads.GetUploadsForDay(DateOnly.FromDateTime(today)).Select(iu =>
+                    new ImageDto
+                        { Name = iu.FileName, ImageUrl = iu.FullSizeImageUrl, ThumbnailUrl = iu.ThumbnailWebPImageUrl })
+                .ToList();
         }
     }
 }

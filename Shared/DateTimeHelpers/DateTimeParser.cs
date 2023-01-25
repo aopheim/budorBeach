@@ -22,18 +22,19 @@ namespace Shared.DateTimeHelpers
                 : new DateTime(int.Parse(split[0]), int.Parse(split[1]), int.Parse(split[2]), 00, 00, 00);
         }
 
-        public static DateTime GetDateTimeFromFolderAndFileName(string folderAndFileName)
+        // Returns null if unable to parse filename
+        public static DateTime? GetDateTimeFromFolderAndFileName(string folderAndFileName)
         {
             var split = folderAndFileName.Split('/');
 
             if (split.Length != 2)
-                return default;
+                return null;
 
             var folderDate = GetDateTimeDateFromFolderName(split[0]);
             var timeWithDash = split[1].Split('.')[0];
             var splitTime = timeWithDash.Split('-');
             if (splitTime.Length != 3)
-                return default;
+                return null;
 
             var hour = int.Parse(splitTime[0]);
             var minute = int.Parse(splitTime[1]);

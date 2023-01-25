@@ -98,6 +98,11 @@ namespace Services
             }
         }
 
+        public string GetBlobUrl(string containerName, string fileNameWithExtension)
+        {
+            return GetBlobClient(containerName, fileNameWithExtension).Uri.ToString();
+        }
+
         public BlobClient GetBlobClient(string containerName, string fileNameWithExtension)
         {
             var containerClient = _blobServiceClient.GetBlobContainerClient(containerName);
