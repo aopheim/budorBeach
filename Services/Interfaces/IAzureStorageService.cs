@@ -20,5 +20,6 @@ namespace Services.Interfaces
             CancellationToken cancellationToken);
 
          Task SetJpgBlobPropertiesAsync(BlobClient blob);
+         string GetBlobUrl(string containerName, string fileNameWithExtension);
     }
 }

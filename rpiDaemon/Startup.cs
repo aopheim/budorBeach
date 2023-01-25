@@ -52,6 +52,8 @@ public class Startup
         services.AddQuartz(q =>
         {
             q.UseJobFactory<JobFactory>();
+            q.AddJobAndTrigger<IndexImageUploadRepoJob>(GlobalConstants.DailyJobs,
+                GlobalConstants.IndexImageUploadDbTrigger, TimeSpan.FromHours(24));
             q.AddJobAndTrigger<GetBme280SensorReadingsJob>(GlobalConstants.SecondJobs,
                 GlobalConstants.Bme280Trigger,
                 _environment.IsDevelopment()
@@ -111,9 +113,10 @@ public class Startup
         _container.RegisterSingleton<IBirdRecordingAnalyzer, AudioRecordingRecordingAnalyzer>();
         _container.RegisterSingleton<IAudioUploader, AudioUploaderService>();
         _container.RegisterSingleton<IExternalSingletonProcess, ExternalSingletonProcess>();
-        _container.Register<CaptureAudioContinuouslyJob>();
         _container.Register<IAudioService, AudioService.AudioService>();
         _container.Register<IRepositories, Repositories>(Lifestyle.Scoped);
+        
+        _container.Register<CaptureAudioContinuouslyJob>();
         _container.Register<GetBme280SensorReadingsJob>();
         _container.Register<TakePictureJob>();
         _container.Register<GetProximityJob>();
@@ -122,6 +125,8 @@ public class Startup
         _container.Register<UploadAudioRecordingsJob>();
         _container.Register<AnalyzeAudioRecordingsJob>();
         _container.Register<StartVideoSurveillanceJob>();
+        _container.Register<IndexImageUploadRepoJob>();
+        
         _container.Register<IBirdNetResultConverter, BirdNetResultConverter>();
         _container.Register<IFileSystemService, FileSystemService>();
         _container.Register<IAzureStorageService, AzureStorageService>();

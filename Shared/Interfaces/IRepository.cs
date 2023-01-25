@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Shared.Interfaces
@@ -23,6 +24,7 @@ namespace Shared.Interfaces
         ISensorReadingRepo SensorReadings { get; }
         IBirdPresenceRepo BirdPresenceRegistrations { get; }
         ISpeciesRecognitionRepo SpeciesRecognitions { get; }
-        public Task SaveChangesAsync();
+        IImageUploadRepo ImageUploads { get; set; }
+        public Task SaveChangesAsync(CancellationToken cancellationToken = default);
     }
 }

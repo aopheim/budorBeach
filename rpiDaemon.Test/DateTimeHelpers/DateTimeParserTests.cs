@@ -26,7 +26,7 @@ namespace rpiDaemon.Test.DateTimeHelpers
         public void GetDateTimeFromFolderName_Works(string folderAndFileName, int expectedYear, int expectedMonth,
             int expectedDay, int expectedHour, int expectedMinute, int expectedSecond)
         {
-            var result = DateTimeParser.GetDateTimeFromFolderAndFileName(folderAndFileName);
+            var result = DateTimeParser.GetDateTimeFromFolderAndFileName(folderAndFileName).Value;
 
             result.Year.Should().Be(expectedYear);
             result.Month.Should().Be(expectedMonth);

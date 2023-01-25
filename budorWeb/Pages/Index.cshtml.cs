@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using Azure.Storage.Blobs;
 using DataAccess.EFCore;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Hosting;
@@ -14,9 +13,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Services.Interfaces;
-using Shared;
-using Shared.Azure;
-using Shared.DateTimeHelpers;
+using Shared.Interfaces;
 using Shared.Models;
 using Shared.PiCameraSettings;
 using Shared.SignalR;
@@ -30,14 +27,16 @@ namespace budorWeb.Pages
         private readonly BudorDbContext _context;
         private readonly PiCameraSettings _currentCameraSettings;
         private readonly ILogger<BudorBeachModel> _logger;
+        private readonly IRepositories _repos;
         private readonly ISignalRService _signalRService;
 
         public BudorBeachModel(ILogger<BudorBeachModel> logger, IConfiguration config, BudorDbContext context,
-            IWebHostEnvironment environment, ISignalRService signalRService, IAzureStorageService azureStorageService)
+            IWebHostEnvironment environment, ISignalRService signalRService, IAzureStorageService azureStorageService,
+            IRepositories repos)
         {
             _context = context;
             _signalRService = signalRService;
-            _azureStorageService = azureStorageService;
+            _repos = repos;
             _logger = logger;
             _config = config;
             _currentCameraSettings = PiCameraSettingsHelper.GetCurrentCameraSettingsFromFile();
@@ -50,8 +49,6 @@ namespace budorWeb.Pages
 
 
         public List<ImageDto> LatestImages { get; set; }
-        public BlobContainerClient ThumbnailsContainerClient { get; set; }
-        public BlobContainerClient ImagesContainerClient { get; set; }
         [CanBeNull] public SensorReadingModel LatestSensorReadingModel { get; set; }
         [BindProperty] public int IsoSetting { get; set; }
         [BindProperty] public int ShutterTimeSetting { get; set; }
@@ -74,22 +71,11 @@ namespace budorWeb.Pages
             var latestTime = _context.SensorReadings.Max(s => s.MeasuredAtUtc);
             LatestSensorReadingModel = _context.SensorReadings.FirstOrDefault(s => s.MeasuredAtUtc == latestTime);
             _logger.LogInformation($"After SensorReading SQL: {stopwatch.Elapsed.TotalMilliseconds} ms");
-
-            ThumbnailsContainerClient =
-                _azureStorageService.GetBlobContainerClient(GlobalConstants.ThumbnailImagesContainerName);
-            ImagesContainerClient =
-                _azureStorageService.GetBlobContainerClient(GlobalConstants.ImagesContainerName);
-            _logger.LogInformation($"Blob query started at {stopwatch.Elapsed.TotalMilliseconds} ms");
-            var blobs = ImagesContainerClient.GetBlobs()
-                .OrderByDescending(blob => blob.Properties.CreatedOn).Take(5).ToList();
-            _logger.LogInformation($"Blob query returned at {stopwatch.Elapsed.TotalMilliseconds} ms");
-
-            LatestImages = blobs.Select(b => new ImageDto
-            {
-                ImageUrl = b.GetUrlForBlob(ImagesContainerClient, ".jpg"),
-                ThumbnailUrl = b.GetUrlForBlob(ThumbnailsContainerClient, ".webp"),
-                Name = b.Name
-            }).ToList();
+            _logger.LogInformation($"Before ImageUpload SQL: {stopwatch.Elapsed.TotalMilliseconds} ms");
+            LatestImages = _repos.ImageUploads.GetLatestUploads(6).Select(iu => new ImageDto
+                    { Name = iu.FileName, ImageUrl = iu.FullSizeImageUrl, ThumbnailUrl = iu.ThumbnailWebPImageUrl })
+                .ToList();
+            _logger.LogInformation($"After ImageUpload SQL: {stopwatch.Elapsed.TotalMilliseconds} ms");
             stopwatch.Stop();
             _logger.LogInformation($"Performed OnGetAsync in total {stopwatch.Elapsed.TotalMilliseconds} ms");
         }
