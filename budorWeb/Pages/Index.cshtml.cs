@@ -34,11 +34,16 @@ namespace budorWeb.Pages
             IWebHostEnvironment environment, ISignalRService signalRService, IAzureStorageService azureStorageService,
             IRepositories repos)
         {
+            var stopWatch = new Stopwatch();
+            stopWatch.Start();
+
             _context = context;
             _signalRService = signalRService;
             _repos = repos;
             _logger = logger;
             _config = config;
+            IsoSetting = CurrentCameraSettings.Iso;
+            ShutterTimeSetting = CurrentCameraSettings.ShutterTime;
             _currentCameraSettings = PiCameraSettingsHelper.GetCurrentCameraSettingsFromFile();
             IsoSetting = _currentCameraSettings.Iso;
             ShutterTimeSetting = _currentCameraSettings.ShutterTime;

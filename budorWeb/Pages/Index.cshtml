@@ -1,5 +1,6 @@
 ﻿@page
 @using global::Shared.DateTimeHelpers
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @using budorWeb.Services
 @model BudorBeachModel
 @{
@@ -80,7 +81,7 @@
 
     <h2>De 5 siste bildene</h2>
     <div class="row">
-        @foreach (var image in Model?.LatestImages ?? new List<ImageDto>())
+        @foreach (var image in Model?.LatestImages ?? new List<BudorBeachModel.ImageDto>())
         {
             <div class="col-md-6">
                 <div class="card my-3">

@@ -115,7 +115,7 @@ public class Startup
         _container.RegisterSingleton<IExternalSingletonProcess, ExternalSingletonProcess>();
         _container.Register<IAudioService, AudioService.AudioService>();
         _container.Register<IRepositories, Repositories>(Lifestyle.Scoped);
-        
+
         _container.Register<CaptureAudioContinuouslyJob>();
         _container.Register<GetBme280SensorReadingsJob>();
         _container.Register<TakePictureJob>();
@@ -126,7 +126,7 @@ public class Startup
         _container.Register<AnalyzeAudioRecordingsJob>();
         _container.Register<StartVideoSurveillanceJob>();
         _container.Register<IndexImageUploadRepoJob>();
-        
+
         _container.Register<IBirdNetResultConverter, BirdNetResultConverter>();
         _container.Register<IFileSystemService, FileSystemService>();
         _container.Register<IAzureStorageService, AzureStorageService>();

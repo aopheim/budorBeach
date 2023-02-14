@@ -8,6 +8,7 @@ using CameraService.Interfaces;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using rpiDaemon.DateTimeHelpers;
 using Shared;
 using Shared.Azure;
 using Shared.DateTimeHelpers;
@@ -34,13 +35,11 @@ namespace rpiDaemon.Jobs
                     logger.LogInformation("Camera is in use. Skipping taking image");
                     return;
                 }
-
                 var now = DateTime.UtcNow;
                 var folderName = DateTimeParser.GetFolderName(now);
                 var fileName = DateTimeParser.GetFileName(now);
                 var folderPath = $"{GlobalConstants.ImagesFolder}{folderName}";
                 var fullPath = folderPath + $"/{fileName}.jpg";
-
                 try
                 {
                     await cameraService.TakeImage(fullPath, settings);

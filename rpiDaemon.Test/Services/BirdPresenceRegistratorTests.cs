@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using BaseUnitTests;
 using FluentAssertions;
 using NSubstitute;
 using NUnit.Framework;

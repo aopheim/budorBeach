@@ -405,6 +405,177 @@ namespace budorWeb.Services
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-8-5/egg.webp",
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-8-5/9-31-36.webp"
                     }
+                },
+                new()
+                {
+                    Id = "q",
+                    Date = new DateTime(2022, 04, 13),
+                    Header = "Klar for ny fluesnapper-sesong!",
+                    Body =
+                        "Påsken er kommet, og fuglekassa har våknet til liv igjen etter å ha vært skrudd ned i noen måneder. Fuglekassa er nå tømt og innflyttingsklar. Vi håper å få et gjensyn med Herr og Fru Fluesnapper etter hvert som det blir varmere i været.",
+                    ImageUrls = new List<string>
+                    {
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-4-13/11-25-56.jpg"
+                    }
+                },
+                new()
+                {
+                    Id = "r",
+                    Date = new DateTime(2022, 04, 26),
+                    Header = "Fluesnapperen er tilbake på visning!",
+                    Body =
+                        "I dag har fluesnapperne kommet tilbake! Dette er mye tidligere enn i fjor, da de kom først i starten av juni. Men tydeligvis har de startet å gå på fuglekasse-visning tidligere i år. Håper de finner seg til rette og har finansieringsbeviset i orden",
+                    ImageUrls = new List<string>
+                    {
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-4-26/11-14-11.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-4-26/9-29-11.jpg"
+                    }
+                },
+                new()
+                {
+                    Id = "s",
+                    Date = new DateTime(2022, 04,
+                        28),
+                    Header = "Innflyttingen er i gang!",
+                    Body =
+                        "Det ble en rask budrunde, og Herr Fluesnapper er nå stolt eier av fuglekassa i Størigardsvegen. Nå flyttes det inn for harde livet, og på bare noen timer har han laget til en myk og fin madrass til Fru Fluesnapper",
+                    ImageUrls = new List<string>
+                    {
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-4-27/6-29-11.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-4-27/6-44-11.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-4-27/8-59-11.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-4-27/9-29-11.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-4-27/15-14-11.jpg"
+                    }
+                },
+                new()
+                {
+                    Id = "t",
+                    Date = new DateTime(2022, 05, 02),
+                    Header = "Bygningsarbeid pågår",
+                    Body =
+                        "De siste dagene har Herr Fluesnapper virkelig stått på. Se hvordan han har bygget et lunt og godt rede for sin fremtidige Fluesnapperkone: Først et lag med det som ser ut som lyng, deretter ser det ut som han har nappet av fjær for ekstra isolering",
+                    ImageUrls = new List<string>
+                    {
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-4-29/9-44-11.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-4-30/9-44-11.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-4-30/13-44-11.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-5-3/9-14-11.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-5-3/3-44-11.jpg"
+                    }
+                },
+                new()
+                {
+                    Id = "u",
+                    Date = new DateTime(2022, 05, 10),
+                    Header = "Nå mangler bare Fru Fluesnapper",
+                    Body =
+                        "Nå ser det ut som Herr Fluesnapper er fornøyd med redet sitt. Det ser veldig mykt og fint ut. Så nå mangler bare en Fru Fluesnapper. Herr Fluesnapper er nå mye sjeldnere innom fuglekassa, så alt tyder på at han er på sjekkern langs Størigardsvegen.",
+                    ImageUrls = new List<string>
+                    {
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-5-8/11-59-34.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-5-10/6-59-34.jpg"
+                    }
+                },
+                new()
+                {
+                    Id = "v",
+                    Date = new DateTime(2022, 05, 12),
+                    Header = "Jomfrufødsel fra Herr Fluesnapper?",
+                    Body =
+                        "I dag kom det egg i fuglekassa! Men hvem som har lagt egget er et mysterium. Vi har ikke sett noe til besøk fra Fru Fluesnapper, og selve fødselen må ha skjedd veldig fort i morgentimene. Kameraet har bare greid å plukke opp det svart-hvite hodet til Herr Fluesnapper, så sannsynligvis må dette være verdens første dokumenterte jomfrufødsel fra enn mannlig fluesnapper. Sensasjon!",
+                    ImageUrls = new List<string>
+                    {
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-5-12/3-29-34.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-5-12/2-59-34.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-5-12/3-14-34.jpg"
+                    }
+                },
+                new()
+                {
+                    Id = "w",
+                    Date = new DateTime(2022, 05, 17),
+                    Header = "Herr Fluesnapper har fått seg kjæreste!",
+                    Body =
+                        "På selveste nasjonaldagen  dukket det opp en Fru Fluesnapper i fuglekassa! Det ser ut som hun ispiserer redebyggingen til Herr Fluesnapper, men har så langt kommet tilbake flere ganger, så det ser ut som hun lar seg sjarmere. Det ene egget som på uforklarig vis hadde havnet i fuglekassa har ligget uten tilsyn i mange dager. Vi begynner å tro at det er en gjøk som har vært innom. Det ser ut som det nå ligger nedgravd under litt ekstra kvist som har kommet til.",
+                    ImageUrls = new List<string>
+                    {
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-5-17/8-18-39.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-5-17/7-23-39.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-5-18/3-53-39.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-5-17/7-43-39.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-5-17/14-53-39.jpg"
+                    }
+                },
+                new()
+                {
+                    Id = "x", Date = new DateTime(2022, 05, 26),
+                    Header = "Nytt egg!",
+                    Body =
+                        "I dag tidlig kom det et nytt egg i fuglekassa! Og denne gangen ser det ut som det er Fru Fluesnapper som har lagt det. Hun har ikke vært så mye innom de siste dagene, men vannet gikk tydeligvis i dag morges. Vi gratulerer så mye!",
+                    ImageUrls = new List<string>
+                    {
+                        "https://budorbeach.blob.core.windows.net/images/2022-5-26/4-43-39.jpg",
+                        "https://budorbeach.blob.core.windows.net/images/2022-5-26/5-23-39.jpg",
+                        "https://budorbeach.blob.core.windows.net/images/2022-5-26/4-48-39.jpg",
+                        "https://budorbeach.blob.core.windows.net/images/2022-5-26/4-58-39.jpg"
+                    }
+                },
+                new()
+                {
+                    Id = "y",
+                    Date = new DateTime(2022, 06, 03),
+                    Header = "Hektiske dager på fødestua",
+                    Body =
+                        "De siste dagene har vært hektiske for Fru Fluesnapper. Hver morgen har hun måttet haste seg inn i fuglekassa for å legge et nytt egg. Seks egg har hun lagt nå. Det er like mange som hun la i fjor.",
+                    ImageUrls = new List<string>
+                    {
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-6-3/4-21-1.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-6-3/6-41-1.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-6-3/5-31-1.jpg"
+                    }
+                },
+                new NewsFeedEntry
+                {
+                    Id = "z",
+                    Date = new DateTime(2022, 06, 13),
+                    Header = "Ruging pågår",
+                    Body =
+                        "Fru Fluesnapper har nå lagt et egg nesten hver eneste morgen, og har fått syv fine egg. Hun ligger nå betydelig mer og ruger enn tidligere, da hun ofte lot eggene ligge for seg selv. Forhåpentligvis betyr det at det nærmer seg klekking! Vi har dessverre hatt ustabil forbindelse til fuglekassa i det siste. Dels har dette vært på grunn av at internett-tilgangen har falt ut, og dels er det fordi en litt for ivrig fuglekasse-tekniker har prøvd å få til direktesendt video fra fuglekassa, og derfor har måttet deaktivere kamera-funkjsonen for å teste det ut. Pr nå har vi ikke lenger kontakt med fuglekassa, men vi krysser fingrene for at vi får den tilbake. ",
+                    ImageUrls = new List<string>
+                    {
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-6-13/10-26-23.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-6-13/9-19-46.jpg"
+                    }
+                },
+                new NewsFeedEntry
+                {
+                    Id = "za",
+                    Date = new DateTime(2022, 06, 21),
+                    Header = "Småsnapper-livet har startet",
+                    Body =
+                        "Etter en uke uten kontakt med fuglekassa har den våknet til liv igjen, og fluesnapper-familien har blitt en ordentlig storfamilie i mellomtiden. Alle eggene er nå klekket, og Herr og Fru Fluesnapper er travelt opptatt med å ruge og fine mat til sine små håpefulle.",
+                    ImageUrls = new List<string>
+                    {
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-6-21/5-22-33.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-6-21/4-47-33.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-6-21/4-57-33.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-6-21/4-37-33.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-6-21/4-22-33.jpg"
+                    }
+                },
+                new NewsFeedEntry
+                {
+                    Id = "zb",
+                    Date = new DateTime(2022, 08, 05),
+                    Header = "Rapport fra fuglekasse-teknikeren",
+                    Body =
+                        "På grunn av diverse tekniske problemer var dessverre forbindelsen til fuglekassa nede da årets mini-fluesnappere vokste opp og forlot redet. Nå har vi endelig fått en fuglekasse-tekniker på plass for å få fuglekassa på beina, og den er nå oppe og går igjen. Igjen lå bare et ensomt egg som aldri ble klekt. Kanskje det var egget fra Herr Fluesnappers jomfrufødsel? Egget er i hvert fall mye mindre i virkeligheten enn det ser ut som på bildet. Nå er også fuglekassa oppdatert med nytt og bedre kamera. Se så fine bilder det blir nå! Fluesnapper-entusiast-miljøet gleder seg allerede til neste sesong!",
+                    ImageUrls = new List<string>
+                    {
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-8-5/egg.jpg",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-8-5/9-31-36.jpg"
+                    }
                 }
             }.OrderByDescending(e => e.Date).ToList();
         }

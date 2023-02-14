@@ -19,6 +19,7 @@ namespace Services
         private static readonly HttpClient Client = new();
         private readonly IExternalSingletonProcess _externalProcess;
         private readonly ILogger _logger;
+        private Process _process;
 
         public BirdNetServer(ILogger logger, IExternalSingletonProcess externalProcess)
         {
