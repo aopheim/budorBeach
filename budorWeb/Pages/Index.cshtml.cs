@@ -7,12 +7,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using DataAccess.EFCore;
 using JetBrains.Annotations;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Services.Interfaces;
 using Shared.Interfaces;
 using Shared.Models;
 using Shared.PiCameraSettings;
@@ -22,7 +20,6 @@ namespace budorWeb.Pages
 {
     public class BudorBeachModel : PageModel
     {
-        private readonly IAzureStorageService _azureStorageService;
         private readonly IConfiguration _config;
         private readonly BudorDbContext _context;
         private readonly PiCameraSettings _currentCameraSettings;
@@ -31,7 +28,7 @@ namespace budorWeb.Pages
         private readonly ISignalRService _signalRService;
 
         public BudorBeachModel(ILogger<BudorBeachModel> logger, IConfiguration config, BudorDbContext context,
-            IWebHostEnvironment environment, ISignalRService signalRService, IAzureStorageService azureStorageService,
+            ISignalRService signalRService,
             IRepositories repos)
         {
             var stopWatch = new Stopwatch();
@@ -42,8 +39,6 @@ namespace budorWeb.Pages
             _repos = repos;
             _logger = logger;
             _config = config;
-            IsoSetting = CurrentCameraSettings.Iso;
-            ShutterTimeSetting = CurrentCameraSettings.ShutterTime;
             _currentCameraSettings = PiCameraSettingsHelper.GetCurrentCameraSettingsFromFile();
             IsoSetting = _currentCameraSettings.Iso;
             ShutterTimeSetting = _currentCameraSettings.ShutterTime;
@@ -87,9 +82,7 @@ namespace budorWeb.Pages
 
         public async Task<IActionResult> OnPostAsync(CancellationToken cancellationToken)
         {
-            CurrentCameraSettings.Iso = IsoSetting;
-            CurrentCameraSettings.ShutterTime = ShutterTimeSetting;
-            PiCameraSettingsHelper.SetCameraSettingsToFile(CurrentCameraSettings);
+            PiCameraSettingsHelper.SetCameraSettingsToFile(new PiCameraSettings(IsoSetting, ShutterTimeSetting));
             await _signalRService.TakeImage(CurrentCameraSettings, cancellationToken);
 
             return RedirectToPage("Index");
