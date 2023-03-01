@@ -9,6 +9,8 @@ using Microsoft.Extensions.Logging;
 using Services.Interfaces;
 using Shared;
 using Shared.DateTimeHelpers;
+using Shared.Interfaces;
+using Shared.Models;
 using Shared.PiCameraSettings;
 
 namespace Services;
@@ -21,10 +23,11 @@ public class PictureService : IPictureService
     private readonly IFileSystemService _fileSystemService;
     private readonly ILogger<PictureService> _logger;
     private readonly IPictureEditService _pictureEditService;
+    private readonly IRepositories _repos;
 
     public PictureService(IWebHostEnvironment environment, ILogger<PictureService> logger, ICameraService cameraService,
         IAzureStorageService azureStorageService, IFileSystemService fileSystemService,
-        IPictureEditService pictureEditService)
+        IPictureEditService pictureEditService, IRepositories repos)
     {
         _environment = environment;
         _logger = logger;
@@ -32,6 +35,7 @@ public class PictureService : IPictureService
         _azureStorageService = azureStorageService;
         _fileSystemService = fileSystemService;
         _pictureEditService = pictureEditService;
+        _repos = repos;
     }
 
     public async Task TakeImageAndUploadAsync(PiCameraSettings settings, CancellationToken cancellationToken)
@@ -73,6 +77,15 @@ public class PictureService : IPictureService
             var compressedImagePath = await _pictureEditService.CompressJpgToWebPFormat(fullPath);
             await UploadImageToContainerClient(GlobalConstants.ThumbnailImagesContainerName,
                 $"{folderName}/{fileName}.webp", compressedImagePath, cancellationToken);
+            _repos.ImageUploads.Add(new ImageUploadModel
+            {
+                FileName = $"{folderName}/{fileName}", TakenAtUtc = now,
+                FullSizeImageUrl = _azureStorageService.GetBlobUrl(GlobalConstants.ImagesContainerName, fullPath),
+                ThumbnailJpgImageUrl = null,
+                ThumbnailWebPImageUrl = _azureStorageService.GetBlobUrl(GlobalConstants.ThumbnailImagesContainerName,
+                    fullPath.Replace(".jpg", ".webp"))
+            });
+            await _repos.SaveChangesAsync(cancellationToken);
 
             _fileSystemService.DeleteDirectory(folderPath, true);
         }

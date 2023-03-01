@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Azure;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
-using Azure.Storage.Blobs;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -18,12 +17,10 @@ namespace Services
     {
         private static readonly TimeSpan UploadTimeOut = TimeSpan.FromSeconds(15);
         private readonly BlobServiceClient _blobServiceClient;
-        private readonly IConfiguration _config;
         private readonly CancellationTokenSource _timeOutTokenSource = new CancellationTokenSource(UploadTimeOut);
 
         public AzureStorageService(IConfiguration config, IWebHostEnvironment environment)
         {
-            _config = config;
             _blobServiceClient =
                 new BlobServiceClient(environment.IsDevelopment()
                     ? config[AzuriteStorageConnectionString]
