@@ -40,6 +40,7 @@ namespace rpiDaemon.Jobs
                 var fileName = DateTimeParser.GetFileName(now);
                 var folderPath = $"{GlobalConstants.ImagesFolder}{folderName}";
                 var fullPath = folderPath + $"/{fileName}.jpg";
+       
                 try
                 {
                     await cameraService.TakeImage(fullPath, settings);

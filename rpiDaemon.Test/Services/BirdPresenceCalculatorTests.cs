@@ -22,7 +22,6 @@ namespace rpiDaemon.Test.Services
 
             TestSubject.BirdIsPresent(registrations).Should().BeTrue();
         }
-
         [TestCaseSource(typeof(BirdAbsenceDistanceCreator))]
         public void BirdShouldBeAbsent(params double[] distances)
         {
@@ -76,7 +75,6 @@ namespace rpiDaemon.Test.Services
             yield return distances.ToArray();
         }
     }
-
     public class BirdAbsenceDistanceCreator : IEnumerable
     {
         public IEnumerator GetEnumerator()

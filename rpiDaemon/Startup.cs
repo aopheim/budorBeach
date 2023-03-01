@@ -13,8 +13,6 @@ using Microsoft.Extensions.Logging;
 using Quartz;
 using rpiDaemon.Jobs;
 using rpiDaemon.Jobs.JobFactories;
-using Services;
-using Services.Interfaces;
 using Shared;
 using Shared.Interfaces;
 using Shared.SignalR;
@@ -126,7 +124,6 @@ public class Startup
         _container.Register<AnalyzeAudioRecordingsJob>();
         _container.Register<StartVideoSurveillanceJob>();
         _container.Register<IndexImageUploadRepoJob>();
-
         _container.Register<IBirdNetResultConverter, BirdNetResultConverter>();
         _container.Register<IFileSystemService, FileSystemService>();
         _container.Register<IAzureStorageService, AzureStorageService>();

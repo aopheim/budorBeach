@@ -5,7 +5,6 @@ using JetBrains.Annotations;
 using Quartz;
 using Services.Interfaces;
 using Shared;
-using Shared.PiCameraSettings;
 
 namespace rpiDaemon.Jobs
 {
