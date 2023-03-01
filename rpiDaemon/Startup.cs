@@ -13,6 +13,8 @@ using Microsoft.Extensions.Logging;
 using Quartz;
 using rpiDaemon.Jobs;
 using rpiDaemon.Jobs.JobFactories;
+using Services;
+using Services.Interfaces;
 using Shared;
 using Shared.Interfaces;
 using Shared.SignalR;
