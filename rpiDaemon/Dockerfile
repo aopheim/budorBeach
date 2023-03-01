@@ -14,7 +14,7 @@ COPY ["DataAccess.EFCore/DataAccess.EFCore.csproj", "DataAccess.EFCore/"]
 COPY ["AudioService/AudioService.csproj", "AudioService/"]
 COPY ["Services/Services.csproj", "Services/"]
 COPY ["Dtos/Dtos.csproj", "Dtos/"]
-RUN dotnet restore "rpiDaemon/rpiDaemon.csproj" -r linux-arm
+RUN dotnet restore "rpiDaemon/rpiDaemon.csproj" -r linux-arm --configfile "rpiDaemon/nuget.config"
 COPY . .
 WORKDIR "/src/rpiDaemon"
 RUN dotnet build "rpiDaemon.csproj" -c Release -o /app/build -r linux-arm

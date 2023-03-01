@@ -45,13 +45,4 @@
     <ItemGroup>
         <Folder Include="Jobs\JobFactories\"/>
     </ItemGroup>
-
-    <!--    <ItemGroup>-->
-    <!--        <Content Include="appsettings.json">-->
-    <!--            <CopyToPublishDirectory>Never</CopyToPublishDirectory>-->
-    <!--        </Content>-->
-    <!--        <Content Include="appsettings.Development.json">-->
-    <!--            <CopyToPublishDirectory>Never</CopyToPublishDirectory>-->
-    <!--        </Content>-->
-    <!--    </ItemGroup>-->
 </Project>

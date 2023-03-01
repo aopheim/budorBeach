@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Net.Http;
@@ -17,14 +16,11 @@ namespace Services
     public class BirdNetServer : IBirdNetServer
     {
         private static readonly HttpClient Client = new();
-        private readonly IExternalSingletonProcess _externalProcess;
         private readonly ILogger _logger;
-        private Process _process;
 
         public BirdNetServer(ILogger logger, IExternalSingletonProcess externalProcess)
         {
             _logger = logger;
-            _externalProcess = externalProcess;
         }
 
         // public Task StartAsync(CancellationToken cancellationToken)
