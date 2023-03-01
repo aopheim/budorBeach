@@ -1,25 +1,24 @@
 ﻿using System;
 using System.IO;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using Azure.Storage.Blobs;
+using CameraService.Interfaces;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using MMALSharp;
-using MMALSharp.Common;
-using MMALSharp.Handlers;
 using rpiDaemon.DateTimeHelpers;
+using Shared;
 using Shared.Azure;
 using Shared.PiCameraSettings;
 using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Processing;
 
 namespace rpiDaemon.Jobs
 {
     public static class TakePictureJobHelper
     {
-        public static async Task TakeImageAndUploadAsync(IWebHostEnvironment environment, MMALCamera camera,
+        public static async Task TakeImageAndUploadAsync(IWebHostEnvironment environment, ICameraService cameraService,
             ILogger logger, BlobContainerClient containerClient, BlobContainerClient thumbnailContainerClient,
             PiCameraSettings settings)
         {
@@ -30,21 +29,21 @@ namespace rpiDaemon.Jobs
             }
             else
             {
+                if (cameraService.CameraIsInUse())
+                {
+                    logger.LogInformation("Camera is in use. Skipping taking image");
+                    return;
+                }
+
                 var now = DateTime.UtcNow;
                 var folderName = DateTimeParser.GetFolderName(now);
                 var fileName = DateTimeParser.GetFileName(now);
-                var folderPath = $"/home/pi/images/{folderName}";
+                var folderPath = $"{GlobalConstants.ImagesFolder}{folderName}";
                 var fullPath = folderPath + $"/{fileName}.jpg";
+
                 try
                 {
-                    using var imgCaptureHandler = new ImageStreamCaptureHandler(fullPath);
-
-                    MMALCameraConfig.ISO = settings.Iso;
-                    MMALCameraConfig.ShutterSpeed = settings.ShutterTime;
-
-                    camera.ConfigureCameraSettings();
-
-                    await camera.TakePicture(imgCaptureHandler, MMALEncoding.JPEG, MMALEncoding.I420);
+                    await cameraService.TakeImage(fullPath, settings);
                 }
                 catch (Exception e)
                 {
@@ -56,23 +55,20 @@ namespace rpiDaemon.Jobs
                 logger.LogInformation(
                     $"Picture taken at {DateTime.UtcNow}. Camera settings: {JsonSerializer.Serialize(settings)}");
                 await UploadImageToContainerClient(containerClient, folderName, fileName, fullPath);
-                var compressedImagePath = await CompressJpgImage(fullPath);
+                var compressedImagePath = await CompressToWebPFormat(fullPath);
                 await UploadImageToContainerClient(thumbnailContainerClient, folderName, fileName, compressedImagePath);
 
                 Directory.Delete(folderPath, true);
             }
         }
 
-        private static async Task<string> CompressJpgImage(string fullInputPath)
+        private static async Task<string> CompressToWebPFormat(string fullInputPath)
         {
-            var outputPath = fullInputPath.Replace(".jpg", "-resized.jpg");
+            var outputPath = fullInputPath.Replace(".jpg", ".webp");
 
             await using var input = File.OpenRead(fullInputPath);
             var image = await Image.LoadAsync(input);
-            var newWidth = image.Width / 4;
-            var newHeight = image.Height / 4;
-            image.Mutate(img => img.Resize(newWidth, newHeight));
-            await image.SaveAsync(outputPath);
+            await image.SaveAsWebpAsync(outputPath);
 
             return outputPath;
         }
@@ -82,9 +78,10 @@ namespace rpiDaemon.Jobs
         {
             var blobClient = containerClient.GetBlobClient($"{folderName}/{fileName}.jpg");
             await using var uploadFileStream = File.OpenRead(fullPath);
-            await blobClient.UploadAsync(uploadFileStream, true);
+            var cTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+            await blobClient.UploadAsync(uploadFileStream, true, cTokenSource.Token);
             uploadFileStream.Close();
-            await AzureStorageHelper.SetBlobPropertiesAsync(blobClient);
+            await AzureStorageHelper.SetJpgBlobPropertiesAsync(blobClient);
         }
     }
 }

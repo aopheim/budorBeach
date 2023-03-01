@@ -5,20 +5,12 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using Azure.Storage.Blobs;
-using Azure.Storage.Blobs.Models;
+using DataAccess.EFCore;
 using JetBrains.Annotations;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using rpiDaemon;
-using rpiDaemon.DateTimeHelpers;
-using Shared;
-using Shared.Azure;
 using Shared.Interfaces;
 using Shared.Models;
 using Shared.PiCameraSettings;
@@ -29,72 +21,69 @@ namespace budorWeb.Pages
     public class BudorBeachModel : PageModel
     {
         private readonly IConfiguration _config;
-        private readonly HubConnection _connection;
-        private readonly ApplicationDbContext _context;
+        private readonly BudorDbContext _context;
+        private readonly PiCameraSettings _currentCameraSettings;
         private readonly ILogger<BudorBeachModel> _logger;
+        private readonly IRepositories _repos;
+        private readonly ISignalRService _signalRService;
 
-        public BudorBeachModel(ILogger<BudorBeachModel> logger, IConfiguration config, ApplicationDbContext context,
-            IWebHostEnvironment environment)
+        public BudorBeachModel(ILogger<BudorBeachModel> logger, IConfiguration config, BudorDbContext context,
+            ISignalRService signalRService,
+            IRepositories repos)
         {
             var stopWatch = new Stopwatch();
             stopWatch.Start();
+
             _context = context;
+            _signalRService = signalRService;
+            _repos = repos;
             _logger = logger;
             _config = config;
             _currentCameraSettings = PiCameraSettingsHelper.GetCurrentCameraSettingsFromFile();
             IsoSetting = _currentCameraSettings.Iso;
             ShutterTimeSetting = _currentCameraSettings.ShutterTime;
-
-            _connection = SignalRHelper.GetHubConnection(environment.IsProduction()
-                ? GlobalConstants.ProductionHubUrl
-                : GlobalConstants.DevelopmentHubUrl);
-            SignalRHelper.SetupEventsForDebuggingConnection(logger, _connection);
-            stopWatch.Stop();
-            _logger.LogInformation($"Constructor in Index.cshtml ran in {stopWatch.Elapsed.Milliseconds} ms");
+            SetupWebClientMethods();
         }
 
-        private PiCameraSettings _currentCameraSettings { get; }
+        private PiCameraSettings CurrentCameraSettings { get; }
 
 
-        public List<BlobItem> LatestImages { get; set; }
-        public BlobContainerClient ThumbnailsContainerClient { get; set; }
-        public BlobContainerClient ImagesContainerClient { get; set; }
+        public List<ImageDto> LatestImages { get; set; }
         [CanBeNull] public SensorReadingModel LatestSensorReadingModel { get; set; }
         [BindProperty] public int IsoSetting { get; set; }
         [BindProperty] public int ShutterTimeSetting { get; set; }
 
+        private void SetupWebClientMethods()
+        {
+            _signalRService.RegisterClientMethod<PiCameraSettings>(nameof(ISignalRService.TakeImage),
+                settings => { _logger.LogInformation(JsonSerializer.Serialize(settings)); });
+            _signalRService.RegisterClientMethod<SensorReadingModel>(nameof(ISignalRService.SendSensorReading),
+                model => { _logger.LogInformation(JsonSerializer.Serialize(model)); });
+        }
+
         public async Task OnGetAsync(CancellationToken cancellationToken)
         {
+            await _signalRService.ConsoleLogMessage(".NET Web Client connected!", cancellationToken);
+
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            SetupWebClientMethods();
-            await SignalRHelper.StartWithRetryAsync(_connection, cancellationToken);
-            await _connection.InvokeAsync(nameof(BudorHub.SendMessageToAllClients), ".NET Web Client connected!",
-                cancellationToken);
-            _logger.LogInformation($"Before SQL: {stopwatch.Elapsed.Milliseconds} ms");
-            LatestSensorReadingModel = _context.SensorReadings.OrderByDescending(m => m.MeasuredAtUtc).FirstOrDefault();
-            _logger.LogInformation($"After SQL: {stopwatch.Elapsed.Milliseconds} ms");
-
-            ThumbnailsContainerClient =
-                AzureStorageHelper.GetBlobContainerClient(_config, GlobalConstants.ThumbnailImagesContainerName);
-            ImagesContainerClient =
-                AzureStorageHelper.GetBlobContainerClient(_config, GlobalConstants.ImagesContainerName);
-            var blobs = ThumbnailsContainerClient.GetBlobs()
-                .OrderByDescending(blob => DateTimeParser.GetDateTimeFromFolderAndFileName(blob.Name)).Take(5).ToList();
+            _logger.LogInformation($"Before SensorReading SQL: {stopwatch.Elapsed.TotalMilliseconds} ms");
+            var latestTime = _context.SensorReadings.Max(s => s.MeasuredAtUtc);
+            LatestSensorReadingModel = _context.SensorReadings.FirstOrDefault(s => s.MeasuredAtUtc == latestTime);
+            _logger.LogInformation($"After SensorReading SQL: {stopwatch.Elapsed.TotalMilliseconds} ms");
+            _logger.LogInformation($"Before ImageUpload SQL: {stopwatch.Elapsed.TotalMilliseconds} ms");
+            LatestImages = _repos.ImageUploads.GetLatestUploads(6).Select(iu => new ImageDto
+                    { Name = iu.FileName, ImageUrl = iu.FullSizeImageUrl, ThumbnailUrl = iu.ThumbnailWebPImageUrl })
+                .ToList();
+            _logger.LogInformation($"After ImageUpload SQL: {stopwatch.Elapsed.TotalMilliseconds} ms");
             stopwatch.Stop();
-            _logger.LogInformation($"Performed OnGetAsync in {stopwatch.Elapsed.Milliseconds} ms");
-
-            LatestImages = blobs;
+            _logger.LogInformation($"Performed OnGetAsync in total {stopwatch.Elapsed.TotalMilliseconds} ms");
         }
 
         public async Task<IActionResult> OnPostAsync(CancellationToken cancellationToken)
         {
-            await SignalRHelper.StartWithRetryAsync(_connection, cancellationToken);
-
-            _currentCameraSettings.Iso = IsoSetting;
-            _currentCameraSettings.ShutterTime = ShutterTimeSetting;
-            PiCameraSettingsHelper.SetCameraSettingsToFile(_currentCameraSettings);
-            await _connection.InvokeAsync(nameof(BudorHub.TakeImage), _currentCameraSettings, cancellationToken);
+            PiCameraSettingsHelper.SetCameraSettingsToFile(new PiCameraSettings(IsoSetting, ShutterTimeSetting));
+            await _signalRService.TakeImage(CurrentCameraSettings, cancellationToken);
 
             return RedirectToPage("Index");
         }
@@ -130,13 +119,6 @@ namespace budorWeb.Pages
             };
             return new JsonResult(chartModel);
         }
-
-        private void SetupWebClientMethods()
-        {
-            _connection.On<string>(nameof(IBudorHubClient.TakeImage), message => { _logger.LogInformation(message); });
-            _connection.On<SensorReadingModel>(nameof(IBudorHubClient.ReceiveCurrentSensorReading),
-                model => { _logger.LogInformation(JsonSerializer.Serialize(model)); });
-        }
     }
 
     public class SensorReadingsChartDto
@@ -145,5 +127,12 @@ namespace budorWeb.Pages
         public List<double> PressureReadings { get; set; }
         public List<double> HumidityReadings { get; set; }
         public List<DateTime> MeasuredAt { get; set; }
+    }
+
+    public class ImageDto
+    {
+        public string ThumbnailUrl { get; set; }
+        public string ImageUrl { get; set; }
+        public string Name { get; set; }
     }
 }
