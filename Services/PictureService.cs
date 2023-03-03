@@ -80,10 +80,11 @@ public class PictureService : IPictureService
             _repos.ImageUploads.Add(new ImageUploadModel
             {
                 FileName = $"{folderName}/{fileName}", TakenAtUtc = now,
-                FullSizeImageUrl = _azureStorageService.GetBlobUrl(GlobalConstants.ImagesContainerName, fullPath),
+                FullSizeImageUrl = _azureStorageService.GetBlobUrl(GlobalConstants.ImagesContainerName,
+                    $"{folderName}/{fileName}.jpg"),
                 ThumbnailJpgImageUrl = null,
                 ThumbnailWebPImageUrl = _azureStorageService.GetBlobUrl(GlobalConstants.ThumbnailImagesContainerName,
-                    fullPath.Replace(".jpg", ".webp"))
+                    $"{folderName}/{fileName}.webp")
             });
             await _repos.SaveChangesAsync(cancellationToken);
 
