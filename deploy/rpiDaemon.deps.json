@@ -9,21 +9,29 @@
     ".NETCoreApp,Version=v6.0/linux-arm": {
       "rpiDaemon/1.0.0": {
         "dependencies": {
+          "AudioService": "1.0.0",
           "AutoFixture": "4.17.0",
           "Azure.Storage.Blobs": "12.8.4",
-          "Iot.Device.Bindings": "1.4.0",
+          "CameraService": "1.0.0",
+          "DataAccess.EFCore": "1.0.0",
+          "Dtos": "1.0.0",
+          "Iot.Device.Bindings": "2.0.0",
           "JetBrains.Annotations": "2021.1.0",
-          "MMALSharp": "0.6.0",
           "Microsoft.ApplicationInsights.AspNetCore": "2.20.0",
           "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore": "5.0.6",
           "Microsoft.AspNetCore.SignalR.Client": "5.0.6",
           "Microsoft.EntityFrameworkCore.Design": "5.0.6",
           "Microsoft.EntityFrameworkCore.SqlServer": "5.0.6",
           "Microsoft.Extensions.Hosting.Systemd": "5.0.1",
-          "Quartz": "3.3.2",
-          "Quartz.AspNetCore": "3.3.2",
-          "Quartz.Extensions.Hosting": "3.3.2",
+          "Quartz": "3.3.3",
+          "Quartz.AspNetCore": "3.3.3",
+          "Quartz.Extensions.DependencyInjection": "3.3.3",
+          "Quartz.Extensions.Hosting": "3.3.3",
+          "Seq.Extensions.Logging": "6.0.0",
+          "Services": "1.0.0",
           "Shared": "1.0.0",
+          "SimpleInjector": "5.3.2",
+          "SimpleInjector.Integration.AspNetCore": "5.3.0",
           "SixLabors.ImageSharp": "1.0.3",
           "SolarCalculator": "3.0.6",
           "System.IO.Ports": "5.0.1"
@@ -94,6 +102,26 @@
           }
         }
       },
+      "DynamicLanguageRuntime/1.3.1": {
+        "dependencies": {
+          "System.CodeDom": "5.0.0",
+          "System.Configuration.ConfigurationManager": "4.7.0"
+        },
+        "runtime": {
+          "lib/netcoreapp3.1/Microsoft.Dynamic.dll": {
+            "assemblyVersion": "1.3.1.0",
+            "fileVersion": "1.3.1.1000"
+          },
+          "lib/netcoreapp3.1/Microsoft.Scripting.Metadata.dll": {
+            "assemblyVersion": "1.3.1.0",
+            "fileVersion": "1.3.1.1000"
+          },
+          "lib/netcoreapp3.1/Microsoft.Scripting.dll": {
+            "assemblyVersion": "1.3.1.0",
+            "fileVersion": "1.3.1.1000"
+          }
+        }
+      },
       "Fare/2.1.1": {
         "dependencies": {
           "NETStandard.Library": "1.6.1"
@@ -105,21 +133,53 @@
           }
         }
       },
-      "Humanizer.Core/2.8.26": {},
-      "Iot.Device.Bindings/1.4.0": {
+      "Humanizer.Core/2.8.26": {
+        "runtime": {
+          "lib/netstandard2.0/Humanizer.dll": {
+            "assemblyVersion": "2.8.0.0",
+            "fileVersion": "2.8.26.1919"
+          }
+        }
+      },
+      "Iot.Device.Bindings/2.0.0": {
         "dependencies": {
           "Microsoft.Extensions.Logging.Abstractions": "5.0.0",
           "SixLabors.ImageSharp": "1.0.3",
-          "System.Device.Gpio": "1.4.0",
-          "System.Drawing.Common": "5.0.2",
+          "System.Device.Gpio": "2.0.0",
+          "System.Drawing.Common": "5.0.3",
           "System.IO.Ports": "5.0.1",
           "System.Management": "5.0.0",
           "UnitsNet": "4.77.0"
         },
         "runtime": {
-          "lib/net5.0/Iot.Device.Bindings.dll": {
-            "assemblyVersion": "1.4.0.0",
-            "fileVersion": "1.400.21.16602"
+          "lib/net6.0/Iot.Device.Bindings.dll": {
+            "assemblyVersion": "2.0.0.0",
+            "fileVersion": "2.0.22.7504"
+          }
+        }
+      },
+      "IronPython/2.7.12": {
+        "dependencies": {
+          "DynamicLanguageRuntime": "1.3.1",
+          "Microsoft.Win32.Registry": "5.0.0",
+          "Mono.Unix": "7.1.0-final.1.21458.1"
+        },
+        "runtime": {
+          "lib/netcoreapp3.1/IronPython.Modules.dll": {
+            "assemblyVersion": "2.7.12.0",
+            "fileVersion": "2.7.12.1000"
+          },
+          "lib/netcoreapp3.1/IronPython.SQLite.dll": {
+            "assemblyVersion": "2.7.12.0",
+            "fileVersion": "2.7.12.1000"
+          },
+          "lib/netcoreapp3.1/IronPython.Wpf.dll": {
+            "assemblyVersion": "2.7.12.0",
+            "fileVersion": "2.7.12.1000"
+          },
+          "lib/netcoreapp3.1/IronPython.dll": {
+            "assemblyVersion": "2.7.12.0",
+            "fileVersion": "2.7.12.1000"
           }
         }
       },
@@ -496,6 +556,12 @@
           "Humanizer.Core": "2.8.26",
           "Microsoft.CSharp": "4.7.0",
           "Microsoft.EntityFrameworkCore.Relational": "5.0.6"
+        },
+        "runtime": {
+          "lib/netstandard2.1/Microsoft.EntityFrameworkCore.Design.dll": {
+            "assemblyVersion": "5.0.6.0",
+            "fileVersion": "5.0.621.21307"
+          }
         }
       },
       "Microsoft.EntityFrameworkCore.Relational/5.0.6": {
@@ -659,6 +725,7 @@
           }
         }
       },
+      "Microsoft.Extensions.Localization.Abstractions/2.1.0": {},
       "Microsoft.Extensions.Logging/5.0.0": {
         "dependencies": {
           "Microsoft.Extensions.DependencyInjection": "5.0.1",
@@ -855,43 +922,71 @@
           }
         }
       },
-      "MMALSharp/0.6.0": {
+      "MMALSharp/0.7.0-380": {
         "dependencies": {
-          "MMALSharp.Common": "0.6.0",
-          "MMALSharp.Processing": "0.6.0",
+          "MMALSharp.Common": "0.7.0-380",
+          "MMALSharp.Processing": "0.7.0-380",
           "Microsoft.CSharp": "4.7.0",
           "Microsoft.Extensions.Logging.Abstractions": "5.0.0"
         },
         "runtime": {
           "lib/netstandard2.0/MMALSharp.dll": {
-            "assemblyVersion": "0.6.0.0",
-            "fileVersion": "0.6.0.0"
+            "assemblyVersion": "0.7.0.0",
+            "fileVersion": "0.7.0.0"
           }
         }
       },
-      "MMALSharp.Common/0.6.0": {
+      "MMALSharp.Common/0.7.0-380": {
         "dependencies": {
           "Microsoft.Extensions.Logging.Abstractions": "5.0.0",
-          "System.Drawing.Common": "5.0.2",
+          "System.Drawing.Common": "5.0.3",
           "System.Numerics.Vectors": "4.5.0"
         },
         "runtime": {
           "lib/netstandard2.0/MMALSharp.Common.dll": {
-            "assemblyVersion": "0.6.0.0",
-            "fileVersion": "0.6.0.0"
+            "assemblyVersion": "0.7.0.0",
+            "fileVersion": "0.7.0.0"
           }
         }
       },
-      "MMALSharp.Processing/0.6.0": {
+      "MMALSharp.Processing/0.7.0-380": {
         "dependencies": {
-          "MMALSharp.Common": "0.6.0",
+          "MMALSharp.Common": "0.7.0-380",
           "Microsoft.Extensions.Logging.Abstractions": "5.0.0",
-          "System.Drawing.Common": "5.0.2"
+          "Mono.Posix.NETStandard": "1.0.0",
+          "System.Drawing.Common": "5.0.3",
+          "System.Threading.Channels": "5.0.0"
         },
         "runtime": {
           "lib/netstandard2.0/MMALSharp.Processing.dll": {
-            "assemblyVersion": "0.6.0.0",
-            "fileVersion": "0.6.0.0"
+            "assemblyVersion": "0.7.0.0",
+            "fileVersion": "0.7.0.0"
+          }
+        }
+      },
+      "Mono.Posix.NETStandard/1.0.0": {
+        "runtime": {
+          "runtimes/linux-arm/lib/netstandard2.0/Mono.Posix.NETStandard.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        },
+        "native": {
+          "runtimes/linux-arm/native/libMonoPosixHelper.so": {
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "Mono.Unix/7.1.0-final.1.21458.1": {
+        "runtime": {
+          "lib/net6.0/Mono.Unix.dll": {
+            "assemblyVersion": "7.1.0.0",
+            "fileVersion": "7.100.21.45801"
+          }
+        },
+        "native": {
+          "runtimes/linux-arm/native/libMono.Unix.so": {
+            "fileVersion": "0.0.0.0"
           }
         }
       },
@@ -951,7 +1046,7 @@
           }
         }
       },
-      "Quartz/3.3.2": {
+      "Quartz/3.3.3": {
         "dependencies": {
           "Microsoft.Extensions.Logging.Abstractions": "5.0.0",
           "System.Configuration.ConfigurationManager": "4.7.0",
@@ -959,47 +1054,47 @@
         },
         "runtime": {
           "lib/netstandard2.0/Quartz.dll": {
-            "assemblyVersion": "3.3.2.0",
-            "fileVersion": "3.3.2.0"
+            "assemblyVersion": "3.3.3.0",
+            "fileVersion": "3.3.3.0"
           }
         }
       },
-      "Quartz.AspNetCore/3.3.2": {
+      "Quartz.AspNetCore/3.3.3": {
         "dependencies": {
           "Microsoft.Extensions.DependencyInjection.Abstractions": "5.0.0",
           "Microsoft.Extensions.Diagnostics.HealthChecks": "2.2.0",
-          "Quartz.Extensions.Hosting": "3.3.2"
+          "Quartz.Extensions.Hosting": "3.3.3"
         },
         "runtime": {
           "lib/netcoreapp3.1/Quartz.AspNetCore.dll": {
-            "assemblyVersion": "3.3.2.0",
-            "fileVersion": "3.3.2.0"
+            "assemblyVersion": "3.3.3.0",
+            "fileVersion": "3.3.3.0"
           }
         }
       },
-      "Quartz.Extensions.DependencyInjection/3.3.2": {
+      "Quartz.Extensions.DependencyInjection/3.3.3": {
         "dependencies": {
           "Microsoft.Extensions.Configuration.Abstractions": "5.0.0",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "5.0.0",
           "Microsoft.Extensions.Options": "5.0.0",
-          "Quartz": "3.3.2"
+          "Quartz": "3.3.3"
         },
         "runtime": {
           "lib/netstandard2.0/Quartz.Extensions.DependencyInjection.dll": {
-            "assemblyVersion": "3.3.2.0",
-            "fileVersion": "3.3.2.0"
+            "assemblyVersion": "3.3.3.0",
+            "fileVersion": "3.3.3.0"
           }
         }
       },
-      "Quartz.Extensions.Hosting/3.3.2": {
+      "Quartz.Extensions.Hosting/3.3.3": {
         "dependencies": {
           "Microsoft.Extensions.Hosting.Abstractions": "5.0.0",
-          "Quartz.Extensions.DependencyInjection": "3.3.2"
+          "Quartz.Extensions.DependencyInjection": "3.3.3"
         },
         "runtime": {
           "lib/netstandard2.0/Quartz.Extensions.Hosting.dll": {
-            "assemblyVersion": "3.3.2.0",
-            "fileVersion": "3.3.2.0"
+            "assemblyVersion": "3.3.3.0",
+            "fileVersion": "3.3.3.0"
           }
         }
       },
@@ -1190,6 +1285,75 @@
           "runtime.native.System.Security.Cryptography.OpenSsl": "4.3.0"
         }
       },
+      "Seq.Extensions.Logging/6.0.0": {
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection": "5.0.1",
+          "Microsoft.Extensions.Logging": "5.0.0",
+          "Microsoft.Extensions.Logging.Configuration": "5.0.0"
+        },
+        "runtime": {
+          "lib/net5.0/Seq.Extensions.Logging.dll": {
+            "assemblyVersion": "6.0.0.0",
+            "fileVersion": "6.0.0.0"
+          }
+        }
+      },
+      "SimpleInjector/5.3.2": {
+        "dependencies": {
+          "System.ComponentModel": "4.3.0"
+        },
+        "runtime": {
+          "lib/netstandard2.1/SimpleInjector.dll": {
+            "assemblyVersion": "5.0.0.0",
+            "fileVersion": "5.0.0.0"
+          }
+        }
+      },
+      "SimpleInjector.Integration.AspNetCore/5.3.0": {
+        "dependencies": {
+          "Microsoft.AspNetCore.Hosting.Abstractions": "2.2.0",
+          "Microsoft.AspNetCore.Http": "2.2.0",
+          "Microsoft.AspNetCore.Http.Abstractions": "2.2.0",
+          "SimpleInjector": "5.3.2",
+          "SimpleInjector.Integration.GenericHost": "5.3.0",
+          "SimpleInjector.Integration.ServiceCollection": "5.3.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/SimpleInjector.Integration.AspNetCore.dll": {
+            "assemblyVersion": "5.0.0.0",
+            "fileVersion": "5.0.0.0"
+          }
+        }
+      },
+      "SimpleInjector.Integration.GenericHost/5.3.0": {
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "5.0.0",
+          "Microsoft.Extensions.Hosting.Abstractions": "5.0.0",
+          "SimpleInjector": "5.3.2",
+          "SimpleInjector.Integration.ServiceCollection": "5.3.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/SimpleInjector.Integration.GenericHost.dll": {
+            "assemblyVersion": "5.0.0.0",
+            "fileVersion": "5.0.0.0"
+          }
+        }
+      },
+      "SimpleInjector.Integration.ServiceCollection/5.3.0": {
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "5.0.0",
+          "Microsoft.Extensions.Hosting.Abstractions": "5.0.0",
+          "Microsoft.Extensions.Localization.Abstractions": "2.1.0",
+          "Microsoft.Extensions.Logging.Abstractions": "5.0.0",
+          "SimpleInjector": "5.3.2"
+        },
+        "runtime": {
+          "lib/netstandard2.0/SimpleInjector.Integration.ServiceCollection.dll": {
+            "assemblyVersion": "5.0.0.0",
+            "fileVersion": "5.0.0.0"
+          }
+        }
+      },
       "SixLabors.ImageSharp/1.0.3": {
         "runtime": {
           "lib/netcoreapp3.1/SixLabors.ImageSharp.dll": {
@@ -1321,16 +1485,16 @@
           "runtime.unix.System.Console": "4.3.1"
         }
       },
-      "System.Device.Gpio/1.4.0": {
+      "System.Device.Gpio/2.0.0": {
         "dependencies": {
           "Microsoft.Win32.Registry": "5.0.0",
           "System.Memory": "4.5.4",
           "System.Threading.Tasks.Extensions": "4.5.4"
         },
         "runtime": {
-          "lib/net5.0/System.Device.Gpio.dll": {
-            "assemblyVersion": "1.4.0.0",
-            "fileVersion": "1.400.21.16602"
+          "lib/net6.0/System.Device.Gpio.dll": {
+            "assemblyVersion": "2.0.0.0",
+            "fileVersion": "2.0.22.7504"
           }
         }
       },
@@ -1388,14 +1552,14 @@
           "runtime.any.System.Diagnostics.Tracing": "4.3.0"
         }
       },
-      "System.Drawing.Common/5.0.2": {
+      "System.Drawing.Common/5.0.3": {
         "dependencies": {
           "Microsoft.Win32.SystemEvents": "5.0.0"
         },
         "runtime": {
           "runtimes/unix/lib/netcoreapp3.0/System.Drawing.Common.dll": {
             "assemblyVersion": "5.0.0.2",
-            "fileVersion": "5.0.421.11614"
+            "fileVersion": "5.0.1221.52207"
           }
         }
       },
@@ -2060,7 +2224,7 @@
       "System.ValueTuple/4.5.0": {},
       "System.Windows.Extensions/4.7.0": {
         "dependencies": {
-          "System.Drawing.Common": "5.0.2"
+          "System.Drawing.Common": "5.0.3"
         },
         "runtime": {
           "lib/netcoreapp3.0/System.Windows.Extensions.dll": {
@@ -2150,6 +2314,56 @@
           }
         }
       },
+      "AudioService/1.0.0": {
+        "dependencies": {
+          "IronPython": "2.7.12",
+          "Services": "1.0.0",
+          "Shared": "1.0.0"
+        },
+        "runtime": {
+          "AudioService.dll": {}
+        }
+      },
+      "CameraService/1.0.0": {
+        "dependencies": {
+          "MMALSharp": "0.7.0-380",
+          "MMALSharp.Processing": "0.7.0-380",
+          "Shared": "1.0.0"
+        },
+        "runtime": {
+          "CameraService.dll": {}
+        }
+      },
+      "DataAccess.EFCore/1.0.0": {
+        "dependencies": {
+          "Microsoft.EntityFrameworkCore.Design": "5.0.6",
+          "Microsoft.EntityFrameworkCore.Relational": "5.0.6",
+          "Microsoft.EntityFrameworkCore.SqlServer": "5.0.6",
+          "Microsoft.Extensions.Configuration": "5.0.0",
+          "Microsoft.Extensions.Configuration.UserSecrets": "5.0.0",
+          "Shared": "1.0.0"
+        },
+        "runtime": {
+          "DataAccess.EFCore.dll": {}
+        }
+      },
+      "Dtos/1.0.0": {
+        "runtime": {
+          "Dtos.dll": {}
+        }
+      },
+      "Services/1.0.0": {
+        "dependencies": {
+          "Dtos": "1.0.0",
+          "Iot.Device.Bindings": "2.0.0",
+          "Microsoft.AspNetCore.SignalR.Client.Core": "5.0.6",
+          "Shared": "1.0.0",
+          "SimpleInjector": "5.3.2"
+        },
+        "runtime": {
+          "Services.dll": {}
+        }
+      },
       "Shared/1.0.0": {
         "dependencies": {
           "Azure.Storage.Blobs": "12.8.4",
@@ -2205,6 +2419,13 @@
       "path": "azure.storage.common/12.7.3",
       "hashPath": "azure.storage.common.12.7.3.nupkg.sha512"
     },
+    "DynamicLanguageRuntime/1.3.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-UJtMjb7305dvqycigIB100ualBnXlhmReDTViPKEVjtqwwHywYnhCb37gUEiVuel+lkJBq99N/ITX6Z7P1W6xQ==",
+      "path": "dynamiclanguageruntime/1.3.1",
+      "hashPath": "dynamiclanguageruntime.1.3.1.nupkg.sha512"
+    },
     "Fare/2.1.1": {
       "type": "package",
       "serviceable": true,
@@ -2219,12 +2440,19 @@
       "path": "humanizer.core/2.8.26",
       "hashPath": "humanizer.core.2.8.26.nupkg.sha512"
     },
-    "Iot.Device.Bindings/1.4.0": {
+    "Iot.Device.Bindings/2.0.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-B6RkiKl+/n9NoX2GKva3ReG9v5nD1ne8e7arZiwoKxIEd7V7XneqYDBpfyIJGdbccf7vZFco7IPQi/463/JGoA==",
-      "path": "iot.device.bindings/1.4.0",
-      "hashPath": "iot.device.bindings.1.4.0.nupkg.sha512"
+      "sha512": "sha512-T8sjmut4AgKNAfWI/Ba++/QVqmd/6vS2fx7FZcz+qooGeVPReX9PhUmNqfzSxDtVhfQIXXpxN/EJM8lbyjnpkQ==",
+      "path": "iot.device.bindings/2.0.0",
+      "hashPath": "iot.device.bindings.2.0.0.nupkg.sha512"
+    },
+    "IronPython/2.7.12": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-fxbH4L39a0AkDfvjH+9z+P1A1wSIUHtmU5XKn/2FUt2JA73rfJ9o8iuRIic+TYSpu6M4AeduRxNV87Fcvk0vIw==",
+      "path": "ironpython/2.7.12",
+      "hashPath": "ironpython.2.7.12.nupkg.sha512"
     },
     "JetBrains.Annotations/2021.1.0": {
       "type": "package",
@@ -2667,6 +2895,13 @@
       "path": "microsoft.extensions.hosting.systemd/5.0.1",
       "hashPath": "microsoft.extensions.hosting.systemd.5.0.1.nupkg.sha512"
     },
+    "Microsoft.Extensions.Localization.Abstractions/2.1.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-i5LgUcc0OB4KMujLmjdpDsha72xLa7CQwpG3zEEa9SRC5k8qrSyx97flmiikq61sVWzPrHXjYaj3jaZC6z+TBw==",
+      "path": "microsoft.extensions.localization.abstractions/2.1.0",
+      "hashPath": "microsoft.extensions.localization.abstractions.2.1.0.nupkg.sha512"
+    },
     "Microsoft.Extensions.Logging/5.0.0": {
       "type": "package",
       "serviceable": true,
@@ -2835,26 +3070,40 @@
       "path": "microsoft.win32.systemevents/5.0.0",
       "hashPath": "microsoft.win32.systemevents.5.0.0.nupkg.sha512"
     },
-    "MMALSharp/0.6.0": {
+    "MMALSharp/0.7.0-380": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-8lJnCShSfcsNbw9FxfPTVdLtrMNQUP6JCJVdU7DsIyE2URh/ZzaQC+AjqsWCKh38I6mn2XhT+Ufk2O98uQSW4w==",
-      "path": "mmalsharp/0.6.0",
-      "hashPath": "mmalsharp.0.6.0.nupkg.sha512"
+      "sha512": "sha512-AYYTNJ8eqqKPO+DCpUaIlOw1FQQtUHaHvUeEpeYXq5G02OtKT0pCXH6thOJy6BIrDmdeJMtsMp0oco/IPZUvXQ==",
+      "path": "mmalsharp/0.7.0-380",
+      "hashPath": "mmalsharp.0.7.0-380.nupkg.sha512"
     },
-    "MMALSharp.Common/0.6.0": {
+    "MMALSharp.Common/0.7.0-380": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-YIHue1vQnubw4wt9x7o2MOHIFfn9Po6fB3gpv9yZAFjEZczhKU92ykaHim/iHp9SjdeSDjr+xbXlvFDmdoYvNg==",
-      "path": "mmalsharp.common/0.6.0",
-      "hashPath": "mmalsharp.common.0.6.0.nupkg.sha512"
+      "sha512": "sha512-JQbYjbBDhedP7yDHBHw2o1+4kFD3AisPgyZoCSI0aiTCwjUx/+eHvKOIglCWu0j5sFsoJ08uR3Y31mknctpSFA==",
+      "path": "mmalsharp.common/0.7.0-380",
+      "hashPath": "mmalsharp.common.0.7.0-380.nupkg.sha512"
     },
-    "MMALSharp.Processing/0.6.0": {
+    "MMALSharp.Processing/0.7.0-380": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-QlBqJcIeprHlWNKgWZmHzoOaUjoA/nj6EUAs1eX80dN12mqdaP3ZVdBisTU97ruN9O//hnWmvR1MA4SfeUwWmw==",
-      "path": "mmalsharp.processing/0.6.0",
-      "hashPath": "mmalsharp.processing.0.6.0.nupkg.sha512"
+      "sha512": "sha512-jSiZjskO/YKeThWIQ7+ygjRHPSQeio7AkFK/TmQ6L3Et3W5BulwjAIAFlVBMJG81vw/LK6qfMHItEt7Nr09IFA==",
+      "path": "mmalsharp.processing/0.7.0-380",
+      "hashPath": "mmalsharp.processing.0.7.0-380.nupkg.sha512"
+    },
+    "Mono.Posix.NETStandard/1.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-vSN/L1uaVwKsiLa95bYu2SGkF0iY3xMblTfxc8alSziPuVfJpj3geVqHGAA75J7cZkMuKpFVikz82Lo6y6LLdA==",
+      "path": "mono.posix.netstandard/1.0.0",
+      "hashPath": "mono.posix.netstandard.1.0.0.nupkg.sha512"
+    },
+    "Mono.Unix/7.1.0-final.1.21458.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Rhxz4A7By8Q0wEgDqR+mioDsYXGrcYMYPiWE9bSaUKMpG8yAGArhetEQV5Ms6KhKCLdQTlPYLBKPZYoKbAvT/g==",
+      "path": "mono.unix/7.1.0-final.1.21458.1",
+      "hashPath": "mono.unix.7.1.0-final.1.21458.1.nupkg.sha512"
     },
     "NETStandard.Library/1.6.1": {
       "type": "package",
@@ -2870,33 +3119,33 @@
       "path": "newtonsoft.json/11.0.2",
       "hashPath": "newtonsoft.json.11.0.2.nupkg.sha512"
     },
-    "Quartz/3.3.2": {
+    "Quartz/3.3.3": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-zsLt0LLHfIO+hlLBrBB2f7Qolf2C3SeCWXawgnWXSuvsAWsvWBLSax9Tpu5X/KzoF4Y4UHX7tdxvQjxILEsRWA==",
-      "path": "quartz/3.3.2",
-      "hashPath": "quartz.3.3.2.nupkg.sha512"
+      "sha512": "sha512-waM2gyFQ/JOuvyHmlEnN2jpAiqJAEMEaPq6K6rT/mmLKlW0qvxCIYARDRfWaenJ6qQBHH2/J6cx+bCPVZb8z1Q==",
+      "path": "quartz/3.3.3",
+      "hashPath": "quartz.3.3.3.nupkg.sha512"
     },
-    "Quartz.AspNetCore/3.3.2": {
+    "Quartz.AspNetCore/3.3.3": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-2cfCaeGeTSWCH5HZzNkA4vTp66bH1FNKekRwuyiJ97O/v+uJazkI6qljYravNMbop/D9asdofnvoidYIDxDDMw==",
-      "path": "quartz.aspnetcore/3.3.2",
-      "hashPath": "quartz.aspnetcore.3.3.2.nupkg.sha512"
+      "sha512": "sha512-bXXRclAZHEhymg8Nu/1fiSiTV0nC26i6JqDOM8BG+z1UI0UB/xWkpdbhmDZKg1uE00AgORoxQLnoaJjeaoItpw==",
+      "path": "quartz.aspnetcore/3.3.3",
+      "hashPath": "quartz.aspnetcore.3.3.3.nupkg.sha512"
     },
-    "Quartz.Extensions.DependencyInjection/3.3.2": {
+    "Quartz.Extensions.DependencyInjection/3.3.3": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-fx9Pc6Rh74pN7WehRjSuli61sF6MzfaR65c9YdyEOUUCXhBRNrXZwKDaK5Rbg4y/EWXNfgvg47WqdNOpWfLlxg==",
-      "path": "quartz.extensions.dependencyinjection/3.3.2",
-      "hashPath": "quartz.extensions.dependencyinjection.3.3.2.nupkg.sha512"
+      "sha512": "sha512-VXEwbBMo8tx3TNUdPE1gRgx6MnWMXzIYd6Lhy0cWcOTOdSGSbM/c/GuVUjohA03Vryi8ASCWdLCMbVY2EOhUuw==",
+      "path": "quartz.extensions.dependencyinjection/3.3.3",
+      "hashPath": "quartz.extensions.dependencyinjection.3.3.3.nupkg.sha512"
     },
-    "Quartz.Extensions.Hosting/3.3.2": {
+    "Quartz.Extensions.Hosting/3.3.3": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-6+kSH8IDI1z2+oqDFwS9QeOl+4zSMhmlw+JgWlilT09+9j9zphBajHOENop+9bsrhFZJWIT+5WcDh/tuqJuU0w==",
-      "path": "quartz.extensions.hosting/3.3.2",
-      "hashPath": "quartz.extensions.hosting.3.3.2.nupkg.sha512"
+      "sha512": "sha512-vIkGR0lL/u/PoVOcUzGg29BYIy0tqZbU53ZjMERV6L2d5MZRqRibuMtowKabyT8gEKfSEVayqOJsg03fnaEBjw==",
+      "path": "quartz.extensions.hosting/3.3.3",
+      "hashPath": "quartz.extensions.hosting.3.3.3.nupkg.sha512"
     },
     "runtime.any.System.Collections/4.3.0": {
       "type": "package",
@@ -3220,6 +3469,41 @@
       "path": "runtime.unix.system.runtime.extensions/4.3.0",
       "hashPath": "runtime.unix.system.runtime.extensions.4.3.0.nupkg.sha512"
     },
+    "Seq.Extensions.Logging/6.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-DtQvSYf2YettmDUDyFH81oAO3ajeI7kFLiNlWVYX75TUcrgTa2Vk2QztBs/rtyZDDZjtAvIjS2ZR8W5MB/7Fhw==",
+      "path": "seq.extensions.logging/6.0.0",
+      "hashPath": "seq.extensions.logging.6.0.0.nupkg.sha512"
+    },
+    "SimpleInjector/5.3.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-YNpunojK3+pK9S9D7sWpeR6me41StcurcMc9XB2UZE44cYUImXL6SKoxo2sffcq8YVou0/JX/Wjf2UuY1JcRyQ==",
+      "path": "simpleinjector/5.3.2",
+      "hashPath": "simpleinjector.5.3.2.nupkg.sha512"
+    },
+    "SimpleInjector.Integration.AspNetCore/5.3.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-4IQVu+ljtTwa5ybNVJrsZ2hhJVvCkJpnbCiRwSZLw54xid6Z75DVVtZVkxMVoHc2wfMjD4iv2Z9+bx1+nT/A1Q==",
+      "path": "simpleinjector.integration.aspnetcore/5.3.0",
+      "hashPath": "simpleinjector.integration.aspnetcore.5.3.0.nupkg.sha512"
+    },
+    "SimpleInjector.Integration.GenericHost/5.3.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-RDS3BZqTOHaDuJE68DH8lqIAFZ0GPqNb+wFwCUIdlnRxoIBHKu2lcgHj6CMSYMSvs1hjcrDilTE+15G5pY6tWw==",
+      "path": "simpleinjector.integration.generichost/5.3.0",
+      "hashPath": "simpleinjector.integration.generichost.5.3.0.nupkg.sha512"
+    },
+    "SimpleInjector.Integration.ServiceCollection/5.3.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-F8l8r/18JVdJSLMV/O2rwQz2wRXJ0o6Ibp01g1xV8P5TomfOwW02GpxQMG0uXeOxKZ6CZ/ILxx19iWbBIrmP4g==",
+      "path": "simpleinjector.integration.servicecollection/5.3.0",
+      "hashPath": "simpleinjector.integration.servicecollection.5.3.0.nupkg.sha512"
+    },
     "SixLabors.ImageSharp/1.0.3": {
       "type": "package",
       "serviceable": true,
@@ -3332,12 +3616,12 @@
       "path": "system.console/4.3.0",
       "hashPath": "system.console.4.3.0.nupkg.sha512"
     },
-    "System.Device.Gpio/1.4.0": {
+    "System.Device.Gpio/2.0.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-KLZjf8hxezI7H9nlPg72ErSkeTVTt6kSKoEBqtZ7yibdodIxDm480KNxSGmlIs1vR03JRYOapDxcCrPaDLR0kg==",
-      "path": "system.device.gpio/1.4.0",
-      "hashPath": "system.device.gpio.1.4.0.nupkg.sha512"
+      "sha512": "sha512-7PsI5uD18QZP/60vPxQyhYlm2HywVythMxWeOkL7QAO8ZrSeJO1+ijn18Yd2q87dL9ED1MVCTKyR+DVPjxwx2w==",
+      "path": "system.device.gpio/2.0.0",
+      "hashPath": "system.device.gpio.2.0.0.nupkg.sha512"
     },
     "System.Diagnostics.Debug/4.3.0": {
       "type": "package",
@@ -3388,12 +3672,12 @@
       "path": "system.diagnostics.tracing/4.3.0",
       "hashPath": "system.diagnostics.tracing.4.3.0.nupkg.sha512"
     },
-    "System.Drawing.Common/5.0.2": {
+    "System.Drawing.Common/5.0.3": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-rvr/M1WPf24ljpvvrVd74+NdjRUJu1bBkspkZcnzSZnmAUQWSvanlQ0k/hVHk+cHufZbZfu7vOh/vYc0q5Uu/A==",
-      "path": "system.drawing.common/5.0.2",
-      "hashPath": "system.drawing.common.5.0.2.nupkg.sha512"
+      "sha512": "sha512-rEQZuslijqdsO0pkJn7LtGBaMc//YVA8de0meGihkg9oLPaN+w+/Pb5d71lgp0YjPoKgBKNMvdq0IPnoW4PEng==",
+      "path": "system.drawing.common/5.0.3",
+      "hashPath": "system.drawing.common.5.0.3.nupkg.sha512"
     },
     "System.Globalization/4.3.0": {
       "type": "package",
@@ -3926,6 +4210,31 @@
       "sha512": "sha512-S4rErosYZ+M7N2f76mx3DEZL/biGaUr1SJKfT8lTj7swFpyElcTcJG93rb2jTxzTKrSBDMFpLlYjpbCPEK/gfw==",
       "path": "unitsnet/4.77.0",
       "hashPath": "unitsnet.4.77.0.nupkg.sha512"
+    },
+    "AudioService/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "CameraService/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "DataAccess.EFCore/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Dtos/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Services/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
     },
     "Shared/1.0.0": {
       "type": "project",

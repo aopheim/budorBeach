@@ -3,25 +3,19 @@ using System.Threading.Tasks;
 using Azure;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
-using Microsoft.Extensions.Configuration;
 
 namespace Shared.Azure
 {
     public static class AzureStorageHelper
     {
-        public static BlobContainerClient GetBlobContainerClient(IConfiguration config, string blobContainerName)
+        public static string GetUrlForBlob(this BlobItem blob, BlobContainerClient containerClient,
+            string fileExtension)
         {
-            var blobServiceClient = new BlobServiceClient(config["AzureStorageConnectionString"]);
-            return blobServiceClient.GetBlobContainerClient(blobContainerName);
-        }
-
-        public static string GetUrlForBlob(this BlobItem blob, BlobContainerClient containerClient)
-        {
-            return new Uri(containerClient.Uri, $"{containerClient.Name}/{blob.Name}")
+            return new Uri(containerClient.Uri, $"{containerClient.Name}/{blob.Name.Replace(".jpg", fileExtension)}")
                 .ToString();
         }
 
-        public static async Task SetBlobPropertiesAsync(BlobClient blob)
+        public static async Task SetJpgBlobPropertiesAsync(BlobClient blob)
         {
             try
             {

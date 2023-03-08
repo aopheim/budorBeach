@@ -1,53 +1,65 @@
 ﻿using System;
 using System.Device.I2c;
+using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
+using DataAccess.EFCore;
 using Iot.Device.Bmxx80;
 using Iot.Device.Bmxx80.PowerMode;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Quartz;
-using Shared;
 using Shared.Models;
 using Shared.SignalR;
 
 namespace rpiDaemon.Jobs
 {
+    [DisallowConcurrentExecution]
     [UsedImplicitly]
     public class GetBme280SensorReadingsJob : IJob
     {
-        private readonly HubConnection _connection;
-        private readonly ApplicationDbContext _context;
+        public static readonly TimeSpan ActiveStateTriggerInterval = TimeSpan.FromSeconds(5);
+        private static readonly TimeSpan FailedStateTriggerInterval = TimeSpan.FromHours(1);
+        private readonly BudorDbContext _context;
         private readonly IWebHostEnvironment _environment;
         private readonly Fixture _fixture;
         private readonly ILogger<GetBme280SensorReadingsJob> _logger;
+        private readonly ISignalRService _signalRService;
 
-        public GetBme280SensorReadingsJob(ApplicationDbContext context, ILogger<GetBme280SensorReadingsJob> logger,
-            IWebHostEnvironment environment)
+        public GetBme280SensorReadingsJob(BudorDbContext context, ILogger<GetBme280SensorReadingsJob> logger,
+            IWebHostEnvironment environment, ISignalRService signalRService)
         {
             _context = context;
             _logger = logger;
             _environment = environment;
+            _signalRService = signalRService;
             _fixture = new Fixture();
-
-            var urlToUse = environment.IsProduction()
-                ? GlobalConstants.ProductionHubUrl
-                : GlobalConstants.DevelopmentHubUrl;
-            _connection = SignalRHelper.GetHubConnection(urlToUse);
-            SignalRHelper.SetupEventsForDebuggingConnection(logger, _connection);
         }
 
         private static TimeSpan DbPushInterval => TimeSpan.FromMinutes(2);
 
         public async Task Execute(IJobExecutionContext jobExecutionContext)
         {
-            var sensorReadingModel = GetCurrentSensorReadings();
+            SensorReadingModel sensorReadingModel = null;
+            try
+            {
+                sensorReadingModel = GetCurrentSensorReadings();
+            }
+            catch (IOException)
+            {
+                _logger.LogWarning(
+                    $"Failed to read bme280 sensor. Setting trigger interval to {FailedStateTriggerInterval}");
+                SetTriggerToHaveInterval(jobExecutionContext, FailedStateTriggerInterval);
+            }
+
+            if (sensorReadingModel == null)
+                return;
+            SetTriggerToHaveInterval(jobExecutionContext, ActiveStateTriggerInterval);
             _logger.LogInformation($"{JsonSerializer.Serialize(sensorReadingModel)}");
 
             var lastDbPushInUtc = _context.SensorReadings.OrderByDescending(m => m.MeasuredAtUtc).FirstOrDefault()
@@ -60,18 +72,34 @@ namespace rpiDaemon.Jobs
                 await _context.SaveChangesAsync(jobExecutionContext.CancellationToken);
             }
 
-            await PushReadingsToBudorHub(sensorReadingModel, jobExecutionContext.CancellationToken);
-            await _connection.StopAsync(jobExecutionContext.CancellationToken);
-            await _connection.DisposeAsync();
+            await _signalRService.SendSensorReading(sensorReadingModel, jobExecutionContext.CancellationToken);
+            await _signalRService.ConsoleLogMessage($"{JsonSerializer.Serialize(sensorReadingModel)}",
+                jobExecutionContext.CancellationToken);
         }
 
-        private async Task PushReadingsToBudorHub(SensorReadingModel model, CancellationToken cancellationToken)
+        private void SetTriggerToHaveInterval(IJobExecutionContext context, TimeSpan newInterval)
         {
-            await SignalRHelper.StartWithRetryAsync(_connection, cancellationToken);
-            await _connection.InvokeAsync(nameof(BudorHub.SendSensorReadingModelToWebClient), model,
-                cancellationToken);
-            await _connection.InvokeAsync(nameof(BudorHub.SendMessageToAllClients),
-                $"{JsonSerializer.Serialize(model)}", cancellationToken);
+            var oldTrigger = context.Trigger;
+            var builder = oldTrigger.GetTriggerBuilder();
+            var nextFireTime = oldTrigger.GetNextFireTimeUtc();
+            if (nextFireTime.HasValue &&
+                DatesAreClose(nextFireTime.Value.UtcDateTime, DateTime.UtcNow.Add(newInterval))) return;
+
+            var firstNewTriggerTime = DateTimeOffset.UtcNow.Add(newInterval);
+            var newTrigger = builder.StartAt(firstNewTriggerTime)
+                .WithSimpleSchedule(s => s.WithInterval(newInterval).RepeatForever())
+                .Build();
+            context.Scheduler.RescheduleJob(oldTrigger.Key, newTrigger);
+        }
+
+        private static bool DatesAreClose(DateTimeOffset original, DateTimeOffset toCompare,
+            TimeSpan errorMargin = default)
+        {
+            if (errorMargin == default)
+                errorMargin = TimeSpan.FromSeconds(5);
+
+            var differenceInSeconds = Math.Abs(original.Subtract(toCompare).Seconds);
+            return +differenceInSeconds < errorMargin.Seconds;
         }
 
         private SensorReadingModel GetCurrentSensorReadings()

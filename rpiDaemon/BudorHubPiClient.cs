@@ -1,78 +1,81 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
-using Azure.Storage.Blobs;
+using JetBrains.Annotations;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using MMALSharp;
-using rpiDaemon.Jobs;
-using Shared;
-using Shared.Azure;
+using Services.Interfaces;
 using Shared.Interfaces;
 using Shared.Models;
 using Shared.PiCameraSettings;
 using Shared.SignalR;
+using SimpleInjector;
 
 namespace rpiDaemon
 {
+    [UsedImplicitly]
     public class BudorHubPiClient : IBudorHubClient, IHostedService
     {
-        private readonly MMALCamera _camera;
-
-        private readonly HubConnection _connection;
-        private readonly IWebHostEnvironment _environment;
-        private readonly BlobContainerClient _imagesContainerClient;
+        private readonly Container _container;
         private readonly ILogger<BudorHubPiClient> _logger;
-        private readonly BlobContainerClient _thumbnailsContainerClient;
+        private readonly ISignalRService _signalRService;
 
-        public BudorHubPiClient(ILogger<BudorHubPiClient> logger, IWebHostEnvironment environment,
-            IConfiguration config)
+        public BudorHubPiClient(ILogger<BudorHubPiClient> logger,
+            IWebHostEnvironment environment,
+            IConfiguration config,
+            ISignalRService signalRService,
+            // Anti-pattern, but have currently no other solution
+            Container container
+        )
         {
             _logger = logger;
-            _environment = environment;
-            _connection = new HubConnectionBuilder()
-                .WithUrl(environment.IsProduction()
-                    ? GlobalConstants.ProductionHubUrl
-                    : GlobalConstants.DevelopmentHubUrl).WithAutomaticReconnect()
-                .Build();
-            _imagesContainerClient =
-                AzureStorageHelper.GetBlobContainerClient(config, GlobalConstants.ImagesContainerName);
-            _thumbnailsContainerClient =
-                AzureStorageHelper.GetBlobContainerClient(config, GlobalConstants.ThumbnailImagesContainerName);
-            _camera = environment.IsProduction() ? MMALCamera.Instance : default;
+            _signalRService = signalRService;
+            _container = container;
+            RegisterClientMethods();
         }
 
-        public Task ConsoleLogMessage(string message)
+        public Task ConsoleLogMessage(string message, CancellationToken cancellationToken)
         {
             _logger.LogInformation(message);
             return Task.CompletedTask;
         }
 
-        public Task ReceiveCurrentSensorReading(SensorReadingModel model)
+        public Task SendSensorReading(SensorReadingModel model, CancellationToken cancellationToken)
         {
-            _logger.LogInformation(model.ToString());
-
             return Task.CompletedTask;
         }
 
-        public async Task TakeImage(PiCameraSettings settings)
+        public async Task TakeImage(PiCameraSettings settings, CancellationToken cancellationToken)
         {
-            await TakePictureJobHelper.TakeImageAndUploadAsync(_environment, _camera, _logger, _imagesContainerClient,
-                _thumbnailsContainerClient, settings);
+            var pictureService = GetPictureService();
+            await pictureService.TakeImageAndUploadAsync(settings, cancellationToken);
         }
 
-        public async Task StartAsync(CancellationToken cancellationToken)
+        public Task StartAsync(CancellationToken cancellationToken)
         {
-            _connection.On<PiCameraSettings>(nameof(IBudorHubClient.TakeImage),
-                async settings => { await TakeImage(settings); });
-            await SignalRHelper.StartWithRetryAsync(_connection, cancellationToken);
+            _signalRService.StartWithRetryAsync(cancellationToken);
+            return Task.CompletedTask;
         }
 
         public async Task StopAsync(CancellationToken cancellationToken)
         {
-            await _connection.DisposeAsync();
+            await _signalRService.StopAsync(cancellationToken);
+        }
+
+        private void RegisterClientMethods()
+        {
+            var standardCToken = new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token;
+            _signalRService.RegisterClientMethod<PiCameraSettings>(nameof(ISignalRService.TakeImage),
+                async settings => await TakeImage(settings, standardCToken));
+            _signalRService.RegisterClientMethod<string>(nameof(ISignalRService.ConsoleLogMessage),
+                message => ConsoleLogMessage(message, standardCToken));
+        }
+
+        private IPictureService GetPictureService()
+        {
+            return _container.GetInstance<IPictureService>();
         }
     }
 }

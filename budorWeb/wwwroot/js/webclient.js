@@ -11,7 +11,7 @@ connection.on("ConsoleLogMessage",
         console.log(message);
     });
 
-connection.on("ReceiveCurrentSensorReading",
+connection.on("SendSensorReading",
     (model) => {
         document.getElementById("temperatureInDegreesC").innerHTML = round(model["temperatureInDegreesC"], 1) + "°C";
         document.getElementById("relativeHumidityInPercent").innerHTML = round(model["relativeHumidityInPercent"], 1) + "%";
