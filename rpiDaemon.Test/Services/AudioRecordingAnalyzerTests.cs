@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Dtos;
 using FluentAssertions;
 using NSubstitute;
+using NSubstitute.ReceivedExtensions;
 using NUnit.Framework;
 using Services;
 using Services.Interfaces;
@@ -15,7 +16,6 @@ namespace rpiDaemon.Test.Services
 {
     public class AudioRecordingAnalyzerTests : UnitTestBase<AudioRecordingRecordingAnalyzer>
     {
-        private static readonly double MinConfidenceLevel = 0.5;
         private static readonly int MaxNumberOfFilesToAnalyze = 15;
         private static readonly string HumanLatinName = "Homo Sapiens";
         private static readonly string HumanEnglishName = "Human";
@@ -27,6 +27,8 @@ namespace rpiDaemon.Test.Services
             "fcdf0a93-976c-4129-bc5a-e45b20c08171",
             "e70dc45f-090b-4022-9742-20b80df49646"
         };
+
+        private static double MinConfidenceLevel => AudioRecordingRecordingAnalyzer.MinConfidenceLevel;
 
         [Test]
         public async Task NoRecordingsAboveMinConfidence_ShouldDeleteAudioRecording()
@@ -48,6 +50,9 @@ namespace rpiDaemon.Test.Services
                     new()
                     {
                         Confidence = 0.1
+                    }, new()
+                    {
+                        Confidence = 0.2
                     }
                 }
             });
@@ -55,6 +60,7 @@ namespace rpiDaemon.Test.Services
             await TestSubject.RunAnalyzer(default);
 
             Get<IFileSystemService>().Received(4).DeleteFile(Arg.Any<string>());
+            Get<IRepositories>().SpeciesRecognitions.Received(0).AddRange(Arg.Any<IEnumerable<SpeciesRecognitionModel>>());
         }
 
         [Test]
@@ -142,6 +148,7 @@ namespace rpiDaemon.Test.Services
 
             await TestSubject.RunAnalyzer(default);
 
+            Get<IRepositories>().SpeciesRecognitions.Received(1).AddRange(Arg.Any<IEnumerable<SpeciesRecognitionModel>>());
             var calls = Get<IRepositories>().SpeciesRecognitions.ReceivedCalls();
             var arg = calls.Single(c => c.GetMethodInfo().Name == nameof(ISpeciesRecognitionRepo.AddRange))
                 .GetArguments().First();
