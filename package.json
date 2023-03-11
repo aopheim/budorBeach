@@ -9,6 +9,5 @@
     "docker:compose:pull": "sudo docker compose -f docker-compose.prod.yml pull",
     "docker:compose:stop": "sudo docker compose stop && sudo docker container stop budorbeach-audiorecorderlinux-1",
     "docker:remove:containers": "sudo docker rm $(sudo docker ps -aq)"
-    "
   }
 }
