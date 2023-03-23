@@ -11,6 +11,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Services.Interfaces;
+using Shared;
 using Shared.Interfaces;
 using Shared.Models;
 using Shared.PiCameraSettings;
@@ -20,6 +22,7 @@ namespace budorWeb.Pages
 {
     public class BudorBeachModel : PageModel
     {
+        private readonly IAzureStorageService _azureStorageService;
         private readonly IConfiguration _config;
         private readonly BudorDbContext _context;
         private readonly PiCameraSettings _currentCameraSettings;
@@ -29,7 +32,7 @@ namespace budorWeb.Pages
 
         public BudorBeachModel(ILogger<BudorBeachModel> logger, IConfiguration config, BudorDbContext context,
             ISignalRService signalRService,
-            IRepositories repos)
+            IRepositories repos, IAzureStorageService azureStorageService)
         {
             var stopWatch = new Stopwatch();
             stopWatch.Start();
@@ -37,6 +40,7 @@ namespace budorWeb.Pages
             _context = context;
             _signalRService = signalRService;
             _repos = repos;
+            _azureStorageService = azureStorageService;
             _logger = logger;
             _config = config;
             _currentCameraSettings = PiCameraSettingsHelper.GetCurrentCameraSettingsFromFile();
@@ -46,9 +50,8 @@ namespace budorWeb.Pages
         }
 
         private PiCameraSettings CurrentCameraSettings { get; }
-
-
         public List<ImageDto> LatestImages { get; set; }
+        public List<SpeciesRecognitionDto> LatestSpeciesRecognitions { get; set; }
         [CanBeNull] public SensorReadingModel LatestSensorReadingModel { get; set; }
         [BindProperty] public int IsoSetting { get; set; }
         [BindProperty] public int ShutterTimeSetting { get; set; }
@@ -65,19 +68,34 @@ namespace budorWeb.Pages
         {
             await _signalRService.ConsoleLogMessage(".NET Web Client connected!", cancellationToken);
 
-            var stopwatch = new Stopwatch();
-            stopwatch.Start();
-            _logger.LogInformation($"Before SensorReading SQL: {stopwatch.Elapsed.TotalMilliseconds} ms");
             var latestTime = _context.SensorReadings.Max(s => s.MeasuredAtUtc);
             LatestSensorReadingModel = _context.SensorReadings.FirstOrDefault(s => s.MeasuredAtUtc == latestTime);
-            _logger.LogInformation($"After SensorReading SQL: {stopwatch.Elapsed.TotalMilliseconds} ms");
-            _logger.LogInformation($"Before ImageUpload SQL: {stopwatch.Elapsed.TotalMilliseconds} ms");
             LatestImages = _repos.ImageUploads.GetLatestUploads(6).Select(iu => new ImageDto
                     { Name = iu.FileName, ImageUrl = iu.FullSizeImageUrl, ThumbnailUrl = iu.ThumbnailWebPImageUrl })
                 .ToList();
-            _logger.LogInformation($"After ImageUpload SQL: {stopwatch.Elapsed.TotalMilliseconds} ms");
-            stopwatch.Stop();
-            _logger.LogInformation($"Performed OnGetAsync in total {stopwatch.Elapsed.TotalMilliseconds} ms");
+
+            var latestRecognitions = _repos.SpeciesRecognitions.GetLatestRecognitions(10);
+            LatestSpeciesRecognitions = new List<SpeciesRecognitionDto>();
+            foreach (var r in latestRecognitions)
+            {
+                var fileNameWithExtension = $"{r.RecordingId}.wav";
+                var recordingExist = await _azureStorageService.ExistsAsync(
+                    GlobalConstants.AudioRecordingsContainerName,
+                    fileNameWithExtension, cancellationToken);
+                LatestSpeciesRecognitions.Add(new SpeciesRecognitionDto
+                {
+                    Confidence = r.Confidence,
+                    RecordingUrl = recordingExist
+                        ? @$"https://budorbeach.blob.core.windows.net/{GlobalConstants.AudioRecordingsContainerName}/{fileNameWithExtension}"
+                        : null,
+                    LatinSpeciesName = r.LatinName,
+                    NorwegianSpeciesName = "Kråke",
+                    EnglishSpeciesName = r.EnglishName,
+                    RecognizedAtUtc = r.RecognizedAtUtc,
+                    ThumbnailSpeciesImageUrl =
+                        "https://upload.wikimedia.org/wikipedia/commons/7/77/Ficedula_hypoleuca_G%C3%B6teborg_2.jpg"
+                });
+            }
         }
 
         public async Task<IActionResult> OnPostAsync(CancellationToken cancellationToken)
@@ -134,5 +152,17 @@ namespace budorWeb.Pages
         public string ThumbnailUrl { get; set; }
         public string ImageUrl { get; set; }
         public string Name { get; set; }
+    }
+
+    public class SpeciesRecognitionDto
+    {
+        public Guid Id { get; set; }
+        public DateTime RecognizedAtUtc { get; set; }
+        public string LatinSpeciesName { get; set; }
+        public string NorwegianSpeciesName { get; set; }
+        public string EnglishSpeciesName { get; set; }
+        public double Confidence { get; set; }
+        public string ThumbnailSpeciesImageUrl { get; set; }
+        [CanBeNull] public string RecordingUrl { get; set; }
     }
 }
