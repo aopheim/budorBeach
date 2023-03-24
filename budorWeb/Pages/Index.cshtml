@@ -12,167 +12,240 @@
 }
 
 <div class="container my-3">
-    <div class="row">
-        <div class="col">
-            <p>Værdata sist oppdatert</p>
-            <p id="lastUpdatedAt">@DateTimeParser.GetLocalDateTimeAsString(Model.LatestSensorReadingModel?.MeasuredAtUtc)</p>
+<div class="row">
+    <div class="col">
+        <p>Værdata sist oppdatert</p>
+        <p id="lastUpdatedAt">@DateTimeParser.GetLocalDateTimeAsString(Model.LatestSensorReadingModel?.MeasuredAtUtc)</p>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-4">
+        <div class="text-center">
+            <i class="fa fa-thermometer-three-quarters"></i>
+            <p id="temperatureInDegreesC">@Math.Round(Model.LatestSensorReadingModel?.TemperatureInDegreesC ?? default, 1)°C</p>
         </div>
     </div>
+    <div class="col-sm-4">
+        <div class="text-center">
+            <i class="fa fa-humidity"></i>
+            <p id="relativeHumidityInPercent">@Math.Round(Model.LatestSensorReadingModel?.RelativeHumidityInPercent ?? default, 1)%</p>
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="text-center">
+            <i class="fa fa-humidity"></i>
+            <p id="pressureInhPa">@Math.Round(Model.LatestSensorReadingModel?.PressureInhPa ?? default, 1)hPa</p>
+        </div>
+    </div>
+    @* <div class="alert alert-danger" role="alert"> *@
+    @*     Det ser dessverre ut som kameraet i fuglekassa har falt ned. En fuglekassetekniker er på vei for å feste det bedre. Værdata-sensorene har dessverre også streiket i det siste. Sannsynligvis har en ledning blitt røsket ut av august-regnværet. Vi håper å få dette på beina igjen så fort som mulig. *@
+    @* </div> *@
+    @{
+        const int last12 = 12;
+        const int lastDay = 24;
+        const int lastThreeDays = 24 * 3;
+        const int lastSevenDays = 24 * 7;
+        const int lastMonth = 24 * 30;
+        const int lastThreeMonths = 24 * 30 * 3;
+        const int lastSixMonths = 24 * 30 * 6;
+        const int lastYear = 24 * 30 * 12;
+    }
+    <div class="col-sm-12 col-lg-2">
+        <select class="form-select" id="chartDropDown" aria-label="Se data fra siste...">
+            <option value="@last12" selected="selected">Siste 12 timer</option>
+            <option value="@lastDay">Siste døgn</option>
+            <option value="@lastThreeDays">Siste tre dager</option>
+            <option value="@lastSevenDays">Siste uke</option>
+            <option value="@lastMonth">Siste måned</option>
+            <option value="@lastThreeMonths">Siste 3 måneder</option>
+            <option value="@lastSixMonths">Siste 6 måneder</option>
+            <option value="@lastYear">Siste år</option>
+        </select>
+    </div>
     <div class="row">
-        <div class="col-sm-4">
-            <div class="text-center">
-                <i class="fa fa-thermometer-three-quarters"></i>
-                <p id="temperatureInDegreesC">@Math.Round(Model.LatestSensorReadingModel?.TemperatureInDegreesC ?? default, 1)°C</p>
-            </div>
-        </div>
-        <div class="col-sm-4">
-            <div class="text-center">
-                <i class="fa fa-humidity"></i>
-                <p id="relativeHumidityInPercent">@Math.Round(Model.LatestSensorReadingModel?.RelativeHumidityInPercent ?? default, 1)%</p>
-            </div>
-        </div>
-        <div class="col-sm-4">
-            <div class="text-center">
-                <i class="fa fa-humidity"></i>
-                <p id="pressureInhPa">@Math.Round(Model.LatestSensorReadingModel?.PressureInhPa ?? default, 1)hPa</p>
-            </div>
-        </div>
-        @* <div class="alert alert-danger" role="alert"> *@
-        @*     Det ser dessverre ut som kameraet i fuglekassa har falt ned. En fuglekassetekniker er på vei for å feste det bedre. Værdata-sensorene har dessverre også streiket i det siste. Sannsynligvis har en ledning blitt røsket ut av august-regnværet. Vi håper å få dette på beina igjen så fort som mulig. *@
-        @* </div> *@
-        @{
-            const int last12 = 12;
-            const int lastDay = 24;
-            const int lastThreeDays = 24 * 3;
-            const int lastSevenDays = 24 * 7;
-            const int lastMonth = 24 * 30;
-            const int lastThreeMonths = 24 * 30 * 3;
-            const int lastSixMonths = 24 * 30 * 6;
-            const int lastYear = 24 * 30 * 12;
-        }
-        <div class="col-sm-6 col-lg-2">
-            <select class="form-select" id="chartDropDown" aria-label="Se data fra siste...">
-                <option value="@last12" selected="selected">Siste 12 timer</option>
-                <option value="@lastDay">Siste døgn</option>
-                <option value="@lastThreeDays">Siste tre dager</option>
-                <option value="@lastSevenDays">Siste uke</option>
-                <option value="@lastMonth">Siste måned</option>
-                <option value="@lastThreeMonths">Siste 3 måneder</option>
-                <option value="@lastSixMonths">Siste 6 måneder</option>
-                <option value="@lastYear">Siste år</option>
-            </select>
-        </div>
-        <div class="col-sm-12">
+        <div class="col-md-4">
             <div class="card-body">
                 <canvas id="tempChart"></canvas>
             </div>
         </div>
-        <div class="col-sm-6">
+        <div class="col-md-4">
             <div class="card-body">
                 <canvas id="humidityChart"></canvas>
             </div>
         </div>
-        <div class="col-sm-6">
+        <div class="col-md-4">
             <div class="card-body">
                 <canvas id="pressureChart"></canvas>
             </div>
         </div>
     </div>
+</div>
 
-    <h2>De 5 siste bildene</h2>
-    <div class="row">
-        @foreach (var image in Model?.LatestImages ?? new List<ImageDto>())
+<div class="row">
+    <div class="col-md-8">
+        <h4>De siste bildene fra fuglekassa</h4>
+
+        @if (!Model?.LatestImages?.Any() ?? true)
         {
-            <div class="col-md-6">
-                <div class="card my-3">
-                    <a href="@image.ImageUrl">
-                        <img class="card-img-top" src="@image.ImageUrl" alt="@image.Name">
-                    </a>
-                    <div class="card-body">
-                        <h4 class="card-text">@DateTimeParser.GetLocalDateTimeAsString(DateTimeParser.GetDateTimeFromFolderAndFileName(image.Name))</h4>
+            <h4>Fant ingen bilder fra fuglekassa</h4>
+        }
+        else
+        {
+            <div class="row">
+                @foreach (var image in Model.LatestImages)
+                {
+                    <div class="col-md-6">
+                        <div class="card my-3">
+                            <a href="@image.ImageUrl">
+                                <img class="card-img-top" src="@image.ImageUrl" alt="@image.Name">
+                            </a>
+                            <div class="card-body">
+                                <h5 class="card-text">@DateTimeParser.GetLocalDateTimeAsString(DateTimeParser.GetDateTimeFromFolderAndFileName(image.Name))</h5>
+                            </div>
+                        </div>
                     </div>
-                </div>
+                }
             </div>
         }
     </div>
-    <a href="images">
-        <h2>Til dagens bildegalleri</h2>
-    </a>
-    <br/>
-    <br/>
-    <br/>
-    <h2>Siste fuglekassenytt</h2>
-    <div class="row">
-        <div class="col-4">
-            <div id="newsfeed" class="list-group">
-                @foreach (var entry in NewsFeedService.GetNewsFeedEntries())
-                {
-                    <a class="list-group-item list-group-item-action" href="#@entry.Id">@DateTimeParser.GetLocalDateAsString(entry.Date) - @entry.Header</a>
-                }
-            </div>
-        </div>
-        <div class="col-8">
-            <div data-bs-spy="scroll" data-bs-target="#newsfeed" data-bs-offset="0" tabindex="0" style="max-height: 700px; overflow-x: auto; overflow-y: auto; position: relative;">
-                @foreach (var entry in NewsFeedService.GetNewsFeedEntries())
-                {
-                    var carouselControlsId = "carousel-controls" + entry.Id;
+    <div class="list-group col-md-4">
+        <h4>
+            De siste gjenkjenningene
+            <a tabindex="0" role="button" data-bs-toggle="popover" data-bs-trigger="focus" data-bs-placement="top"
+               data-bs-content="I fuglekassa er det også installert en mikrofon. Denne tar kontinuerlig lydopptak som analyseres av kunstig intelligens-nettverket <a href='https://birdnet.cornell.edu/' target='_blank' title='BirdNET'>BirdNET</a>.
+Dette gir en oversikt over hvilke fuglearter som er observert i nærheten. Prosent-andelen angir hvilken konfidens BirdNET har gitt gjenkjenningen. ">
+                <i class="bi bi-info-circle"></i>
+            </a>
+        </h4>
 
-                    <h4 id="@entry.Id">@DateTimeParser.GetLocalDateAsString(entry.Date) - @entry.Header</h4>
-                    <p>@entry.Body</p>
-                    @if (entry.ImageUrls?.Count == 1)
+        @foreach (var recognition in Model?.LatestSpeciesRecognitions ?? new List<SpeciesRecognitionDto>())
+        {
+            <div class="list-group-item">
+                <div class="row d-flex justify-content-between align-items-center">
+                    <div class="col-sm-4">
+                        <p>
+                            <i class="bi "></i>@DateTimeParser.GetLocalDateTimeAsString(recognition.RecognizedAtUtc)
+                        </p>
+                        <p><i class="bi bi-bar-chart-fill"></i> @Math.Round(recognition.Confidence * 100, 0) %</p>
+                    </div>
+                    <div class="flex-col col-sm-6">
+                        <p>
+                            <i class="bi bi-twitter "></i>@recognition.EnglishSpeciesName
+                        </p>
+                        <p class="fst-italic fw-light">@recognition.LatinSpeciesName</p>
+                    </div>
+                    @if (recognition.RecordingUrl != null)
                     {
-                        <img class="img-fluid mx-auto d-block" src="@entry.ImageUrls[0]" alt="@entry.ImageUrls[0]"/>
-                    }
-                    else if (entry.ImageUrls?.Count > 1)
-                    {
-                        <div id="@carouselControlsId" class="carousel slide " data-interval="false">
-                            <div class="carousel-inner">
-                                @{ var isActive = "active"; }
-                                @foreach (var url in entry.ImageUrls)
-                                {
-                                    <div class="carousel-item @isActive">
-                                        <img src="@url" class="d-block w-100" alt="@url"/>
-                                    </div>
-                                    {
-                                        isActive = "";
-                                    }
-                                }
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <audio controls loop preload="none" src="@recognition.RecordingUrl"></audio>
                             </div>
-                            <button class="carousel-control-prev" type="button" data-bs-target="#@carouselControlsId" data-bs-slide="prev">
-                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                <span class="visually-hidden">Previous</span>
-                            </button>
-                            <button class="carousel-control-next" type="button" data-bs-target="#@carouselControlsId" data-bs-slide="next">
-                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                <span class="visually-hidden">Next</span>
-                            </button>
                         </div>
                     }
-                    <hr class="my-4"/>
-                }
+                </div>
+            </div>
+        }
+
+
+    </div>
+</div>
+<div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Masse tekst!
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
             </div>
         </div>
     </div>
-    <h2>Kamera-innstillinger</h2>
-    <form method="post">
-        <div class="row">
-            <div class="col-sm-6">
-                <div class="text-center">
-                    <h5>ISO (0 = auto)</h5>
-                    <input type="range" asp-for="IsoSetting" id="iso-slider" value="@Model.IsoSetting" min="0" max="800" step="100" onclick="showValue('iso-slider', 'iso-slider-val')">
-                    <h4 id="iso-slider-val">@Model.IsoSetting</h4>
-                </div>
-            </div>
-            <div class="col-sm-6">
-                <div class="text-center">
-                    <h5>Lukkerhastighet (0 = auto)</h5>
-                    <input type="range" asp-for="ShutterTimeSetting" id="shutterspeed-slider" value="@Model.ShutterTimeSetting" min="0" max="6000" step="10" onclick="showValue('shutterspeed-slider', 'shutterspeed-slider-val')">
-                    <h4 id="shutterspeed-slider-val">@Model.ShutterTimeSetting</h4>
-                </div>
-            </div>
-            <input type="submit" value="Ta bilde"/>
+</div>
+<a href="images" class="link-primary">
+    <h2>Til dagens bildegalleri</h2>
+</a>
+<br/>
+<br/>
+<br/>
+<h2>Siste fuglekassenytt</h2>
+<div class="row">
+    <div class="col-4">
+        <div id="newsfeed" class="list-group">
+            @foreach (var entry in NewsFeedService.GetNewsFeedEntries())
+            {
+                <a class="list-group-item list-group-item-action" href="#@entry.Id">@DateTimeParser.GetLocalDateAsString(entry.Date) - @entry.Header</a>
+            }
         </div>
-    </form>
+    </div>
+    <div class="col-8">
+        <div data-bs-spy="scroll" data-bs-target="#newsfeed" data-bs-offset="0" tabindex="0" style="max-height: 700px; overflow-x: auto; overflow-y: auto; position: relative;">
+            @foreach (var entry in NewsFeedService.GetNewsFeedEntries())
+            {
+                var carouselControlsId = "carousel-controls" + entry.Id;
+
+                <h4 id="@entry.Id">@DateTimeParser.GetLocalDateAsString(entry.Date) - @entry.Header</h4>
+                <p>@entry.Body</p>
+                @if (entry.ImageUrls?.Count == 1)
+                {
+                    <img class="img-fluid mx-auto d-block" src="@entry.ImageUrls[0]" alt="@entry.ImageUrls[0]"/>
+                }
+                else if (entry.ImageUrls?.Count > 1)
+                {
+                    <div id="@carouselControlsId" class="carousel slide " data-interval="false">
+                        <div class="carousel-inner">
+                            @{ var isActive = "active"; }
+                            @foreach (var url in entry.ImageUrls)
+                            {
+                                <div class="carousel-item @isActive">
+                                    <img src="@url" class="d-block w-100" alt="@url"/>
+                                </div>
+                                {
+                                    isActive = "";
+                                }
+                            }
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#@carouselControlsId" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#@carouselControlsId" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    </div>
+                }
+                <hr class="my-4"/>
+            }
+        </div>
+    </div>
+</div>
+<h2>Kamera-innstillinger</h2>
+<form method="post">
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="text-center">
+                <h5>ISO (0 = auto)</h5>
+                <input type="range" asp-for="IsoSetting" id="iso-slider" value="@Model.IsoSetting" min="0" max="800" step="100" onclick="showValue('iso-slider', 'iso-slider-val')">
+                <h4 id="iso-slider-val">@Model.IsoSetting</h4>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="text-center">
+                <h5>Lukkerhastighet (0 = auto)</h5>
+                <input type="range" asp-for="ShutterTimeSetting" id="shutterspeed-slider" value="@Model.ShutterTimeSetting" min="0" max="6000" step="10" onclick="showValue('shutterspeed-slider', 'shutterspeed-slider-val')">
+                <h4 id="shutterspeed-slider-val">@Model.ShutterTimeSetting</h4>
+            </div>
+        </div>
+        <input type="submit" value="Ta bilde"/>
+    </div>
+</form>
 </div>
 
 <script src="~/js/signalr/dist/browser/signalr.min.js"></script>
@@ -183,4 +256,10 @@
         var val = document.getElementById(elementId).value;
         document.getElementById(valueElementId).innerHTML = val;
     }
+    
+    // For enabling popovers
+    var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+    var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+      return new bootstrap.Popover(popoverTriggerEl, {html: true})
+    })
 </script>

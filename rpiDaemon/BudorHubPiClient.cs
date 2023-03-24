@@ -47,10 +47,12 @@ namespace rpiDaemon
             return Task.CompletedTask;
         }
 
-        public async Task TakeImage(PiCameraSettings settings, CancellationToken cancellationToken)
+        public Task TakeImage(PiCameraSettings settings, CancellationToken cancellationToken)
         {
-            var pictureService = GetPictureService();
-            await pictureService.TakeImageAndUploadAsync(settings, cancellationToken);
+            // This currently crashes due to mismatch in lifestyle. Needs to be looked into. Commenting out for now...
+            // var pictureService = GetPictureService();
+            // await pictureService.TakeImageAndUploadAsync(settings, cancellationToken);
+            return Task.FromResult(true);
         }
 
         public Task StartAsync(CancellationToken cancellationToken)

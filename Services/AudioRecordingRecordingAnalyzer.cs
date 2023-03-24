@@ -25,7 +25,6 @@ namespace Services
         private readonly List<string> _englishNamesToExcludeFromUpload =
             new() { "human", "human vocal", "human non-vocal", "human whistle" };
 
-        private readonly IWebHostEnvironment _environment;
 
         private readonly List<string> _latinNamesToExcludeFromUpload =
             new() { "homo sapiens" };
@@ -36,16 +35,15 @@ namespace Services
 
 
         public AudioRecordingRecordingAnalyzer(ILogger<AudioRecordingRecordingAnalyzer> logger,
-            IBirdNetServer birdNetServer, Container container, IWebHostEnvironment environment)
+            IBirdNetServer birdNetServer, Container container)
         {
             _logger = logger;
             _birdNetServer = birdNetServer;
             _container = container;
-            _environment = environment;
             _isRunning = false;
         }
 
-        private double MinConfidenceLevel => DateTime.UtcNow < new DateTime(2022, 12, 12, 13, 00, 00) ? 0.15 : 0.7;
+        public static double MinConfidenceLevel =>  0.7;
 
         public bool IsRunning()
         {
@@ -135,7 +133,7 @@ namespace Services
             if (speciesRecognitionsToAddToDb.Any())
             {
                 repos.SpeciesRecognitions?.AddRange(speciesRecognitionsToAddToDb);
-                await repos.SaveChangesAsync();
+                await repos.SaveChangesAsync(cancellationToken);
             }
         }
 

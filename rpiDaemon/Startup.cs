@@ -52,8 +52,8 @@ public class Startup
         services.AddQuartz(q =>
         {
             q.UseJobFactory<JobFactory>();
-            q.AddJobAndTrigger<IndexImageUploadRepoJob>(GlobalConstants.DailyJobs,
-                GlobalConstants.IndexImageUploadDbTrigger, TimeSpan.FromHours(24));
+            // q.AddJobAndTrigger<IndexImageUploadRepoJob>(GlobalConstants.DailyJobs,
+            //     GlobalConstants.IndexImageUploadDbTrigger, TimeSpan.FromHours(24));
             q.AddJobAndTrigger<GetBme280SensorReadingsJob>(GlobalConstants.SecondJobs,
                 GlobalConstants.Bme280Trigger,
                 _environment.IsDevelopment()
