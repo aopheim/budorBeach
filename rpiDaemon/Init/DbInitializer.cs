@@ -14,19 +14,39 @@ namespace rpiDaemon.Init
         {
             context.Database.Migrate();
 
-            if (context.SensorReadings.Any()) return;
-            var readings = new List<SensorReadingModel>();
-
-            for (var i = 0; i < 50; i++)
+            if (!context.SensorReadings.Any())
             {
-                var randomDouble = new Random().NextDouble();
-                readings.Add(new SensorReadingModel
-                    { MeasuredAtUtc = DateTime.UtcNow, TemperatureInDegreesC = randomDouble });
+                var readings = new List<SensorReadingModel>();
+
+                for (var i = 0; i < 50; i++)
+                {
+                    var randomDouble = new Random().NextDouble();
+                    readings.Add(new SensorReadingModel
+                        { MeasuredAtUtc = DateTime.UtcNow, TemperatureInDegreesC = randomDouble });
+                }
+
+                foreach (var reading in readings) context.SensorReadings.Add(reading);
+
+                context.SaveChanges();
             }
 
-            foreach (var reading in readings) context.SensorReadings.Add(reading);
+            if (!context.SpeciesRecognitions.Any())
+            {
+                var recognitions = new List<SpeciesRecognitionModel>();
+                for (var i = 0; i < 50; i++)
+                    recognitions.Add(new SpeciesRecognitionModel
+                    {
+                        Confidence = new Random().NextDouble(),
+                        EnglishName = "SomeEnglishName",
+                        LatinName = "SomeLatinName",
+                        RecordingId = Guid.NewGuid(),
+                        RecognizedAtUtc = DateTime.UtcNow
+                    });
 
-            context.SaveChanges();
+                foreach (var recognitionModel in recognitions) context.SpeciesRecognitions.Add(recognitionModel);
+                context.SaveChanges();
+            }
+
             logger.LogInformation("Db successfully initialized");
         }
     }

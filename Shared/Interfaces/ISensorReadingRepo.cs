@@ -16,6 +16,7 @@ namespace Shared.Interfaces
     public interface ISpeciesRecognitionRepo : IRepository<SpeciesRecognitionModel>
     {
         bool Exists(Guid recordingId);
+        IEnumerable<SpeciesRecognitionModel> GetLatestRecognitions(int numberOfResults);
     }
 
     public interface IImageUploadRepo : IRepository<ImageUploadModel>
