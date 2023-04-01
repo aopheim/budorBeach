@@ -5,5 +5,7 @@ namespace Dtos
         public double Confidence { get; set; }
         public string? LatinName { get; set; }
         public string? EnglishName { get; set; }
+        public string? NorwegianName { get; set; }
+        
     }
 }
