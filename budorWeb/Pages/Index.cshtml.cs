@@ -7,9 +7,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using DataAccess.EFCore;
 using JetBrains.Annotations;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Services.Interfaces;
 using Shared;
@@ -26,13 +28,14 @@ namespace budorWeb.Pages
         private readonly IConfiguration _config;
         private readonly BudorDbContext _context;
         private readonly PiCameraSettings _currentCameraSettings;
+        private readonly IWebHostEnvironment _environment;
         private readonly ILogger<BudorBeachModel> _logger;
         private readonly IRepositories _repos;
         private readonly ISignalRService _signalRService;
 
         public BudorBeachModel(ILogger<BudorBeachModel> logger, IConfiguration config, BudorDbContext context,
             ISignalRService signalRService,
-            IRepositories repos, IAzureStorageService azureStorageService)
+            IRepositories repos, IAzureStorageService azureStorageService, IWebHostEnvironment environment)
         {
             var stopWatch = new Stopwatch();
             stopWatch.Start();
@@ -41,6 +44,7 @@ namespace budorWeb.Pages
             _signalRService = signalRService;
             _repos = repos;
             _azureStorageService = azureStorageService;
+            _environment = environment;
             _logger = logger;
             _config = config;
             _currentCameraSettings = PiCameraSettingsHelper.GetCurrentCameraSettingsFromFile();
@@ -86,7 +90,9 @@ namespace budorWeb.Pages
                 {
                     Confidence = r.Confidence,
                     RecordingUrl = recordingExist
-                        ? @$"https://budorbeach.blob.core.windows.net/{GlobalConstants.AudioRecordingsContainerName}/{fileNameWithExtension}"
+                        ? _environment.IsDevelopment()
+                            ? @$"https://127.0.0.1:10000/devstoreaccount1/{GlobalConstants.AudioRecordingsContainerName}/{fileNameWithExtension}"
+                            : @$"https://budorbeach.blob.core.windows.net/{GlobalConstants.AudioRecordingsContainerName}/{fileNameWithExtension}"
                         : null,
                     LatinSpeciesName = r.LatinName,
                     NorwegianSpeciesName = "Kråke",
