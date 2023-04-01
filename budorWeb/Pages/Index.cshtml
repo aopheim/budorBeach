@@ -81,7 +81,7 @@
     </div>
 </div>
 
-<div class="row">
+<div class="row" >
     <div class="col-md-8">
         <h4>De siste bildene fra fuglekassa</h4>
 
@@ -108,7 +108,7 @@
             </div>
         }
     </div>
-    <div class="list-group col-md-4">
+    <div class="list-group col-md-4 overflow-auto" style="height: 70vh;">
         <h4>
             De siste gjenkjenningene
             <a tabindex="0" role="button" data-bs-toggle="popover" data-bs-trigger="focus" data-bs-placement="top"
@@ -149,25 +149,6 @@ Dette gir en oversikt over hvilke fuglearter som er observert i nærheten. Prose
 
     </div>
 </div>
-<div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                Masse tekst!
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
-            </div>
-        </div>
-    </div>
-</div>
 <a href="images" class="link-primary">
     <h2>Til dagens bildegalleri</h2>
 </a>
@@ -176,7 +157,7 @@ Dette gir en oversikt over hvilke fuglearter som er observert i nærheten. Prose
 <br/>
 <h2>Siste fuglekassenytt</h2>
 <div class="row">
-    <div class="col-4">
+    <div class="col-4 overflow-auto" style="height: 70vh;"  >
         <div id="newsfeed" class="list-group">
             @foreach (var entry in NewsFeedService.GetNewsFeedEntries())
             {
@@ -184,7 +165,7 @@ Dette gir en oversikt over hvilke fuglearter som er observert i nærheten. Prose
             }
         </div>
     </div>
-    <div class="col-8">
+    <div class="col-8 overflow-auto" style="height: 70vh;">
         <div data-bs-spy="scroll" data-bs-target="#newsfeed" data-bs-offset="0" tabindex="0" style="max-height: 700px; overflow-x: auto; overflow-y: auto; position: relative;">
             @foreach (var entry in NewsFeedService.GetNewsFeedEntries())
             {
