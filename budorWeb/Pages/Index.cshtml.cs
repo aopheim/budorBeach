@@ -32,10 +32,12 @@ namespace budorWeb.Pages
         private readonly ILogger<BudorBeachModel> _logger;
         private readonly IRepositories _repos;
         private readonly ISignalRService _signalRService;
+        private readonly ISpeciesNameTranslator _speciesTranslator;
 
         public BudorBeachModel(ILogger<BudorBeachModel> logger, IConfiguration config, BudorDbContext context,
             ISignalRService signalRService,
-            IRepositories repos, IAzureStorageService azureStorageService, IWebHostEnvironment environment)
+            IRepositories repos, IAzureStorageService azureStorageService, IWebHostEnvironment environment,
+            ISpeciesNameTranslator speciesTranslator)
         {
             var stopWatch = new Stopwatch();
             stopWatch.Start();
@@ -45,6 +47,7 @@ namespace budorWeb.Pages
             _repos = repos;
             _azureStorageService = azureStorageService;
             _environment = environment;
+            _speciesTranslator = speciesTranslator;
             _logger = logger;
             _config = config;
             _currentCameraSettings = PiCameraSettingsHelper.GetCurrentCameraSettingsFromFile();
@@ -95,7 +98,7 @@ namespace budorWeb.Pages
                             : @$"https://budorbeach.blob.core.windows.net/{GlobalConstants.AudioRecordingsContainerName}/{fileNameWithExtension}"
                         : null,
                     LatinSpeciesName = r.LatinName,
-                    NorwegianSpeciesName = "Kråke",
+                    NorwegianSpeciesName = _speciesTranslator.TranslateFromLatinName(r.LatinName),
                     EnglishSpeciesName = r.EnglishName,
                     RecognizedAtUtc = r.RecognizedAtUtc,
                     ThumbnailSpeciesImageUrl =

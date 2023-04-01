@@ -81,7 +81,7 @@
     </div>
 </div>
 
-<div class="row" >
+<div class="row">
     <div class="col-md-8">
         <h4>De siste bildene fra fuglekassa</h4>
 
@@ -129,20 +129,20 @@ Dette gir en oversikt over hvilke fuglearter som er observert i nærheten. Prose
                         <p><i class="bi bi-bar-chart-fill"></i> @Math.Round(recognition.Confidence * 100, 0) %</p>
                     </div>
                     <div class="col-sm-6">
-                        <p>
-                            <i class="bi bi-twitter "></i>@recognition.EnglishSpeciesName
+                        <p >
+                            <i class="bi bi-twitter"></i> @(recognition.NorwegianSpeciesName ?? recognition.EnglishSpeciesName)
                         </p>
                         <p class="fst-italic fw-light">@recognition.LatinSpeciesName</p>
                     </div>
-            </div>
-                    @if (recognition.RecordingUrl != null)
-                    {
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <audio controls loop preload="none" src="@recognition.RecordingUrl"></audio>
-                            </div>
+                </div>
+                @if (recognition.RecordingUrl != null)
+                {
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <audio controls loop preload="none" src="@recognition.RecordingUrl"></audio>
                         </div>
-                    }
+                    </div>
+                }
             </div>
         }
 
@@ -157,7 +157,7 @@ Dette gir en oversikt over hvilke fuglearter som er observert i nærheten. Prose
 <br/>
 <h2>Siste fuglekassenytt</h2>
 <div class="row">
-    <div class="col-4 overflow-auto" style="height: 70vh;"  >
+    <div class="col-4 overflow-auto" style="height: 70vh;">
         <div id="newsfeed" class="list-group">
             @foreach (var entry in NewsFeedService.GetNewsFeedEntries())
             {
