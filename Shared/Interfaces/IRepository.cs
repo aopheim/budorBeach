@@ -8,15 +8,15 @@ namespace Shared.Interfaces
 {
     public interface IRepository<T> where T : class
     {
-        T GetById(int id);
-        IEnumerable<T> GetAll();
-        IEnumerable<T> Find(Expression<Func<T, bool>> expression);
-        void Add(T entity);
-        void Update(T entity);
-        void UpdateRange(IEnumerable<T> entities);
-        void AddRange(IEnumerable<T> entities);
-        void Remove(T entity);
-        void RemoveRange(IEnumerable<T> entities);
+        Task<T> GetByIdAsync(int id, CancellationToken cancellationToken);
+        Task<IEnumerable<T>> GetAllAsync(CancellationToken cancellationToken);
+        Task<IEnumerable<T>> WhereAsync(Expression<Func<T, bool>> expression, CancellationToken cancellationToken);
+        Task AddAsync(T entity, CancellationToken cancellationToken);
+        Task UpdateAsync(T entity, CancellationToken cancellationToken);
+        void UpdateRange(IEnumerable<T> entities, CancellationToken cancellationToken);
+        Task AddRangeAsync(IEnumerable<T> entities, CancellationToken cancellationToken);
+        Task RemoveAsync(T entity, CancellationToken cancellationToken);
+        void RemoveRange(IEnumerable<T> entities, CancellationToken cancellationToken);
     }
 
     public interface IRepositories

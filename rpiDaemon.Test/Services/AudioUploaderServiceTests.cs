@@ -21,7 +21,7 @@ namespace rpiDaemon.Test.Services
         {
             Get<IFileSystemService>().GetFileNamesWithoutExtensionInFolder(Arg.Any<string>())
                 .ReturnsForAnyArgs(new List<string> { Guid.NewGuid().ToString(), Guid.NewGuid().ToString() });
-            Get<IRepositories>().SpeciesRecognitions.Find(srm => true)
+            Get<IRepositories>().SpeciesRecognitions.WhereAsync(srm => true, default)
                 .ReturnsForAnyArgs(new List<SpeciesRecognitionModel>());
 
             await TestSubject.StartUpload(default);
@@ -35,7 +35,7 @@ namespace rpiDaemon.Test.Services
             var idsToUpload = new List<Guid> { Guid.NewGuid(), Guid.NewGuid() };
             Get<IFileSystemService>().GetFileNamesWithoutExtensionInFolder(Arg.Any<string>())
                 .ReturnsForAnyArgs(idsToUpload.Select(id => id.ToString()));
-            Get<IRepositories>().SpeciesRecognitions.Find(srm => true)
+            Get<IRepositories>().SpeciesRecognitions.WhereAsync(srm => true, default)
                 .ReturnsForAnyArgs(new List<SpeciesRecognitionModel>
                 {
                     new SpeciesRecognitionModel { RecordingId = idsToUpload[0] },
@@ -56,7 +56,7 @@ namespace rpiDaemon.Test.Services
             var idNotToUpload = Guid.NewGuid();
             Get<IFileSystemService>().GetFileNamesWithoutExtensionInFolder(Arg.Any<string>())
                 .ReturnsForAnyArgs(new List<string> { idToUpload.ToString(), idNotToUpload.ToString() });
-            Get<IRepositories>().SpeciesRecognitions.Find(srm => true)
+            Get<IRepositories>().SpeciesRecognitions.WhereAsync(srm => true, default)
                 .ReturnsForAnyArgs(new List<SpeciesRecognitionModel>
                 {
                     new SpeciesRecognitionModel { RecordingId = idToUpload },
@@ -75,7 +75,7 @@ namespace rpiDaemon.Test.Services
             var idsToUpload = new List<Guid> { Guid.NewGuid(), Guid.NewGuid() };
             Get<IFileSystemService>().GetFileNamesWithoutExtensionInFolder(Arg.Any<string>())
                 .ReturnsForAnyArgs(idsToUpload.Select(id => id.ToString()));
-            Get<IRepositories>().SpeciesRecognitions.Find(srm => true)
+            Get<IRepositories>().SpeciesRecognitions.WhereAsync(srm => true, default)
                 .ReturnsForAnyArgs(new List<SpeciesRecognitionModel>
                 {
                     new SpeciesRecognitionModel { RecordingId = idsToUpload[0] },
@@ -98,7 +98,7 @@ namespace rpiDaemon.Test.Services
                 .ReturnsForAnyArgs(idsToUpload.Select(id => id.ToString()));
             var recognitionsInDb = new List<SpeciesRecognitionModel>();
             idsToUpload.ForEach(id => recognitionsInDb.Add(new SpeciesRecognitionModel { RecordingId = id }));
-            Get<IRepositories>().SpeciesRecognitions.Find(srm => true)
+            Get<IRepositories>().SpeciesRecognitions.WhereAsync(srm => true, default)
                 .ReturnsForAnyArgs(recognitionsInDb);
 
             await TestSubject.StartUpload(default);

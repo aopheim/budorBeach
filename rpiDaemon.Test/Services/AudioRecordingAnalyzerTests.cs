@@ -78,10 +78,11 @@ namespace rpiDaemon.Test.Services
             await TestSubject.RunAnalyzer(default);
 
             Get<IFileSystemService>().Received(4).DeleteFile(Arg.Any<string>());
-            Get<IRepositories>().SpeciesRecognitions
-                .AddRange(Arg.Is<List<SpeciesRecognitionModel>>(models => models.Count == 0));
+            await Get<IRepositories>().SpeciesRecognitions
+                .AddRangeAsync(Arg.Is<List<SpeciesRecognitionModel>>(models => models.Count == 0), default);
             var calls = Get<IRepositories>().ReceivedCalls();
-            calls.Where(c => c.GetMethodInfo().Name == nameof(ISpeciesRecognitionRepo.AddRange)).Should().BeEmpty();
+            calls.Where(c => c.GetMethodInfo().Name == nameof(ISpeciesRecognitionRepo.AddRangeAsync)).Should()
+                .BeEmpty();
         }
 
         [Test]
@@ -112,7 +113,7 @@ namespace rpiDaemon.Test.Services
 
             Get<IFileSystemService>().Received(4).DeleteFile(Arg.Any<string>());
             Get<IRepositories>().ReceivedCalls()
-                .Where(c => c.GetMethodInfo().Name == nameof(ISpeciesRecognitionRepo.AddRange)).Should().BeEmpty();
+                .Where(c => c.GetMethodInfo().Name == nameof(ISpeciesRecognitionRepo.AddRangeAsync)).Should().BeEmpty();
         }
 
         [Test]
@@ -143,7 +144,7 @@ namespace rpiDaemon.Test.Services
             await TestSubject.RunAnalyzer(default);
 
             var calls = Get<IRepositories>().SpeciesRecognitions.ReceivedCalls();
-            var arg = calls.Single(c => c.GetMethodInfo().Name == nameof(ISpeciesRecognitionRepo.AddRange))
+            var arg = calls.Single(c => c.GetMethodInfo().Name == nameof(ISpeciesRecognitionRepo.AddRangeAsync))
                 .GetArguments().First();
             (arg as List<SpeciesRecognitionModel>).First().EnglishName.Should().Be("ToSave");
         }
@@ -175,7 +176,7 @@ namespace rpiDaemon.Test.Services
             await TestSubject.RunAnalyzer(default);
 
             var calls = Get<IRepositories>().SpeciesRecognitions.ReceivedCalls();
-            var arg = calls.Single(c => c.GetMethodInfo().Name == nameof(ISpeciesRecognitionRepo.AddRange))
+            var arg = calls.Single(c => c.GetMethodInfo().Name == nameof(ISpeciesRecognitionRepo.AddRangeAsync))
                 .GetArguments().First();
             (arg as List<SpeciesRecognitionModel>).Count.Should().BeLessOrEqualTo(MaxNumberOfFilesToAnalyze);
         }
@@ -203,7 +204,7 @@ namespace rpiDaemon.Test.Services
             await TestSubject.RunAnalyzer(default);
 
             var calls = Get<IRepositories>().SpeciesRecognitions.ReceivedCalls();
-            var arg = calls.Where(c => c.GetMethodInfo().Name == nameof(ISpeciesRecognitionRepo.AddRange)).Should()
+            var arg = calls.Where(c => c.GetMethodInfo().Name == nameof(ISpeciesRecognitionRepo.AddRangeAsync)).Should()
                 .HaveCount(0);
         }
 

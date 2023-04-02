@@ -134,8 +134,8 @@ namespace Services
 
             if (speciesRecognitionsToAddToDb.Any())
             {
-                repos.SpeciesRecognitions?.AddRange(speciesRecognitionsToAddToDb);
-                await repos.SaveChangesAsync();
+                await repos.SpeciesRecognitions.AddRangeAsync(speciesRecognitionsToAddToDb, cancellationToken);
+                await repos.SaveChangesAsync(cancellationToken);
             }
         }
 

@@ -68,15 +68,16 @@ namespace Services
                     localRecordingIds.Add(idAsGuid);
 
             var localRecordingsToUpload =
-                repos.SpeciesRecognitions.Find(srm => localRecordingIds.Contains(srm.RecordingId))
-                    .Select(r => r.RecordingId).ToList();
+                (await repos.SpeciesRecognitions.WhereAsync(srm => localRecordingIds.Contains(srm.RecordingId),
+                    cancellationToken))
+                .Select(r => r.RecordingId).ToList();
             _logger.LogInformation($"Found {localRecordingsToUpload.Count} recordings for upload");
             foreach (var recordingId in localRecordingsToUpload.Take(MaxNumberOfFilesToUpload))
             {
                 var fileName = recordingId + ".wav";
                 var filePath = recordingsFolderName + fileName;
                 if (!await azureStorageService.ExistsAsync(GlobalConstants.AudioRecordingsContainerName,
-                    fileName, cancellationToken))
+                        fileName, cancellationToken))
                 {
                     _logger.LogInformation($"Uploading recording {recordingId}.wav...");
                     await azureStorageService.UploadFileFromPath(GlobalConstants.AudioRecordingsContainerName,

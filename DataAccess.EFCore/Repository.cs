@@ -2,6 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Shared.Interfaces;
 
 namespace DataAccess.EFCore
@@ -15,47 +18,48 @@ namespace DataAccess.EFCore
             _context = context;
         }
 
-        public void Add(T entity)
+        public async Task AddAsync(T entity, CancellationToken cancellationToken)
         {
-            _context.Set<T>().Add(entity);
+            await _context.Set<T>().AddAsync(entity, cancellationToken);
         }
 
-        public void AddRange(IEnumerable<T> entities)
+        public async Task<IEnumerable<T>> GetAllAsync(CancellationToken cancellationToken)
         {
-            _context.Set<T>().AddRange(entities);
+            return await _context.Set<T>().ToListAsync(cancellationToken);
         }
 
-        public void Update(T entity)
+        public async Task<T> GetByIdAsync(int id, CancellationToken cancellationToken)
         {
-            _context.Set<T>().Update(entity);
+            return await _context.Set<T>().FindAsync(id, cancellationToken);
         }
 
-        public void UpdateRange(IEnumerable<T> entities)
+        public async Task<IEnumerable<T>> WhereAsync(Expression<Func<T, bool>> expression,
+            CancellationToken cancellationToken)
+        {
+            return await _context.Set<T>().Where(expression).ToListAsync(cancellationToken);
+        }
+
+        public async Task AddRangeAsync(IEnumerable<T> entities, CancellationToken cancellationToken)
+        {
+            await _context.Set<T>().AddRangeAsync(entities, cancellationToken);
+        }
+
+        public Task UpdateAsync(T entity, CancellationToken cancellationToken)
+        {
+            return Task.FromResult(_context.Set<T>().Update(entity));
+        }
+
+        public void UpdateRange(IEnumerable<T> entities, CancellationToken cancellationToken)
         {
             _context.Set<T>().UpdateRange(entities);
         }
-        
-        public IEnumerable<T> Find(Expression<Func<T, bool>> expression)
+
+        public Task RemoveAsync(T entity, CancellationToken cancellationToken)
         {
-            return _context.Set<T>().Where(expression);
+            return Task.FromResult(_context.Set<T>().Remove(entity));
         }
 
-        public IEnumerable<T> GetAll()
-        {
-            return _context.Set<T>().ToList();
-        }
-
-        public T GetById(int id)
-        {
-            return _context.Set<T>().Find(id);
-        }
-
-        public void Remove(T entity)
-        {
-            _context.Set<T>().Remove(entity);
-        }
-
-        public void RemoveRange(IEnumerable<T> entities)
+        public void RemoveRange(IEnumerable<T> entities, CancellationToken cancellationToken)
         {
             _context.Set<T>().RemoveRange(entities);
         }
