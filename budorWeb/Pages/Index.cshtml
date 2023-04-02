@@ -83,7 +83,7 @@
 
 <div class="row">
     <div class="col-md-8">
-        <h4>De siste bildene fra fuglekassa</h4>
+        <h3>De siste bildene fra fuglekassa</h3>
 
         @if (!Model?.LatestImages?.Any() ?? true)
         {
@@ -108,16 +108,16 @@
             </div>
         }
     </div>
-    <div class="list-group col-md-4 overflow-auto" style="height: 70vh;">
-        <h4>
+    <div class="list-group col-md-4" >
+        <h3>
             De siste gjenkjenningene
             <a tabindex="0" role="button" data-bs-toggle="popover" data-bs-trigger="focus" data-bs-placement="top"
                data-bs-content="I fuglekassa er det også installert en mikrofon. Denne tar kontinuerlig lydopptak som analyseres av kunstig intelligens-nettverket <a href='https://birdnet.cornell.edu/' target='_blank' title='BirdNET'>BirdNET</a>.
 Dette gir en oversikt over hvilke fuglearter som er observert i nærheten. Prosent-andelen angir hvilken konfidens BirdNET har gitt gjenkjenningen. ">
                 <i class="bi bi-info-circle"></i>
             </a>
-        </h4>
-
+        </h3>
+        <div class="overflow-auto mt-3" style="height: 70vh;">
         @foreach (var recognition in Model?.LatestSpeciesRecognitions ?? new List<SpeciesRecognitionDto>())
         {
             <div class="row list-group-item">
@@ -145,17 +145,19 @@ Dette gir en oversikt over hvilke fuglearter som er observert i nærheten. Prose
                 }
             </div>
         }
+            
+        </div>
 
 
     </div>
 </div>
 <a href="images" class="link-primary">
-    <h2>Til dagens bildegalleri</h2>
+    <h3>Til dagens bildegalleri</h3>
 </a>
 <br/>
 <br/>
 <br/>
-<h2>Siste fuglekassenytt</h2>
+<h3>Siste fuglekassenytt</h3>
 <div class="row">
     <div class="col-4 overflow-auto" style="height: 70vh;">
         <div id="newsfeed" class="list-group">
