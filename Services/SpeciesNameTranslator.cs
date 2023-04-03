@@ -23,15 +23,7 @@ public class SpeciesNameTranslator : ISpeciesNameTranslator
     [CanBeNull]
     public string TranslateFromTaxonomyCode(string eBirdTaxonomyCode, string translateToLocale = "no")
     {
-        var path = @$"{_environment.WebRootPath}/translations/{TaxonomyFileName}";
-        if (!File.Exists(path)) return null;
-        var taxonomyAsString = File.ReadAllText(path);
-        var dict = JsonSerializer.Deserialize<Dictionary<string, string>>(taxonomyAsString);
-        var latinAndEnglishName = dict?[eBirdTaxonomyCode];
-        if (latinAndEnglishName == null || latinAndEnglishName.Split('_').Length != 2)
-            return null;
-        var latinName = latinAndEnglishName.Split('_').First();
-
+        var latinName = GetLatinNameFromTaxonomyCode(eBirdTaxonomyCode);
         return GetLocaleNameFromLatinName(latinName, translateToLocale);
     }
 
@@ -39,6 +31,30 @@ public class SpeciesNameTranslator : ISpeciesNameTranslator
     public string TranslateFromLatinName(string latinName, string translateToLocale = "no")
     {
         return GetLocaleNameFromLatinName(latinName, translateToLocale);
+    }
+
+    public string GetLatinNameFromTaxonomyCode(string eBirdTaxonomyCode)
+    {
+        var dict = GetTaxonomyDictionary();
+        var latinAndEnglishName = dict?[eBirdTaxonomyCode];
+        if (latinAndEnglishName == null || latinAndEnglishName.Split('_').Length != 2)
+            return null;
+        return latinAndEnglishName.Split('_').First();
+    }
+
+    [CanBeNull]
+    public string GetTaxonomyCodeFromLatinAndEnglishName(string latinName, string englishName)
+    {
+        var dict = GetTaxonomyDictionary();
+        return dict.TryGetValue($"{latinName}_{englishName}", out var speciesId) ? speciesId : null;
+    }
+
+    private Dictionary<string, string> GetTaxonomyDictionary()
+    {
+        var path = @$"{_environment.WebRootPath}/translations/{TaxonomyFileName}";
+        if (!File.Exists(path)) return null;
+        var taxonomyAsString = File.ReadAllText(path);
+        return JsonSerializer.Deserialize<Dictionary<string, string>>(taxonomyAsString);
     }
 
     [CanBeNull]

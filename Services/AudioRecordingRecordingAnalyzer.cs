@@ -26,6 +26,7 @@ namespace Services
             new() { "human", "human vocal", "human non-vocal", "human whistle" };
 
         private readonly IWebHostEnvironment _environment;
+        private readonly ISpeciesNameTranslator _translator;
 
         private readonly List<string> _latinNamesToExcludeFromUpload =
             new() { "homo sapiens" };
@@ -36,12 +37,13 @@ namespace Services
 
 
         public AudioRecordingRecordingAnalyzer(ILogger<AudioRecordingRecordingAnalyzer> logger,
-            IBirdNetServer birdNetServer, Container container, IWebHostEnvironment environment)
+            IBirdNetServer birdNetServer, Container container, IWebHostEnvironment environment, ISpeciesNameTranslator translator)
         {
             _logger = logger;
             _birdNetServer = birdNetServer;
             _container = container;
             _environment = environment;
+            _translator = translator;
             _isRunning = false;
         }
 
@@ -126,7 +128,8 @@ namespace Services
                         LatinName = dto.LatinName,
                         // Should be save time for the wav file. Fix later...
                         RecognizedAtUtc = DateTime.UtcNow,
-                        RecordingId = recordingIdAsGuid
+                        RecordingId = recordingIdAsGuid,
+                        EBirdTaxonomyId = _translator.GetTaxonomyCodeFromLatinAndEnglishName(dto.LatinName, dto.EnglishName)
                     });
 
                 speciesRecognitionsToAddToDb.AddRange(modelsToSave);

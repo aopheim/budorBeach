@@ -100,6 +100,7 @@ namespace budorWeb.Pages
                     LatinSpeciesName = r.LatinName,
                     NorwegianSpeciesName = _speciesTranslator.TranslateFromLatinName(r.LatinName),
                     EnglishSpeciesName = r.EnglishName,
+                    SpeciesId = _speciesTranslator.GetTaxonomyCodeFromLatinAndEnglishName(r.LatinName, r.EnglishName),
                     RecognizedAtUtc = r.RecognizedAtUtc,
                     ThumbnailSpeciesImageUrl =
                         "https://upload.wikimedia.org/wikipedia/commons/7/77/Ficedula_hypoleuca_G%C3%B6teborg_2.jpg"
@@ -170,6 +171,7 @@ namespace budorWeb.Pages
         public string LatinSpeciesName { get; set; }
         public string NorwegianSpeciesName { get; set; }
         public string EnglishSpeciesName { get; set; }
+        public string SpeciesId { get; set; }
         public double Confidence { get; set; }
         public string ThumbnailSpeciesImageUrl { get; set; }
         [CanBeNull] public string RecordingUrl { get; set; }

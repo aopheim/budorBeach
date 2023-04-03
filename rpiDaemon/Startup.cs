@@ -110,12 +110,12 @@ public class Startup
         _container.RegisterSingleton<IBirdPresenceCalculator, BirdPresenceCalculator>();
         _container.RegisterSingleton<IBirdPresenceRegistrator, BirdPresenceRegistrator>();
         _container.RegisterSingleton<IBirdNetServer, BirdNetServer>();
-        _container.RegisterSingleton<IBirdRecordingAnalyzer, AudioRecordingRecordingAnalyzer>();
         _container.RegisterSingleton<IAudioUploader, AudioUploaderService>();
         _container.RegisterSingleton<IExternalSingletonProcess, ExternalSingletonProcess>();
         _container.Register<IAudioService, AudioService.AudioService>();
         _container.Register<IRepositories, Repositories>(Lifestyle.Scoped);
 
+        _container.Register<IBirdRecordingAnalyzer, AudioRecordingRecordingAnalyzer>();
         _container.Register<CaptureAudioContinuouslyJob>();
         _container.Register<GetBme280SensorReadingsJob>();
         _container.Register<TakePictureJob>();
@@ -132,6 +132,7 @@ public class Startup
         _container.Register<IExternalProcess, ExternalProcess>();
         _container.Register<IPictureService, PictureService>();
         _container.Register<IPictureEditService, PictureEditService>();
+        _container.Register<ISpeciesNameTranslator, SpeciesNameTranslator>();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -2,6 +2,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
+using Shared;
 
 namespace DataAccess.EFCore
 {
@@ -16,8 +17,8 @@ namespace DataAccess.EFCore
 
             var optionsBuilder = new DbContextOptionsBuilder<BudorDbContext>();
             optionsBuilder.UseSqlServer(environment == "Production"
-                ? config["ProductionDb"]
-                : config["DevelopmentDb"]);
+                ? config[GlobalConstants.ProductionDb]
+                : config[GlobalConstants.DevelopmentDb]);
 
             return new BudorDbContext(optionsBuilder.Options);
         }

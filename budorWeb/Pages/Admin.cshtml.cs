@@ -1,4 +1,5 @@
 using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using Services.Interfaces;
@@ -23,5 +24,10 @@ public class Admin : PageModel
     public void OnPostConvertImages(CancellationToken cancellationToken)
     {
         _migrationService.MigrateJpgImagesToWebP(cancellationToken);
+    }
+
+    public async Task OnPostMigrateRecognitions(CancellationToken cancellationToken)
+    {
+        await _migrationService.MigrateSpeciesRecognitionsToIncludeEBirdTaxonomyId(cancellationToken);
     }
 }
