@@ -5,7 +5,6 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Dtos;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Services.Interfaces;
@@ -25,29 +24,27 @@ namespace Services
         private readonly List<string> _englishNamesToExcludeFromUpload =
             new() { "human", "human vocal", "human non-vocal", "human whistle" };
 
-        private readonly IWebHostEnvironment _environment;
-        private readonly ISpeciesNameTranslator _translator;
-
         private readonly List<string> _latinNamesToExcludeFromUpload =
             new() { "homo sapiens" };
 
         private readonly ILogger<AudioRecordingRecordingAnalyzer> _logger;
+        private readonly ISpeciesNameTranslator _translator;
         private readonly int MaxNumberOfFilesToAnalyze = 15;
         private bool _isRunning;
 
 
         public AudioRecordingRecordingAnalyzer(ILogger<AudioRecordingRecordingAnalyzer> logger,
-            IBirdNetServer birdNetServer, Container container, IWebHostEnvironment environment, ISpeciesNameTranslator translator)
+            IBirdNetServer birdNetServer, Container container,
+            ISpeciesNameTranslator translator)
         {
             _logger = logger;
             _birdNetServer = birdNetServer;
             _container = container;
-            _environment = environment;
             _translator = translator;
             _isRunning = false;
         }
 
-        private double MinConfidenceLevel => DateTime.UtcNow < new DateTime(2022, 12, 12, 13, 00, 00) ? 0.15 : 0.7;
+        public static double MinConfidenceLevel => 0.7;
 
         public bool IsRunning()
         {
@@ -129,7 +126,8 @@ namespace Services
                         // Should be save time for the wav file. Fix later...
                         RecognizedAtUtc = DateTime.UtcNow,
                         RecordingId = recordingIdAsGuid,
-                        EBirdTaxonomyId = _translator.GetTaxonomyCodeFromLatinAndEnglishName(dto.LatinName, dto.EnglishName)
+                        EBirdTaxonomyId =
+                            _translator.GetTaxonomyCodeFromLatinAndEnglishName(dto.LatinName, dto.EnglishName)
                     });
 
                 speciesRecognitionsToAddToDb.AddRange(modelsToSave);

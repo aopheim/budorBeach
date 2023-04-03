@@ -3,6 +3,7 @@ import uuid
 import wave
 import pyaudio
 import bottle
+import datetime
 from bottle import response
 import json
 
@@ -27,12 +28,13 @@ def healthcheck():
 
 @bottle.route('/record', method='POST')
 def makeRecording():
+    print('Starting recording at ', datetime.datetime.now())
     record()
+    print('Recording ended at ', datetime.datetime.now())
     data = {'msg': 'OK'}
     return json.dumps(data)
 
 def record():
-    print('Starting recording...')
     c_error_handler = ERROR_HANDLER_FUNC(py_error_handler)
 
     asound = cdll.LoadLibrary('libasound.so')
@@ -49,12 +51,10 @@ def record():
         str(uuid.uuid1()) + '.wav'  # name of .wav file
 
     audio = pyaudio.PyAudio()  # create pyaudio instantiation
-    print('Created pyaudio instance')
     # create pyaudio stream
     stream = audio.open(format=form_1, rate=samp_rate, channels=chans,
                         input_device_index=dev_index, input=True,
                         frames_per_buffer=chunk)
-    print('made stream')
     frames = []
 
     # loop through stream and append audio chunks to frame array

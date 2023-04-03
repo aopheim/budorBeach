@@ -8,3 +8,4 @@ services:
     image: aopheim/birdnetserver:latest
     ports:
       - 8080
+    restart: unless-stopped
