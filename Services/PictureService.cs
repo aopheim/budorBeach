@@ -77,7 +77,7 @@ public class PictureService : IPictureService
             var compressedImagePath = await _pictureEditService.CompressJpgToWebPFormat(fullPath);
             await UploadImageToContainerClient(GlobalConstants.ThumbnailImagesContainerName,
                 $"{folderName}/{fileName}.webp", compressedImagePath, cancellationToken);
-            _repos.ImageUploads.Add(new ImageUploadModel
+            await _repos.ImageUploads.AddAsync(new ImageUploadModel
             {
                 FileName = $"{folderName}/{fileName}", TakenAtUtc = now,
                 FullSizeImageUrl = _azureStorageService.GetBlobUrl(GlobalConstants.ImagesContainerName,
@@ -85,7 +85,7 @@ public class PictureService : IPictureService
                 ThumbnailJpgImageUrl = null,
                 ThumbnailWebPImageUrl = _azureStorageService.GetBlobUrl(GlobalConstants.ThumbnailImagesContainerName,
                     $"{folderName}/{fileName}.webp")
-            });
+            }, cancellationToken);
             await _repos.SaveChangesAsync(cancellationToken);
 
             _fileSystemService.DeleteDirectory(folderPath, true);

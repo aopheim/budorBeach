@@ -38,7 +38,7 @@ public class IndexImageUploadRepoJob : IJob
 
         var cancellationToken = CancellationTokenSource.CreateLinkedTokenSource(context.CancellationToken,
             new CancellationTokenSource(_indexingTimeOut).Token).Token;
-        if (!_imageUploadRepo.GetAll().Any())
+        if (!(await _imageUploadRepo.GetAllAsync(context.CancellationToken)).Any())
             await InitImageUploadRepo(cancellationToken);
         else
             await ReIndexImageUploadRepo(cancellationToken);
@@ -67,7 +67,7 @@ public class IndexImageUploadRepoJob : IJob
                 continue;
             }
 
-            _imageUploadRepo.Add(new ImageUploadModel
+            await _imageUploadRepo.AddAsync(new ImageUploadModel
             {
                 FileName = fileNameWithoutExtension,
                 TakenAtUtc = takenAtUtc.Value,
@@ -78,7 +78,7 @@ public class IndexImageUploadRepoJob : IJob
                 ThumbnailWebPImageUrl = await thumbnailWebPImage.ExistsAsync(cancellationToken)
                     ? thumbnailWebPImage.Uri.ToString()
                     : null
-            });
+            }, cancellationToken);
             _logger.LogInformation($"Added ImageUpload entry for filename {fileNameWithoutExtension}");
             await _repos.SaveChangesAsync(cancellationToken);
         }
@@ -93,7 +93,7 @@ public class IndexImageUploadRepoJob : IJob
         _logger.LogInformation("Re-indexing ImageUpload db.");
         var stopwatch = new Stopwatch();
         stopwatch.Start();
-        foreach (var imageIndex in _imageUploadRepo.GetAll())
+        foreach (var imageIndex in await _imageUploadRepo.GetAllAsync(cancellationToken))
         {
             var fullSizeImageExist = await _azureStorageService.ExistsAsync(GlobalConstants.ImagesContainerName,
                 imageIndex.FileName + ".jpg", cancellationToken);
@@ -108,7 +108,7 @@ public class IndexImageUploadRepoJob : IJob
             {
                 _logger.LogInformation(
                     $"Found no images in Azure Storage for {imageIndex.FileName}. Deleting entry");
-                _imageUploadRepo.Remove(imageIndex);
+                await _imageUploadRepo.RemoveAsync(imageIndex, cancellationToken);
                 await _repos.SaveChangesAsync(cancellationToken);
                 return;
             }

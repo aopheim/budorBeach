@@ -37,10 +37,11 @@ namespace rpiDaemon.Init
                     recognitions.Add(new SpeciesRecognitionModel
                     {
                         Confidence = new Random().NextDouble(),
-                        EnglishName = "SomeEnglishName",
-                        LatinName = "SomeLatinName",
+                        EnglishName = "Great Tit",
+                        LatinName = "Parus major",
+                        EBirdTaxonomyId = "gretit1",
                         RecordingId = Guid.NewGuid(),
-                        RecognizedAtUtc = DateTime.UtcNow
+                        RecognizedAtUtc = DateTime.UtcNow,
                     });
 
                 foreach (var recognitionModel in recognitions) context.SpeciesRecognitions.Add(recognitionModel);
