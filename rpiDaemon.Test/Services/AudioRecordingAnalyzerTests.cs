@@ -60,7 +60,7 @@ namespace rpiDaemon.Test.Services
             await TestSubject.RunAnalyzer(default);
 
             Get<IFileSystemService>().Received(4).DeleteFile(Arg.Any<string>());
-            Get<IRepositories>().SpeciesRecognitions.Received(0).AddRange(Arg.Any<IEnumerable<SpeciesRecognitionModel>>());
+            Get<IRepositories>().SpeciesRecognitions.Received(0).AddRangeAsync(Arg.Any<IEnumerable<SpeciesRecognitionModel>>(), default);
         }
 
         [Test]
@@ -149,7 +149,7 @@ namespace rpiDaemon.Test.Services
 
             await TestSubject.RunAnalyzer(default);
 
-            Get<IRepositories>().SpeciesRecognitions.Received(1).AddRange(Arg.Any<IEnumerable<SpeciesRecognitionModel>>());
+            Get<IRepositories>().SpeciesRecognitions.Received(1).AddRangeAsync(Arg.Any<IEnumerable<SpeciesRecognitionModel>>(), default);
             var calls = Get<IRepositories>().SpeciesRecognitions.ReceivedCalls();
             var arg = calls.Single(c => c.GetMethodInfo().Name == nameof(ISpeciesRecognitionRepo.AddRangeAsync))
                 .GetArguments().First();
