@@ -219,7 +219,38 @@ namespace rpiDaemon.Test.Services
             await TestSubject.RunAnalyzer(default);
 
             var calls = Get<IRepositories>().SpeciesRecognitions.ReceivedCalls();
-            var arg = calls.Where(c => c.GetMethodInfo().Name == nameof(ISpeciesRecognitionRepo.AddRangeAsync)).Should()
+            calls.Where(c => c.GetMethodInfo().Name == nameof(ISpeciesRecognitionRepo.AddRangeAsync)).Should()
+                .HaveCount(0);
+        }
+
+        [Test]
+        public async Task IfRecognizedSpeciesIsHiddenSpecies_DoNotAddRecognition()
+        {
+            SetupMocking();
+            Get<IBirdNetResultConverter>().ConvertJson(Arg.Any<string>()).ReturnsForAnyArgs(new BirdNetOutputDto
+            {
+                Message = "success",
+                Results = new List<ClassificationResultDto>
+                {
+                    new()
+                    {
+                        Confidence = MinConfidenceLevel + 0.01,
+                        EnglishName = "HiddenSpecies",
+                        LatinName = "HiddenSpecies"
+                    }
+                }
+            });
+            Get<ISpeciesNameTranslator>().GetTaxonomyCodeFromLatinAndEnglishName("HiddenSpecies", "HiddenSpecies")
+                .ReturnsForAnyArgs("hiddenSpecies");
+            Get<IRepositories>().HiddenSpecies.GetAllAsync(default).ReturnsForAnyArgs(new List<HiddenSpeciesModel>
+                { new HiddenSpeciesModel { TaxonomySpeciesId = "hiddenSpecies" } });
+
+            await TestSubject.RunAnalyzer(default);
+
+            var calls = Get<IRepositories>().SpeciesRecognitions.ReceivedCalls().ToList();
+            calls.Where(c => c.GetMethodInfo().Name == nameof(ISpeciesRecognitionRepo.AddRangeAsync)).Should()
+                .HaveCount(0);
+            calls.Where(c => c.GetMethodInfo().Name == nameof(ISpeciesRecognitionRepo.AddAsync)).Should()
                 .HaveCount(0);
         }
 

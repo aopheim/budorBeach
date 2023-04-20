@@ -107,5 +107,28 @@ namespace rpiDaemon.Test.Services
                 .Where(c => c.GetMethodInfo().Name == nameof(IAzureStorageService.UploadFileFromPath)).Should()
                 .HaveCount(MaxFilesToUpload);
         }
+
+        [Test]
+        public async Task ShouldNotUploadIfRecordingIsOfHiddenSpecies()
+        {
+            var recordingIdOfHiddenSpecies = Guid.NewGuid();
+            var recordingIdToUpload = Guid.NewGuid();
+            Get<IFileSystemService>().GetFileNamesWithoutExtensionInFolder(Arg.Any<string>())
+                .ReturnsForAnyArgs(new List<string>
+                    { recordingIdOfHiddenSpecies.ToString(), recordingIdToUpload.ToString() });
+            Get<IRepositories>().SpeciesRecognitions.WhereAsync(srm => true, default)
+                .ReturnsForAnyArgs(new List<SpeciesRecognitionModel>
+                {
+                    new SpeciesRecognitionModel { RecordingId = recordingIdToUpload },
+                });
+            Get<IRepositories>().HiddenSpecies.GetAllAsync(default).ReturnsForAnyArgs(new List<HiddenSpeciesModel>
+                { new HiddenSpeciesModel { TaxonomySpeciesId = "hiddenSpeciesId" } });
+
+            await TestSubject.StartUpload(default);
+
+            Get<IAzureStorageService>().ReceivedCalls()
+                .Single(c => c.GetMethodInfo().Name == nameof(IAzureStorageService.UploadFileFromPath))
+                .GetArguments()[2].Should().Be(recordingIdToUpload + ".wav");
+        }
     }
 }
