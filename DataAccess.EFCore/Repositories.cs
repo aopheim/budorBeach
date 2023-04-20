@@ -15,10 +15,12 @@ namespace DataAccess.EFCore
             BirdPresenceRegistrations = new BirdPresenceRepo(context);
             SpeciesRecognitions = new SpeciesRecognitionRepo(context);
             ImageUploads = new ImageUploadRepo(context);
+            HiddenSpecies = new HiddenSpeciesRepo(context);
         }
 
         public ISpeciesRecognitionRepo SpeciesRecognitions { get; }
         public IImageUploadRepo ImageUploads { get; set; }
+        public IHiddenSpeciesRepo HiddenSpecies { get; set; }
         public ISensorReadingRepo SensorReadings { get; }
         public IBirdPresenceRepo BirdPresenceRegistrations { get; }
 

@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Dtos;
 using FluentAssertions;
 using NSubstitute;
-using NSubstitute.ReceivedExtensions;
 using NUnit.Framework;
 using Services;
 using Services.Interfaces;
@@ -50,7 +49,8 @@ namespace rpiDaemon.Test.Services
                     new()
                     {
                         Confidence = 0.1
-                    }, new()
+                    },
+                    new()
                     {
                         Confidence = 0.2
                     }
@@ -60,7 +60,8 @@ namespace rpiDaemon.Test.Services
             await TestSubject.RunAnalyzer(default);
 
             Get<IFileSystemService>().Received(4).DeleteFile(Arg.Any<string>());
-            Get<IRepositories>().SpeciesRecognitions.Received(0).AddRangeAsync(Arg.Any<IEnumerable<SpeciesRecognitionModel>>(), default);
+            Get<IRepositories>().SpeciesRecognitions.Received(0)
+                .AddRangeAsync(Arg.Any<IEnumerable<SpeciesRecognitionModel>>(), default);
         }
 
         [Test]
@@ -134,7 +135,8 @@ namespace rpiDaemon.Test.Services
                     new()
                     {
                         Confidence = MinConfidenceLevel + 0.01,
-                        EnglishName = "ToSave"
+                        EnglishName = "ToSave",
+                        LatinName = "ToSaveLatin"
                     },
                     new()
                     {
@@ -146,14 +148,20 @@ namespace rpiDaemon.Test.Services
                     }
                 }
             });
+            Get<ISpeciesNameTranslator>().GetTaxonomyCodeFromLatinAndEnglishName(Arg.Any<string>(), Arg.Any<string>())
+                .ReturnsForAnyArgs("SpeciesId");
 
             await TestSubject.RunAnalyzer(default);
 
-            Get<IRepositories>().SpeciesRecognitions.Received(1).AddRangeAsync(Arg.Any<IEnumerable<SpeciesRecognitionModel>>(), default);
+            Get<IRepositories>().SpeciesRecognitions.Received(1)
+                .AddRangeAsync(Arg.Any<IEnumerable<SpeciesRecognitionModel>>(), default);
             var calls = Get<IRepositories>().SpeciesRecognitions.ReceivedCalls();
             var arg = calls.Single(c => c.GetMethodInfo().Name == nameof(ISpeciesRecognitionRepo.AddRangeAsync))
                 .GetArguments().First();
-            (arg as List<SpeciesRecognitionModel>).First().EnglishName.Should().Be("ToSave");
+            var savedModel = (arg as List<SpeciesRecognitionModel>).First();
+            savedModel.EnglishName.Should().Be("ToSave");
+            savedModel.LatinName.Should().Be("ToSaveLatin");
+            savedModel.EBirdTaxonomyId.Should().Be("SpeciesId");
         }
 
         [Test]
