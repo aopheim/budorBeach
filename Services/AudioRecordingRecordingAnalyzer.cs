@@ -44,7 +44,7 @@ namespace Services
             _isRunning = false;
         }
 
-        public static double MinConfidenceLevel => 0.7;
+        public static double MinConfidenceLevel => 0.5;
 
         public bool IsRunning()
         {
@@ -88,6 +88,8 @@ namespace Services
                 ? recordingIds.Take(
                     MaxNumberOfFilesToAnalyze)
                 : recordingIds).ToList();
+            var allHiddenSpeciesIds =
+                (await repos.HiddenSpecies.GetAllAsync(cancellationToken)).Select(s => s.TaxonomySpeciesId);
             _logger.LogInformation($"Found {recordingIdsToAnalyze.Count} recordings to analyze");
             foreach (var recordingId in recordingIdsToAnalyze)
             {
@@ -118,7 +120,10 @@ namespace Services
                 }
 
                 var modelsToSave = result.Results.Where(r => r.Confidence >= MinConfidenceLevel).Select(dto =>
-                    new SpeciesRecognitionModel
+                {
+                    var speciesId = _translator.GetTaxonomyCodeFromLatinAndEnglishName(dto.LatinName, dto.EnglishName);
+                    if (allHiddenSpeciesIds.Contains(speciesId)) return null;
+                    return new SpeciesRecognitionModel
                     {
                         Confidence = dto.Confidence,
                         EnglishName = dto.EnglishName,
@@ -126,9 +131,9 @@ namespace Services
                         // Should be save time for the wav file. Fix later...
                         RecognizedAtUtc = DateTime.UtcNow,
                         RecordingId = recordingIdAsGuid,
-                        EBirdTaxonomyId =
-                            _translator.GetTaxonomyCodeFromLatinAndEnglishName(dto.LatinName, dto.EnglishName)
-                    });
+                        EBirdTaxonomyId = speciesId
+                    };
+                }).Where(r => r != null);
 
                 speciesRecognitionsToAddToDb.AddRange(modelsToSave);
             }

@@ -25,6 +25,7 @@ namespace Shared.Interfaces
         IBirdPresenceRepo BirdPresenceRegistrations { get; }
         ISpeciesRecognitionRepo SpeciesRecognitions { get; }
         IImageUploadRepo ImageUploads { get; set; }
+        IHiddenSpeciesRepo HiddenSpecies { get; set; }
         public Task SaveChangesAsync(CancellationToken cancellationToken = default);
     }
 }
