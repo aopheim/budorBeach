@@ -44,7 +44,7 @@ namespace Services
             _isRunning = false;
         }
 
-        public static double MinConfidenceLevel => 0.5;
+        public static double MinConfidenceLevel => 0.7;
 
         public bool IsRunning()
         {
