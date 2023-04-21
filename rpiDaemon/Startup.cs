@@ -60,7 +60,7 @@ public class Startup
                     ? TimeSpan.FromSeconds(2)
                     : GetBme280SensorReadingsJob.ActiveStateTriggerInterval);
             q.AddJobAndTrigger<TakePictureJob>(GlobalConstants.SecondJobs, GlobalConstants.PictureTrigger,
-                _environment.IsDevelopment() ? TimeSpan.FromSeconds(10) : TimeSpan.FromHours(4),
+                _environment.IsDevelopment() ? TimeSpan.FromSeconds(10) : TimeSpan.FromHours(1),
                 DateTime.UtcNow.AddSeconds(10));
             // q.AddJobAndTrigger<TakeVideoJob>(GlobalConstants.SecondJobs, GlobalConstants.VideoRecordingTrigger,
             //     null, DateTime.UtcNow.AddSeconds(20));
