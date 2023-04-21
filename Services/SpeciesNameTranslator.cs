@@ -46,6 +46,7 @@ public class SpeciesNameTranslator : ISpeciesNameTranslator
     public string GetTaxonomyCodeFromLatinAndEnglishName(string latinName, string englishName)
     {
         var dict = GetTaxonomyDictionary();
+        if (dict == null) return null;
         return dict.TryGetValue($"{latinName}_{englishName}", out var speciesId) ? speciesId : null;
     }
 
