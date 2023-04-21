@@ -402,9 +402,22 @@ namespace budorWeb.Services
                         "På grunn av diverse tekniske problemer var dessverre forbindelsen til fuglekassa nede da årets mini-fluesnappere vokste opp og forlot redet. Nå har vi endelig fått en fuglekasse-tekniker på plass for å få fuglekassa på beina, og den er nå oppe og går igjen. Igjen lå bare et ensomt egg som aldri ble klekt. Kanskje det var egget fra Herr Fluesnappers jomfrufødsel? Egget er i hvert fall mye mindre i virkeligheten enn det ser ut som på bildet. Nå er også fuglekassa oppdatert med nytt og bedre kamera. Se så fine bilder det blir nå! Fluesnapper-entusiast-miljøet gleder seg allerede til neste sesong!",
                     ImageUrls = new List<string>
                     {
-
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-8-5/egg.webp",
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2022-8-5/9-31-36.webp"
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2023-4-20/12-31-29.webp"
+                    }
+                },
+                new NewsFeedEntry
+                {
+                    Id = "zc",
+                    Date = new DateTime(2023, 04, 21),
+                    Header = "The return of the fluesnapper",
+                    Body =
+                        "I dag returnerte plutselig fluesnapperne til fuglekassa fra sydenferie. Både herr og fru dukket opp på første visning, og kjenner vi dem rett har de finansieringsbeviset i orden og er klare for å flytte inn på kort varsel",
+                    ImageUrls = new List<string>
+                    {
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2023-4-21/8-16-18.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2023-4-21/8-17-51.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2023-4-21/8-24-54.webp"
                     }
                 }
             }.OrderByDescending(e => e.Date).ToList();
