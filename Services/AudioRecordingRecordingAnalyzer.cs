@@ -128,8 +128,7 @@ namespace Services
                         Confidence = dto.Confidence,
                         EnglishName = dto.EnglishName,
                         LatinName = dto.LatinName,
-                        // Should be save time for the wav file. Fix later...
-                        RecognizedAtUtc = DateTime.UtcNow,
+                        RecognizedAtUtc = fileSystemService.GetFileCreationTimeUtc(filePath),
                         RecordingId = recordingIdAsGuid,
                         EBirdTaxonomyId = speciesId
                     };
