@@ -1,8 +1,10 @@
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using Services.Interfaces;
+using Shared.RpiDaemonSettings;
 
 namespace budorWeb.Pages;
 
@@ -20,8 +22,9 @@ public class Admin : PageModel
         _rpiDaemonSettingsService = rpiDaemonSettingsService;
     }
 
-    public int PictureIntervalInMinutes { get; set; }
-    public double SpeciesRecognitionConfidence { get; set; }
+    [BindProperty] public int PictureIntervalInMinutes { get; set; }
+
+    [BindProperty] public double SpeciesRecognitionConfidence { get; set; }
 
     public async Task OnGetAsync(CancellationToken cancellationToken)
     {
@@ -38,5 +41,25 @@ public class Admin : PageModel
     public async Task OnPostMigrateRecognitions(CancellationToken cancellationToken)
     {
         await _migrationService.MigrateSpeciesRecognitionsToIncludeEBirdTaxonomyId(cancellationToken);
+    }
+
+    public async Task OnPostSetRpiDaemonSettings(CancellationToken cancellationToken)
+    {
+        var settings = new RpiDaemonSettings
+        {
+            SpeciesRecognitionConfidence = SpeciesRecognitionConfidence,
+            PictureIntervalInMinutes = PictureIntervalInMinutes
+        };
+        if (!SettingsAreValid(settings)) return;
+        await _rpiDaemonSettingsService.SetRpiDaemonSettings(settings, cancellationToken);
+    }
+
+    private static bool SettingsAreValid(RpiDaemonSettings settings)
+    {
+        if (settings.SpeciesRecognitionConfidence is <= 0 or > 1)
+            return false;
+        if (settings.PictureIntervalInMinutes <= 0)
+            return false;
+        return true;
     }
 }
