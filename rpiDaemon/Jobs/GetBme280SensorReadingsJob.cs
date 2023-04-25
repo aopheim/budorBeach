@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Quartz;
+using Services.Interfaces;
 using Shared.Models;
 using Shared.SignalR;
 
@@ -29,15 +30,17 @@ namespace rpiDaemon.Jobs
         private readonly IWebHostEnvironment _environment;
         private readonly Fixture _fixture;
         private readonly ILogger<GetBme280SensorReadingsJob> _logger;
+        private readonly IQuartzNetService _quartzNetService;
         private readonly ISignalRService _signalRService;
 
         public GetBme280SensorReadingsJob(BudorDbContext context, ILogger<GetBme280SensorReadingsJob> logger,
-            IWebHostEnvironment environment, ISignalRService signalRService)
+            IWebHostEnvironment environment, ISignalRService signalRService, IQuartzNetService quartzNetService)
         {
             _context = context;
             _logger = logger;
             _environment = environment;
             _signalRService = signalRService;
+            _quartzNetService = quartzNetService;
             _fixture = new Fixture();
         }
 
@@ -54,12 +57,12 @@ namespace rpiDaemon.Jobs
             {
                 _logger.LogWarning(
                     $"Failed to read bme280 sensor. Setting trigger interval to {FailedStateTriggerInterval}");
-                SetTriggerToHaveInterval(jobExecutionContext, FailedStateTriggerInterval);
+                _quartzNetService.UpdateTriggerInterval(jobExecutionContext, FailedStateTriggerInterval);
             }
 
             if (sensorReadingModel == null)
                 return;
-            SetTriggerToHaveInterval(jobExecutionContext, ActiveStateTriggerInterval);
+            _quartzNetService.UpdateTriggerInterval(jobExecutionContext, ActiveStateTriggerInterval);
             _logger.LogInformation($"{JsonSerializer.Serialize(sensorReadingModel)}");
 
             var lastDbPushInUtc = _context.SensorReadings.OrderByDescending(m => m.MeasuredAtUtc).FirstOrDefault()
@@ -75,31 +78,6 @@ namespace rpiDaemon.Jobs
             await _signalRService.SendSensorReading(sensorReadingModel, jobExecutionContext.CancellationToken);
             await _signalRService.ConsoleLogMessage($"{JsonSerializer.Serialize(sensorReadingModel)}",
                 jobExecutionContext.CancellationToken);
-        }
-
-        private void SetTriggerToHaveInterval(IJobExecutionContext context, TimeSpan newInterval)
-        {
-            var oldTrigger = context.Trigger;
-            var builder = oldTrigger.GetTriggerBuilder();
-            var nextFireTime = oldTrigger.GetNextFireTimeUtc();
-            if (nextFireTime.HasValue &&
-                DatesAreClose(nextFireTime.Value.UtcDateTime, DateTime.UtcNow.Add(newInterval))) return;
-
-            var firstNewTriggerTime = DateTimeOffset.UtcNow.Add(newInterval);
-            var newTrigger = builder.StartAt(firstNewTriggerTime)
-                .WithSimpleSchedule(s => s.WithInterval(newInterval).RepeatForever())
-                .Build();
-            context.Scheduler.RescheduleJob(oldTrigger.Key, newTrigger);
-        }
-
-        private static bool DatesAreClose(DateTimeOffset original, DateTimeOffset toCompare,
-            TimeSpan errorMargin = default)
-        {
-            if (errorMargin == default)
-                errorMargin = TimeSpan.FromSeconds(5);
-
-            var differenceInSeconds = Math.Abs(original.Subtract(toCompare).Seconds);
-            return +differenceInSeconds < errorMargin.Seconds;
         }
 
         private SensorReadingModel GetCurrentSensorReadings()

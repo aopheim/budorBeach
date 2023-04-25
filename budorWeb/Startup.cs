@@ -67,6 +67,7 @@ namespace budorWeb
             _container.Register<IImageConverter, ImageConverter>();
             _container.Register<IRepositories, Repositories>(Lifestyle.Scoped);
             _container.Register<ISpeciesNameTranslator, SpeciesNameTranslator>();
+            _container.Register<IRpiDaemonSettingsService, RpiDaemonSettingsService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

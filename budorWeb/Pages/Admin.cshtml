@@ -12,3 +12,8 @@
 <form asp-page-handler="migrateRecognitions" method="post">
     <button>Konverter gjenkjenninger til å inkludere EBirdSpeciesId</button>
 </form>
+
+<div>
+    <p>Bilde-intervall i minutter: @Model.PictureIntervalInMinutes</p>
+    <p>Minimum konfidens for arts-gjenkjenning: @Model.SpeciesRecognitionConfidence</p>
+</div>

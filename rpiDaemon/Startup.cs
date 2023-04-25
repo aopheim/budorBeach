@@ -133,6 +133,8 @@ public class Startup
         _container.Register<IPictureService, PictureService>();
         _container.Register<IPictureEditService, PictureEditService>();
         _container.Register<ISpeciesNameTranslator, SpeciesNameTranslator>();
+        _container.Register<IQuartzNetService, QuartzNetService>();
+        _container.Register<IRpiDaemonSettingsService, RpiDaemonSettingsService>();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
