@@ -9,6 +9,7 @@ public static class GlobalConstants
     public const string ImagesContainerName = "images";
     public const string ThumbnailImagesContainerName = "images-thumbnails";
     public const string AudioRecordingsContainerName = "audio-recordings";
+    public const string RpiDaemonSettingsContainerName = "rpidaemon-settings";
 
     public const string DevelopmentUrl = "http://localhost:3000";
     public const string ProductionUrl = "https://budorbeach.no";
@@ -46,6 +47,8 @@ public static class GlobalConstants
     public const string BirdNetAnalyzerPathLinux = @"/home/pi/BirdNET-Analyzer/";
     public const string AudioServiceFolderWindows = @"C:\repos\budorBeach\AudioService";
     public const string BirdNetAnalyzerPathWindows = @"C:\repos\BirdNET-Analyzer";
+    public const string RpiDaemonSettingsFileName = "settings.json";
+
     public const string ProductionDb = "ProductionDb";
     public const string DevelopmentDb = "DevelopmentDb";
     public const string DockerDevelopmentDb = "DockerDevelopmentDb";
