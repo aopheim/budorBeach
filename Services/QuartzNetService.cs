@@ -23,7 +23,7 @@ public class QuartzNetService : IQuartzNetService
             DatesAreClose(nextFireTime.Value.UtcDateTime, DateTime.UtcNow.Add(newInterval)))
         {
             _logger.LogInformation(
-                $"Trying to set new trigger interval for job {context.JobDetail.Key.Name} to {newInterval.Minutes} minutes, but trigger already set. Exiting.");
+                $"Trying to set new trigger interval for job {context.JobDetail.Key.Name} to {newInterval.TotalMinutes} minutes, but trigger already set. Exiting.");
             return;
         }
 
@@ -33,7 +33,7 @@ public class QuartzNetService : IQuartzNetService
             .Build();
         context.Scheduler.RescheduleJob(oldTrigger.Key, newTrigger);
         _logger.LogInformation(
-            $"New trigger interval for job {context.JobDetail.Key.Name} set to {newInterval.Minutes} minutes");
+            $"New trigger interval for job {context.JobDetail.Key.Name} set to {newInterval.TotalMinutes} minutes");
     }
 
     private static bool DatesAreClose(DateTimeOffset original, DateTimeOffset toCompare,
