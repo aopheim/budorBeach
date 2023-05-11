@@ -419,6 +419,18 @@ namespace budorWeb.Services
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2023-4-21/8-17-51.webp",
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2023-4-21/8-24-54.webp"
                     }
+                },
+                new NewsFeedEntry
+                {
+                    Id = "zd",
+                    Date = new DateTime(2023, 05, 11),
+                    Header = "På tide å starte byggearbeidet?",
+                    Body =
+                        "Det har vært helt stille i fuglekassa nå i nesten tre uker, men i dag kom Herr Fluesnapper innom for en rask befaring. Vi håper det betyr at redebyggingen kan begynne",
+                    ImageUrls = new List<string>
+                    {
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2023-5-11/5-54-34.webp"
+                    }
                 }
             }.OrderByDescending(e => e.Date).ToList();
         }
