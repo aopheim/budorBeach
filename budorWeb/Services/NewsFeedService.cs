@@ -431,6 +431,24 @@ namespace budorWeb.Services
                     {
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2023-5-11/5-54-34.webp"
                     }
+                },
+                new NewsFeedEntry
+                {
+                    Id = "ze",
+                    Date = new DateTime(2023, 05, 15),
+                    Header = "Et rede blir til",
+                    Body =
+                        "I løpet av de siste to dagene har det vært hektisk byggeaktivitet i fuglekassa. Det ser ut som det er Fru Fluesnapper som har stått for mesteparten av redebyggingen. Se hvordan utviklingen i byggearbeidet har vært",
+                    ImageUrls = new List<string>
+                    {
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2023-5-13/8-54-34.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2023-5-13/5-54-34.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2023-5-13/9-54-34.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2023-5-13/11-54-34.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2023-5-14/6-54-34.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2023-5-14/7-54-34.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2023-5-16/11-54-34.webp"
+                    },
                 }
             }.OrderByDescending(e => e.Date).ToList();
         }
