@@ -449,6 +449,18 @@ namespace budorWeb.Services
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2023-5-14/7-54-34.webp",
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2023-5-16/11-54-34.webp"
                     },
+                },
+                new NewsFeedEntry
+                {
+                    Id = "zf",
+                    Date = new DateTime(2023, 05, 25),
+                    Header = "Lite aktivitet i det nye redet",
+                    Body =
+                        "Etter byggearbeidet stilnet har det vært lite aktivitet i fuglekassa. Fru Fluesnapper er en sjelden gang innom, men mesteparten av tiden står redet tomt. Vi håper hun ikke velger seg et annet rede",
+                    ImageUrls = new List<string>
+                    {
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2023-5-25/4-54-34.webp"
+                    },
                 }
             }.OrderByDescending(e => e.Date).ToList();
         }
