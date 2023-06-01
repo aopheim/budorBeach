@@ -461,6 +461,24 @@ namespace budorWeb.Services
                     {
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2023-5-25/4-54-34.webp"
                     },
+                },
+                new NewsFeedEntry
+                {
+                    Id = "zg",
+                    Date = new DateTime(2023, 06, 01),
+                    Header = "Fødelsboom i fuglekassa",
+                    Body =
+                        "De siste dagene har Fru Fluesnapper levert ett nytt egg som en klokke. Hver morgen i 6-tiden har hun lagt et nytt egg. Nå har hun lagt seks fine egg, og ligger nå og ruger. I fjor la hun sitt første egg 26.mai, i år kom det 27.mai. Snakk om pålitelig Fluesnapper!",
+                    ImageUrls = new List<string>
+                    {
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2023-5-27/5-54-34.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2023-5-28/5-54-34.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2023-5-29/6-54-34.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2023-5-30/7-54-34.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2023-5-31/7-54-34.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2023-6-1/8-34-54.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2023-6-1/9-34-53.webp"
+                    }
                 }
             }.OrderByDescending(e => e.Date).ToList();
         }
