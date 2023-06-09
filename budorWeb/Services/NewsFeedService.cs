@@ -479,6 +479,18 @@ namespace budorWeb.Services
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2023-6-1/8-34-54.webp",
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2023-6-1/9-34-53.webp"
                     }
+                },
+                new NewsFeedEntry {
+                    Id = "zh",
+                    Date = new DateTime(2023, 06, 09),
+                    Header = "Siste ruge-innspurt?",
+                    Body = "Nå har Fru Fluesnapper ligget og ruget i åtte dager på eggene sine. Det betyr at det er 14 dager siden hun la det første egget. Det må da bety at det snart er tid for klekking? Vi følger spent med",
+                    ImageUrls = new List<string>()
+                    {
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2023-6-9/5-14-9.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2023-6-8/12-14-4.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2023-6-8/8-14-4.webp"
+                    },
                 }
             }.OrderByDescending(e => e.Date).ToList();
         }
