@@ -480,17 +480,34 @@ namespace budorWeb.Services
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2023-6-1/9-34-53.webp"
                     }
                 },
-                new NewsFeedEntry {
+                new NewsFeedEntry
+                {
                     Id = "zh",
                     Date = new DateTime(2023, 06, 09),
                     Header = "Siste ruge-innspurt?",
-                    Body = "Nå har Fru Fluesnapper ligget og ruget i åtte dager på eggene sine. Det betyr at det er 14 dager siden hun la det første egget. Det må da bety at det snart er tid for klekking? Vi følger spent med",
-                    ImageUrls = new List<string>()
+                    Body =
+                        "Nå har Fru Fluesnapper ligget og ruget i åtte dager på eggene sine. Det betyr at det er 14 dager siden hun la det første egget. Det må da bety at det snart er tid for klekking? Vi følger spent med",
+                    ImageUrls = new List<string>
                     {
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2023-6-9/5-14-9.webp",
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2023-6-8/12-14-4.webp",
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2023-6-8/8-14-4.webp"
                     },
+                },
+                new NewsFeedEntry
+                {
+                    Id = "zi",
+                    Date = new DateTime(2023, 06, 15),
+                    Header = "Klekking!",
+                    Body =
+                        "I morgentimene i dag klekket eggene. Det ser ut som Fru Fluesnapper har hakket hull i egget for å hjelpe baby-snapperne, som ser veldig små og hjelpesløse ut. I dag er også første gang Herr Fluesnapper er sett på lang tid. Han har tydeligvis fått meldingen om at hans baby-snappere har kommet til verden",
+                    ImageUrls = new List<string>
+                    {
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2023-6-15/5-21-44.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2023-6-15/4-51-44.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2023-6-15/8-6-44.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2023-6-15/12-36-55.webp"
+                    }
                 }
             }.OrderByDescending(e => e.Date).ToList();
         }
