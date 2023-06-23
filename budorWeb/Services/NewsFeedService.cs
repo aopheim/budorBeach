@@ -505,9 +505,22 @@ namespace budorWeb.Services
                     {
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2023-6-15/5-21-44.webp",
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2023-6-15/4-51-44.webp",
-                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2023-6-15/8-6-44.webp",
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2023-6-15/12-36-55.webp"
                     }
+                },
+                new NewsFeedEntry
+                {
+                    Id = "zj",
+                    Date = new DateTime(2023, 06, 22),
+                    Header = "Hurtigvoksende baby-snappere",
+                    Body =
+                        "Baby-snapperne har vokst fort de siste dagene. De har nå fått seg tydelige nebb, og bittesmå vinger. Det har også vist seg at det er ett egg som ikke er blitt klekket. Fru Fluesnapper snapper nå så mange fluer hun kan for å mette barna sine. ",
+                    ImageUrls = new List<string>()
+                    {
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2023-6-23/6-7-23.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2023-6-23/5-52-23.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2023-6-23/8-7-35.webp"
+                    }, 
                 }
             }.OrderByDescending(e => e.Date).ToList();
         }
