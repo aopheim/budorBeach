@@ -16,5 +16,6 @@ namespace Shared.Models
         [CanBeNull] public string EBirdTaxonomyId { get; set; }
         public DateTime RecognizedAtUtc { get; set; }
         public Guid RecordingId { get; set; }
+        public DateTime? RecordingUploadedAt { get; set; }
     }
 }

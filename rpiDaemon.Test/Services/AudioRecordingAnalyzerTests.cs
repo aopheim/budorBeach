@@ -66,7 +66,7 @@ namespace rpiDaemon.Test.Services
         }
 
         [Test]
-        public async Task IfHumanSpeciesIsDetected_DoNotUploadRecording()
+        public async Task IfHumanSpeciesIsDetected_DoNotSaveRecordingToDb()
         {
             SetupMocking();
             Get<IBirdNetResultConverter>().ConvertJson(Arg.Any<string>()).ReturnsForAnyArgs(new BirdNetOutputDto
