@@ -6,6 +6,7 @@ public static class GlobalConstants
     public const string AppInsightsInstrumentationKey = "AppInsightsInstrumentationKey";
     public const string AzuriteStorageConnectionString = "AzuriteStorageConnectionString";
     public const string AzureStorageConnectionString = "AzureStorageConnectionString";
+    public const string AppConfig = "AppConfig";
     public const string ImagesContainerName = "images";
     public const string ThumbnailImagesContainerName = "images-thumbnails";
     public const string AudioRecordingsContainerName = "audio-recordings";

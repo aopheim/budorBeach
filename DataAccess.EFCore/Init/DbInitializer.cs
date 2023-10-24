@@ -1,16 +1,15 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using DataAccess.EFCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Shared.Models;
 
-namespace rpiDaemon.Init
+namespace DataAccess.EFCore.Init
 {
-    public class DbInitializer
+    public static class DbInitializer
     {
-        public static void Initialize(BudorDbContext context, ILogger<Program> logger)
+        public static void Initialize(BudorDbContext context, ILogger logger)
         {
             context.Database.Migrate();
 

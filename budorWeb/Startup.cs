@@ -47,12 +47,12 @@ namespace budorWeb
             services.AddSignalR();
 
             services.AddLogging(loggingBuilder => loggingBuilder.AddSeq());
-            var connectionString = _hostingEnvironment.IsProduction()
+            var dbConnectionString = _hostingEnvironment.IsProduction()
                 ? Configuration[GlobalConstants.ProductionDb]
                 : Configuration[GlobalConstants.DevelopmentDb];
             services.AddDbContext<BudorDbContext>(options =>
             {
-                options.UseSqlServer(connectionString);
+                options.UseSqlServer(dbConnectionString);
                 options.EnableSensitiveDataLogging();
             });
             if (_hostingEnvironment.IsProduction())
