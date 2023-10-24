@@ -43,6 +43,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <Folder Include="Init\" />
         <Folder Include="Jobs\JobFactories\"/>
     </ItemGroup>
 </Project>

@@ -1,19 +1,40 @@
-using Microsoft.AspNetCore.Hosting;
+using System;
+using budorWeb;
+using DataAccess.EFCore;
+using DataAccess.EFCore.Init;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Shared;
 
-namespace budorWeb
-{
-    public class Program
+var builder = WebApplication.CreateBuilder(args);
+var azureAppConfigConnectionString = builder.Configuration[GlobalConstants.AppConfig];
+builder.Configuration.AddAzureAppConfiguration(azureAppConfigConnectionString);
+
+var startup = new Startup(builder.Configuration, builder.Environment);
+startup.ConfigureServices(builder.Services);
+
+var app = builder.Build();
+if (builder.Environment.IsDevelopment())
+    using (var scope = app.Services.CreateScope())
     {
-        public static void Main(string[] args)
-        {
-            CreateHostBuilder(args).Build().Run();
-        }
+        var serviceProvider = scope.ServiceProvider;
+        var dataBaseContext = serviceProvider.GetRequiredService<BudorDbContext>();
+        var logger = serviceProvider.GetRequiredService<ILogger<Program>>();
 
-        public static IHostBuilder CreateHostBuilder(string[] args)
+        logger.LogInformation("Initializing db for budorWeb if it not exists...");
+        try
         {
-            return Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); });
+            DbInitializer.Initialize(dataBaseContext, logger);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "An error occured when initializing database");
         }
     }
-}
+
+startup.Configure(app, app.Environment);
+
+app.Run();
