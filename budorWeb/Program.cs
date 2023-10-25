@@ -12,6 +12,12 @@ using Shared;
 var builder = WebApplication.CreateBuilder(args);
 var azureAppConfigConnectionString = builder.Configuration[GlobalConstants.AppConfig];
 builder.Configuration.AddAzureAppConfiguration(azureAppConfigConnectionString);
+if(builder.Environment.IsProduction())
+    builder.Logging.AddApplicationInsights(
+        config =>
+            config.ConnectionString = builder.Configuration[GlobalConstants.AppInsightsConnectionString],
+        options => { }
+    );
 
 var startup = new Startup(builder.Configuration, builder.Environment);
 startup.ConfigureServices(builder.Services);

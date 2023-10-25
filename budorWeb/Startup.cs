@@ -55,8 +55,6 @@ namespace budorWeb
                 options.UseSqlServer(dbConnectionString);
                 options.EnableSensitiveDataLogging();
             });
-            if (_hostingEnvironment.IsProduction())
-                services.AddApplicationInsightsTelemetry(Configuration[GlobalConstants.AppInsightsConnectionString]);
         }
 
         private void InitializeContainer()
