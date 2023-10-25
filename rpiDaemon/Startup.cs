@@ -86,12 +86,6 @@ public class Startup
         services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
         services.AddSignalR();
         services.AddLogging(loggingBuilder => loggingBuilder.AddSeq());
-        if (_environment.IsProduction())
-        {
-            var instrumentationKey = Configuration[GlobalConstants.AppInsightsInstrumentationKey];
-            Console.WriteLine($"Set up application insights with instrumentation key {instrumentationKey}");
-            services.AddApplicationInsightsTelemetry(instrumentationKey);
-        }
 
         var secretKey = _environment.IsDevelopment()
             ? RuntimeInformation.IsOSPlatform(OSPlatform.Windows)

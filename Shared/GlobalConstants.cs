@@ -3,7 +3,6 @@
 public static class GlobalConstants
 {
     public const string AppInsightsConnectionString = "AppInsightsConnectionString";
-    public const string AppInsightsInstrumentationKey = "AppInsightsInstrumentationKey";
     public const string AzuriteStorageConnectionString = "AzuriteStorageConnectionString";
     public const string AzureStorageConnectionString = "AzureStorageConnectionString";
     public const string AppConfig = "AppConfig";

@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Shared;
 
 namespace rpiDaemon;
 
@@ -16,7 +17,6 @@ public class Program
         var host = CreateHostBuilder(args)
             .UseSystemd()
             .Build();
-        var logger = host.Services.GetRequiredService<ILogger<Program>>();
         Console.WriteLine(
             $"Starting up! Environment: {Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}");
         CreateDbIfNotExists(host);
@@ -29,8 +29,23 @@ public class Program
         return Host.CreateDefaultBuilder(args)
             .ConfigureWebHostDefaults(webBuilder =>
             {
-                webBuilder.ConfigureAppConfiguration(builder => builder.AddUserSecrets<Startup>());
+                webBuilder.ConfigureAppConfiguration(builder =>
+                {
+                    builder.AddUserSecrets<Startup>();
+                    IConfiguration config = builder.Build();
+                    var appConfigConnectionString = config[GlobalConstants.AppConfig];
+                    builder.AddAzureAppConfiguration(appConfigConnectionString);
+                });
                 webBuilder.UseStartup<Startup>();
+            })
+            .ConfigureLogging((context, builder) =>
+            {
+                if (context.HostingEnvironment.IsProduction())
+                    builder.AddApplicationInsights(
+                        config => config.ConnectionString =
+                            context.Configuration[GlobalConstants.AppInsightsConnectionString],
+                        options => { }
+                    );
             });
     }
 
