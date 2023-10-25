@@ -73,6 +73,8 @@ namespace budorWeb.Pages
 
         public async Task OnGetAsync(CancellationToken cancellationToken)
         {
+            // Adding log to see if App Insights logs it
+            _logger.LogInformation("From OnGetAsync");
             await _signalRService.ConsoleLogMessage(".NET Web Client connected!", cancellationToken);
 
             var latestTime = _context.SensorReadings.Max(s => s.MeasuredAtUtc);
