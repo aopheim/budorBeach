@@ -515,12 +515,57 @@ namespace budorWeb.Services
                     Header = "Hurtigvoksende baby-snappere",
                     Body =
                         "Baby-snapperne har vokst fort de siste dagene. De har nå fått seg tydelige nebb, og bittesmå vinger. Det har også vist seg at det er ett egg som ikke er blitt klekket. Fru Fluesnapper snapper nå så mange fluer hun kan for å mette barna sine. ",
-                    ImageUrls = new List<string>()
+                    ImageUrls = new List<string>
                     {
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2023-6-23/6-7-23.webp",
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2023-6-23/5-52-23.webp",
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2023-6-23/8-7-35.webp"
-                    }, 
+                    },
+                },
+                new NewsFeedEntry
+                {
+                    Id = "zk",
+                    Date = new DateTime(2023, 06, 26),
+                    Header = "Tenåringer i hus",
+                    Body =
+                        "Baby-snapperne har kommet i tenårene, og har nå tydelige vinger og fjærdrakt. Det er også mye mer aktivitet i fuglekassa - det er tydelig at det nok nærmer seg utflytting",
+                    ImageUrls = new List<string>
+                    {
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2023-6-26/5-37-35.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2023-6-26/8-52-35.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2023-6-26/9-7-35.webp"
+                    }
+                },
+                new NewsFeedEntry
+                {
+                    Id = "zl",
+                    Date = new DateTime(2023, 6, 30),
+                    Header = "Klare for å forlate redet",
+                    Body =
+                        "Nå er det like før fluesnapperne forlater redet! De har nå en tydelig fjærdrakt, og ser klare ut for voksenlivet.",
+                    ImageUrls = new List<string>
+                    {
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2023-6-30/9-49-42.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2023-6-30/10-49-42.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2023-6-30/12-19-42.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2023-7-1/7-49-42.webp"
+                    }
+                },
+                new NewsFeedEntry
+                {
+                    Id = "zm",
+                    Date = new DateTime(2023, 7, 1),
+                    Header = "Sees neste år!",
+                    Body =
+                        "I dag forsvant fluesnapperne én etter én. Håper den første flyveturen gikk bra, og at dere kommer tilbake neste år!",
+                    ImageUrls = new List<string>
+                    {
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2023-7-1/3-19-42.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2023-7-1/3-34-42.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2023-7-1/5-19-42.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2023-7-1/6-4-42.webp",
+                        "https://budorbeach.blob.core.windows.net/images-thumbnails/2023-7-1/8-19-42.webp"
+                    }
                 }
             }.OrderByDescending(e => e.Date).ToList();
         }
