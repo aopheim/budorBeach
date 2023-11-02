@@ -3,8 +3,8 @@
 Værstasjon og fuglekassekamera på hytta
 
 # Pre-requisuites to run the daemon on a Raspberry Pi
-
-- Install [yarn](https://yarnpkg.com/) as a package manager
+- Install NodeJS. Debian distributions (compatible with Raspbian) can be found [here](https://deb.nodesource.com/)
+- Install [yarn](https://yarnpkg.com/) as a package manager by enabling corepack in NodeJS: https://yarnpkg.com/getting-started/install
 - Install [docker](https://docs.docker.com/engine/install/debian/)
 
 # Running in Docker
@@ -23,3 +23,5 @@ To setup a pre-commit hook for preventing secrets being committed, [follow this 
 
 - You may need to add the ggshield install location to PATH environment variable. It might on a location like
   `C:\Users\<user-name>\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.10_qbz5n2kfra8p0\LocalCache\local-packages\Python310\Scripts`
+
+
