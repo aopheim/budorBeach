@@ -20,10 +20,12 @@ services:
       # GPIO
       - "/sys/class/gpio:/sys/class/gpio"
     privileged: true
+    platform: linux/arm64
   birdnetserver:
     extends:
       file: docker-compose.yml
       service: birdnetserver
+    platform: linux/arm64
   audiorecorderlinux:
     image: aopheim/audiorecorderlinux:latest
     ports:
@@ -33,3 +35,4 @@ services:
     restart: unless-stopped
     volumes:
       - /home/pi/audioRecordings:/audioRecordings
+    platform: linux/arm64
