@@ -5,6 +5,7 @@
         <UserSecretsId>7a7d43a7-4a55-45c9-b915-7c7aec6d1751</UserSecretsId>
         <EnableDefaultContentItems>false</EnableDefaultContentItems>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
     </PropertyGroup>
 
     <ItemGroup>
