@@ -49,10 +49,8 @@ public class Startup
         });
         services.AddApplicationInsightsTelemetryWorkerService(options =>
         {
-            var connectionString = Configuration[GlobalConstants.AppInsightsConnectionString];
-            Console.WriteLine($"Setting up AppInsights WorkerService with connection string {connectionString}");
             options.ConnectionString =
-                connectionString;
+                Configuration[GlobalConstants.AppInsightsConnectionString];
         });
         InitializeContainer();
 
