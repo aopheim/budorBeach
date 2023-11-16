@@ -12,6 +12,7 @@
         <PackageReference Include="Azure.Storage.Blobs" Version="12.14.1"/>
         <PackageReference Include="Iot.Device.Bindings" Version="2.0.0"/>
         <PackageReference Include="JetBrains.Annotations" Version="2021.1.0"/>
+        <PackageReference Include="Microsoft.ApplicationInsights.WorkerService" Version="2.21.0" />
         <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="5.0.6"/>
         <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="5.0.6"/>
         <PackageReference Include="Microsoft.Azure.AppConfiguration.AspNetCore" Version="6.1.0" />
@@ -21,7 +22,6 @@
         </PackageReference>
         <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.6"/>
         <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="5.0.1"/>
-        <PackageReference Include="Microsoft.Extensions.Logging.ApplicationInsights" Version="2.21.0" />
         <PackageReference Include="Quartz" Version="3.3.3"/>
         <PackageReference Include="Quartz.AspNetCore" Version="3.3.3"/>
         <PackageReference Include="Quartz.Extensions.DependencyInjection" Version="3.3.3"/>

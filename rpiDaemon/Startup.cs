@@ -47,6 +47,13 @@ public class Startup
             options.AddLogging();
             options.AddHostedService<BudorHubPiClient>();
         });
+        services.AddApplicationInsightsTelemetryWorkerService(options =>
+        {
+            var connectionString = Configuration[GlobalConstants.AppInsightsConnectionString];
+            Console.WriteLine($"Setting up AppInsights WorkerService with connection string {connectionString}");
+            options.ConnectionString =
+                connectionString;
+        });
         InitializeContainer();
 
         services.AddQuartz(q =>

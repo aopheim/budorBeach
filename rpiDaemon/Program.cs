@@ -37,16 +37,8 @@ public class Program
                     builder.AddAzureAppConfiguration(appConfigConnectionString);
                 });
                 webBuilder.UseStartup<Startup>();
-            })
-            .ConfigureLogging((context, builder) =>
-            {
-                if (context.HostingEnvironment.IsProduction())
-                    builder.AddApplicationInsights(
-                        config => config.ConnectionString =
-                            context.Configuration[GlobalConstants.AppInsightsConnectionString],
-                        options => { }
-                    );
             });
+
     }
 
     private static void CreateDbIfNotExists(IHost host)
