@@ -51,6 +51,7 @@ public class Startup
         {
             options.ConnectionString =
                 Configuration[GlobalConstants.AppInsightsConnectionString];
+            options.EnableAdaptiveSampling = false;
         });
         InitializeContainer();
 
