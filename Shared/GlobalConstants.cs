@@ -42,9 +42,9 @@ public static class GlobalConstants
     public const string AudioRecordingsFolderLinux = @"/audioRecordings/";
     public const string ImagesFolder = @"/images/";
     public const string AudioRecordingsFolderWindows = @"%APPDATA%/budorBeach/audioRecordings";
-    public const string VideoRecordingsFolderLinux = @"/home/pi/videos/";
-    public const string AudioServiceFolderLinux = @"/home/pi/budorBeach/AudioService/";
-    public const string BirdNetAnalyzerPathLinux = @"/home/pi/BirdNET-Analyzer/";
+    public const string VideoRecordingsFolderLinux = @"/home/budor/videos/";
+    public const string AudioServiceFolderLinux = @"/home/budor/budorBeach/AudioService/";
+    public const string BirdNetAnalyzerPathLinux = @"/home/budor/BirdNET-Analyzer/";
     public const string AudioServiceFolderWindows = @"C:\repos\budorBeach\AudioService";
     public const string BirdNetAnalyzerPathWindows = @"C:\repos\BirdNET-Analyzer";
     public const string RpiDaemonSettingsFileName = "settings.json";
