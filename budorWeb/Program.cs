@@ -7,17 +7,24 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.ApplicationInsights;
 using Shared;
 
 var builder = WebApplication.CreateBuilder(args);
 var azureAppConfigConnectionString = builder.Configuration[GlobalConstants.AppConfig];
 builder.Configuration.AddAzureAppConfiguration(azureAppConfigConnectionString);
-if(builder.Environment.IsProduction())
+if (builder.Environment.IsProduction())
+{
     builder.Logging.AddApplicationInsights(
         config =>
-            config.ConnectionString = builder.Configuration[GlobalConstants.AppInsightsConnectionString],
+        {
+            config.ConnectionString = builder.Configuration[GlobalConstants.AppInsightsConnectionString];
+            config.DisableTelemetry = false;
+        },
         options => { }
     );
+    builder.Logging.AddFilter<ApplicationInsightsLoggerProvider>("Default", LogLevel.Information);
+}
 
 var startup = new Startup(builder.Configuration, builder.Environment);
 startup.ConfigureServices(builder.Services);

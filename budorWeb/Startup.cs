@@ -46,7 +46,9 @@ namespace budorWeb
 
             services.AddSignalR();
 
-            services.AddLogging(loggingBuilder => loggingBuilder.AddSeq());
+            services.AddLogging(loggingBuilder => loggingBuilder.AddApplicationInsights(
+                opt => opt.ConnectionString = Configuration[GlobalConstants.AppInsightsConnectionString],
+                tel => { }).AddSeq());
             var dbConnectionString = _hostingEnvironment.IsProduction()
                 ? Configuration[GlobalConstants.ProductionDb]
                 : Configuration[GlobalConstants.DevelopmentDb];
