@@ -30,15 +30,29 @@ public class Program
             .ConfigureWebHostDefaults(webBuilder =>
             {
                 webBuilder.ConfigureAppConfiguration(builder =>
-                {
-                    builder.AddUserSecrets<Startup>();
-                    IConfiguration config = builder.Build();
-                    var appConfigConnectionString = config[GlobalConstants.AppConfig];
-                    builder.AddAzureAppConfiguration(appConfigConnectionString);
-                });
+                    {
+                        builder.AddUserSecrets<Startup>();
+                        IConfiguration config = builder.Build();
+                        var appConfigConnectionString = config[GlobalConstants.AppConfig];
+                        builder.AddAzureAppConfiguration(appConfigConnectionString);
+                    })
+                    .ConfigureLogging((context, builder) =>
+                    {
+                        if (context.HostingEnvironment.IsProduction())
+                            builder.AddApplicationInsights(
+                                config =>
+                                {
+                                    var configConnectionString =
+                                        context.Configuration[GlobalConstants.AppInsightsConnectionString];
+                                    config.ConnectionString =
+                                        configConnectionString;
+                                },
+                                options => { }
+                            );
+                    });
+                ;
                 webBuilder.UseStartup<Startup>();
             });
-
     }
 
     private static void CreateDbIfNotExists(IHost host)
