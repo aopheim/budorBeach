@@ -41,10 +41,10 @@ namespace rpiDaemon.Jobs
             var sunset = solarTimes.Sunset;
 
             var isDayLightPeriod = now > sunrise && now < sunset;
-            if (!isDayLightPeriod)
-                _logger.LogInformation("Currently dark outside. Not taking image.");
-            if (isDayLightPeriod)
+            if (isDayLightPeriod || (rpiDaemonSettings?.TakeImagesInTheDark ?? false))
                 await _pictureService.TakeImageAndUploadAsync(new PiCameraSettings(), context.CancellationToken);
+            else
+                _logger.LogInformation("Currently dark outside. Not taking image.");
         }
     }
 }

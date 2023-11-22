@@ -23,14 +23,15 @@ public class Admin : PageModel
     }
 
     [BindProperty] public int PictureIntervalInMinutes { get; set; }
-
     [BindProperty] public double SpeciesRecognitionConfidence { get; set; }
+    [BindProperty] public bool TakeImagesInTheDark { get; set; }
 
     public async Task OnGetAsync(CancellationToken cancellationToken)
     {
         var settings = await _rpiDaemonSettingsService.GetRpiDaemonSettings(cancellationToken);
         PictureIntervalInMinutes = settings.PictureIntervalInMinutes;
         SpeciesRecognitionConfidence = settings.SpeciesRecognitionConfidence;
+        TakeImagesInTheDark = settings.TakeImagesInTheDark;
     }
 
     public void OnPostConvertImages(CancellationToken cancellationToken)
@@ -48,9 +49,14 @@ public class Admin : PageModel
         var settings = new RpiDaemonSettings
         {
             SpeciesRecognitionConfidence = SpeciesRecognitionConfidence,
-            PictureIntervalInMinutes = PictureIntervalInMinutes
+            PictureIntervalInMinutes = PictureIntervalInMinutes,
+            TakeImagesInTheDark = TakeImagesInTheDark
         };
-        if (!SettingsAreValid(settings)) return;
+        if (!SettingsAreValid(settings))
+        {
+            _logger.LogWarning("Tried to set invalid RpiDaemon settings. Not saving.");
+            return;
+        }
         await _rpiDaemonSettingsService.SetRpiDaemonSettings(settings, cancellationToken);
     }
 
