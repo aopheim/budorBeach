@@ -11,6 +11,7 @@ services:
       - /home/budor/audioRecordings:/audioRecordings
       - /home/budor/images:/images
       - /opt/vc:/opt/vc
+      - /opt/vc/lib:/opt/vc/lib
     depends_on:
       # - birdnetserver
       - audiorecorderlinux
