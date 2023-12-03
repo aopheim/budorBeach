@@ -33,7 +33,6 @@ services:
       - 4000
     devices:
       - /dev/snd:/dev/snd
-      - /usr/share/alsa/alsa.conf:/usr/share/alsa/alsa.conf
     restart: unless-stopped
     volumes:
       - /home/budor/audioRecordings:/audioRecordings
