@@ -33,7 +33,6 @@ services:
       - 4000
     devices:
       - /dev/snd:/dev/snd
-      - /etc/alsa:/etc/alsa
       - /usr/share/alsa:/usr/share/alsa
     restart: unless-stopped
     volumes:
