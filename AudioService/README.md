@@ -1,1 +1,3 @@
 - recordAudioLinux.py bruker pyAudio. Dette kjører på Python 3.7, 3.8 og 3.9.
+- For debuggin av lydopptak, kjør alsamixer. Litt info ligger i denne tråden: https://stackoverflow.com/questions/31073667/getting-ioerror-errno-invalid-number-of-channels-9998-when-using-mic-with-py
+- For å sette USB-lydkortet som default: https://www.raspberrypi-spy.co.uk/2019/06/using-a-usb-audio-device-with-the-raspberry-pi/ Dette må også gjøres i Docker-containeren! (Er nå satt opp i Dockerfilen til AudioService (kopiering av alsa.conf over til Docker-imaget)

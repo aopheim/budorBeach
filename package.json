@@ -9,6 +9,7 @@
     "docker:compose:pull": "sudo docker compose -f docker-compose.prod.yml pull",
     "docker:compose:stop": "sudo docker compose stop && sudo docker container stop budorbeach-audiorecorderlinux-1",
     "docker:remove:containers": "sudo docker rm $(sudo docker ps -aq)",
-    "docker:pull:rpidaemon": "docker pull aopheim/rpidaemon:latest --platform linux/arm64"
+    "docker:pull:rpidaemon": "docker pull aopheim/rpidaemon:latest --platform linux/arm64",
+    "docker:pull:audiorecorderlinux": "docker pull aopheim/audiorecorderlinux --platform linux/arm64"
   }
 }
