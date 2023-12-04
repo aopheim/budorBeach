@@ -61,6 +61,4 @@ wavefile.setframerate(samp_rate)
 wavefile.writeframes(b''.join(frames))
 wavefile.close()
 
-response.status = 200
-
 

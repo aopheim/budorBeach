@@ -1,3 +1,17 @@
+# Custom classifier
+checkpoints/custom/
+
+# Example output
+example/
+!example/soundscape.wav
+!example/species_list.txt
+
+# Logs
+error_log.txt
+
+# IDE/Editor settings
+.vscode/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -32,6 +46,7 @@ MANIFEST
 #  before PyInstaller builds the exe, so as to inject date/other infos into it.
 *.manifest
 *.spec
+!BirdNET-Analyzer-full.spec
 
 # Installer logs
 pip-log.txt
@@ -127,3 +142,8 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+
+train_data/
+train_cache.npz
+autotune/
