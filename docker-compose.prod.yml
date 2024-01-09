@@ -27,6 +27,8 @@ services:
       file: docker-compose.yml
       service: birdnetserver
     platform: linux/arm64
+    volumes:
+      - /usr/lib/arm-linux-gnueabihf/libffi.so.7:/usr/lib/arm-linux-gnueabihf
   audiorecorderlinux:
     image: aopheim/audiorecorderlinux:latest
     ports:
