@@ -6,6 +6,8 @@ namespace Dtos
         public string? LatinName { get; set; }
         public string? EnglishName { get; set; }
         public string? NorwegianName { get; set; }
+        public double StartTime { get; set; }
+        public double EndTime { get; set; }
         
     }
 }

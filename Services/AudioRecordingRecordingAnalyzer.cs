@@ -93,7 +93,13 @@ namespace Services
             _logger.LogInformation($"Found {recordingIdsToAnalyze.Count} recordings to analyze");
             foreach (var recordingId in recordingIdsToAnalyze)
             {
-                if (!Guid.TryParse(recordingId, out var recordingIdAsGuid)) continue;
+                if (!Guid.TryParse(recordingId, out var recordingIdAsGuid))
+                {
+                    _logger.LogWarning(
+                        $"Found recording with name {recordingId}, which is not parsable to guid. Skipping");
+                    continue;
+                }
+                
                 if (repos.SpeciesRecognitions?.Exists(recordingIdAsGuid) ?? false)
                     continue;
                 var filePath = recordingsFolderName + recordingId + ".wav";
