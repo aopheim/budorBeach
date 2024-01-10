@@ -26,7 +26,7 @@ services:
     extends:
       file: docker-compose.yml
       service: birdnetserver
-    platform: linux/arm32
+    platform: linux/arm
     volumes:
       - /home/budor/audioRecordings:/audioRecordings
   audiorecorderlinux:
