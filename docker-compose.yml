@@ -5,7 +5,7 @@ services:
       - 80
     restart: unless-stopped
   birdnetserver:
-    image: aopheim/birdnetserver:latest
+    image: mmcc73/birdnetserver2.4_arm64:latest
     ports:
       - 8080
     restart: unless-stopped
