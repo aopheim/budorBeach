@@ -25,7 +25,7 @@ def handleRequest():
     try:
         mdata = json.loads(bottle.request.forms.get("meta", {}))
         filePath = mdata["FilePath"]
-        print('Received analyze request: ', mdata)
+        print(f"Received analyze request:\n{mdata}")
         analyzer = Analyzer()
         recording = Recording(
             analyzer,
