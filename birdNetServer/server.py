@@ -23,6 +23,7 @@ def handleRequest():
     # Get request payload
     # Analyze file
     try:
+        print("BirdNetServer received analyze request")
         mdata = json.loads(bottle.request.forms.get("meta", {}))
         filePath = mdata["FilePath"]
         print(f"Received analyze request:\n{mdata}")
@@ -38,16 +39,14 @@ def handleRequest():
         print('Sending recording to analyzer')
         recording.analyze()
         
-        # Parse results
-        if any(recording.detections):
-            
-            # Prepare response
+        if any(recording.detections):            
             data = {"msg": "success", "results": recording.detections }
 
             return json.dumps(data)
 
         else:
-            return json.dumps({"msg": "Error during analysis."})
+            data = {"msg": "success", "results": [] }
+            return json.dumps(data)
 
     except Exception as e:
         # Write error log
