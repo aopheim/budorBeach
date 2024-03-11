@@ -13,7 +13,7 @@ services:
       - /opt/vc:/opt/vc
       - /opt/vc/lib:/opt/vc/lib
     depends_on:
-      # - birdnetserver
+      - birdnetserver
       - audiorecorderlinux
     devices:
       # Camera
@@ -23,9 +23,10 @@ services:
     privileged: true
     platform: linux/arm64
   birdnetserver:
-    extends:
-      file: docker-compose.yml
-      service: birdnetserver
+    image: aopheim/birdnetserver:latest
+    ports:
+      - 8080
+    restart: unless-stopped
     platform: linux/arm64
     volumes:
       - /home/budor/audioRecordings:/audioRecordings

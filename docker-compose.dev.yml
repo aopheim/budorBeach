@@ -19,10 +19,6 @@ services:
       - ACCEPT_EULA=Y
     ports:
       - 1433:1433
-  birdnetserver:
-    extends:
-      file: docker-compose.yml
-      service: birdnetserver
   audiorecorderwindows:
     build:
       context: /AudioService
