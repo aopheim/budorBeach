@@ -2,12 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
-using Shared;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Services.Interfaces;
+using Shared;
 using Shared.Interfaces;
 using SimpleInjector;
 using SimpleInjector.Lifestyles;
@@ -82,7 +82,7 @@ namespace Services
                 var fileName = recording.RecordingId + ".wav";
                 var filePath = recordingsFolderName + fileName;
                 if (!await azureStorageService.ExistsAsync(GlobalConstants.AudioRecordingsContainerName,
-                    fileName, cancellationToken))
+                        fileName, cancellationToken))
                 {
                     _logger.LogInformation($"Uploading recording {recording.RecordingId}.wav...");
                     await azureStorageService.UploadFileFromPath(GlobalConstants.AudioRecordingsContainerName,
@@ -91,6 +91,8 @@ namespace Services
                     recording.RecordingUploadedAt = DateTime.UtcNow;
                     await repos.SpeciesRecognitions.UpdateAsync(recording, cancellationToken);
                 }
+
+                await repos.SaveChangesAsync(cancellationToken);
 
                 _logger.LogInformation($"Deleting local recording {recording}.wav");
                 fileSystemService.DeleteFile(filePath);
