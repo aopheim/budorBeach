@@ -1,4 +1,5 @@
 using System;
+using AutoFixture;
 using NSubstitute;
 using NUnit.Framework;
 using SimpleInjector;
@@ -8,6 +9,7 @@ namespace rpiDaemon.Test
     public abstract class UnitTestBase
     {
         protected Container Container { get; private set; }
+        protected  Fixture Fixture = new Fixture();
         protected Lifestyle DefaultLifestyle { get; set; } = Lifestyle.Singleton;
 
         [SetUp]

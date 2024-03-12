@@ -1,10 +1,12 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Services.Interfaces;
 using Shared;
+using Shared.Interfaces;
 
 namespace Services;
 
@@ -15,13 +17,17 @@ public class MigrationService : IMigrationService
     private readonly IAzureStorageService _azureStorageService;
     private readonly IImageConverter _imageConverter;
     private readonly ILogger<MigrationService> _logger;
+    private readonly IRepositories _repos;
+    private readonly ISpeciesNameTranslator _translator;
 
     public MigrationService(IAzureStorageService azureStorageService, ILogger<MigrationService> logger,
-        IImageConverter imageConverter)
+        IImageConverter imageConverter, IRepositories repos, ISpeciesNameTranslator translator)
     {
         _azureStorageService = azureStorageService;
         _logger = logger;
         _imageConverter = imageConverter;
+        _repos = repos;
+        _translator = translator;
     }
 
 
@@ -67,6 +73,23 @@ public class MigrationService : IMigrationService
         }
 
         _logger.LogInformation("Migration complete!");
+    }
+
+    public async Task MigrateSpeciesRecognitionsToIncludeEBirdTaxonomyId(CancellationToken cancellationToken)
+    {
+        var allRecognitions = (await _repos.SpeciesRecognitions.GetAllAsync(cancellationToken)).ToList();
+        _logger.LogInformation($"Found {allRecognitions.Count} recognitions to migrate");
+        foreach (var recognition in allRecognitions.Where(recognition =>
+                     recognition.EBirdTaxonomyId == null && recognition.LatinName?.Length > 0 &&
+                     recognition.EnglishName?.Length > 0))
+        {
+            recognition.EBirdTaxonomyId =
+                _translator.GetTaxonomyCodeFromLatinAndEnglishName(recognition.LatinName, recognition.EnglishName);
+            await _repos.SpeciesRecognitions.UpdateAsync(recognition, cancellationToken);
+            await _repos.SaveChangesAsync(cancellationToken);
+        }
+
+        _logger.LogInformation("Migration of recognitions finished");
     }
 
     private string GetNewFileName(string existingFileName)

@@ -46,17 +46,17 @@ namespace budorWeb
 
             services.AddSignalR();
 
-            services.AddLogging(loggingBuilder => loggingBuilder.AddSeq());
-            var connectionString = _hostingEnvironment.IsProduction()
+            services.AddLogging(loggingBuilder => loggingBuilder.AddApplicationInsights(
+                opt => opt.ConnectionString = Configuration[GlobalConstants.AppInsightsConnectionString],
+                tel => { }).AddSeq());
+            var dbConnectionString = _hostingEnvironment.IsProduction()
                 ? Configuration[GlobalConstants.ProductionDb]
                 : Configuration[GlobalConstants.DevelopmentDb];
             services.AddDbContext<BudorDbContext>(options =>
             {
-                options.UseSqlServer(connectionString);
+                options.UseSqlServer(dbConnectionString);
                 options.EnableSensitiveDataLogging();
             });
-            if (_hostingEnvironment.IsProduction())
-                services.AddApplicationInsightsTelemetry(Configuration[GlobalConstants.AppInsightsConnectionString]);
         }
 
         private void InitializeContainer()
@@ -66,6 +66,8 @@ namespace budorWeb
             _container.Register<IMigrationService, MigrationService>();
             _container.Register<IImageConverter, ImageConverter>();
             _container.Register<IRepositories, Repositories>(Lifestyle.Scoped);
+            _container.Register<ISpeciesNameTranslator, SpeciesNameTranslator>();
+            _container.Register<IRpiDaemonSettingsService, RpiDaemonSettingsService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

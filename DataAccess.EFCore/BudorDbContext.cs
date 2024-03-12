@@ -14,5 +14,6 @@ namespace DataAccess.EFCore
         public DbSet<BirdPresenceRegistration> BirdPresenceRegistrations { get; set; }
         public DbSet<SpeciesRecognitionModel> SpeciesRecognitions { get; set; }
         public DbSet<ImageUploadModel> ImageUploads { get; set; }
+        public DbSet<HiddenSpeciesModel> HiddenSpecies { get; set; }
     }
 }

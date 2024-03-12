@@ -47,6 +47,12 @@ public class Startup
             options.AddLogging();
             options.AddHostedService<BudorHubPiClient>();
         });
+        services.AddApplicationInsightsTelemetryWorkerService(options =>
+        {
+            options.ConnectionString =
+                Configuration[GlobalConstants.AppInsightsConnectionString];
+            options.EnableAdaptiveSampling = false;
+        });
         InitializeContainer();
 
         services.AddQuartz(q =>
@@ -54,13 +60,13 @@ public class Startup
             q.UseJobFactory<JobFactory>();
             // q.AddJobAndTrigger<IndexImageUploadRepoJob>(GlobalConstants.DailyJobs,
             //     GlobalConstants.IndexImageUploadDbTrigger, TimeSpan.FromHours(24));
-            q.AddJobAndTrigger<GetBme280SensorReadingsJob>(GlobalConstants.SecondJobs,
-                GlobalConstants.Bme280Trigger,
-                _environment.IsDevelopment()
-                    ? TimeSpan.FromSeconds(2)
-                    : GetBme280SensorReadingsJob.ActiveStateTriggerInterval);
+            // q.AddJobAndTrigger<GetBme280SensorReadingsJob>(GlobalConstants.SecondJobs,
+            //     GlobalConstants.Bme280Trigger,
+            //     _environment.IsDevelopment()
+            //         ? TimeSpan.FromSeconds(2)
+            //         : GetBme280SensorReadingsJob.ActiveStateTriggerInterval);
             q.AddJobAndTrigger<TakePictureJob>(GlobalConstants.SecondJobs, GlobalConstants.PictureTrigger,
-                _environment.IsDevelopment() ? TimeSpan.FromSeconds(10) : TimeSpan.FromHours(4),
+                _environment.IsDevelopment() ? TimeSpan.FromSeconds(10) : TimeSpan.FromHours(1),
                 DateTime.UtcNow.AddSeconds(10));
             // q.AddJobAndTrigger<TakeVideoJob>(GlobalConstants.SecondJobs, GlobalConstants.VideoRecordingTrigger,
             //     null, DateTime.UtcNow.AddSeconds(20));
@@ -86,12 +92,6 @@ public class Startup
         services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
         services.AddSignalR();
         services.AddLogging(loggingBuilder => loggingBuilder.AddSeq());
-        if (_environment.IsProduction())
-        {
-            var instrumentationKey = Configuration[GlobalConstants.AppInsightsInstrumentationKey];
-            Console.WriteLine($"Set up application insights with instrumentation key {instrumentationKey}");
-            services.AddApplicationInsightsTelemetry(instrumentationKey);
-        }
 
         var secretKey = _environment.IsDevelopment()
             ? RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
@@ -110,12 +110,12 @@ public class Startup
         _container.RegisterSingleton<IBirdPresenceCalculator, BirdPresenceCalculator>();
         _container.RegisterSingleton<IBirdPresenceRegistrator, BirdPresenceRegistrator>();
         _container.RegisterSingleton<IBirdNetServer, BirdNetServer>();
-        _container.RegisterSingleton<IBirdRecordingAnalyzer, AudioRecordingRecordingAnalyzer>();
         _container.RegisterSingleton<IAudioUploader, AudioUploaderService>();
         _container.RegisterSingleton<IExternalSingletonProcess, ExternalSingletonProcess>();
         _container.Register<IAudioService, AudioService.AudioService>();
         _container.Register<IRepositories, Repositories>(Lifestyle.Scoped);
 
+        _container.Register<IBirdRecordingAnalyzer, AudioRecordingRecordingAnalyzer>();
         _container.Register<CaptureAudioContinuouslyJob>();
         _container.Register<GetBme280SensorReadingsJob>();
         _container.Register<TakePictureJob>();
@@ -132,6 +132,9 @@ public class Startup
         _container.Register<IExternalProcess, ExternalProcess>();
         _container.Register<IPictureService, PictureService>();
         _container.Register<IPictureEditService, PictureEditService>();
+        _container.Register<ISpeciesNameTranslator, SpeciesNameTranslator>();
+        _container.Register<IQuartzNetService, QuartzNetService>();
+        _container.Register<IRpiDaemonSettingsService, RpiDaemonSettingsService>();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Dtos;
 using FluentAssertions;
 using NSubstitute;
-using NSubstitute.ReceivedExtensions;
+using NSubstitute.ReturnsExtensions;
 using NUnit.Framework;
 using Services;
 using Services.Interfaces;
@@ -50,7 +50,8 @@ namespace rpiDaemon.Test.Services
                     new()
                     {
                         Confidence = 0.1
-                    }, new()
+                    },
+                    new()
                     {
                         Confidence = 0.2
                     }
@@ -60,11 +61,12 @@ namespace rpiDaemon.Test.Services
             await TestSubject.RunAnalyzer(default);
 
             Get<IFileSystemService>().Received(4).DeleteFile(Arg.Any<string>());
-            Get<IRepositories>().SpeciesRecognitions.Received(0).AddRange(Arg.Any<IEnumerable<SpeciesRecognitionModel>>());
+            Get<IRepositories>().SpeciesRecognitions.Received(0)
+                .AddRangeAsync(Arg.Any<IEnumerable<SpeciesRecognitionModel>>(), default);
         }
 
         [Test]
-        public async Task IfHumanSpeciesIsDetected_DoNotUploadRecording()
+        public async Task IfHumanSpeciesIsDetected_DoNotSaveRecordingToDb()
         {
             SetupMocking();
             Get<IBirdNetResultConverter>().ConvertJson(Arg.Any<string>()).ReturnsForAnyArgs(new BirdNetOutputDto
@@ -84,10 +86,11 @@ namespace rpiDaemon.Test.Services
             await TestSubject.RunAnalyzer(default);
 
             Get<IFileSystemService>().Received(4).DeleteFile(Arg.Any<string>());
-            Get<IRepositories>().SpeciesRecognitions
-                .AddRange(Arg.Is<List<SpeciesRecognitionModel>>(models => models.Count == 0));
+            await Get<IRepositories>().SpeciesRecognitions
+                .AddRangeAsync(Arg.Is<List<SpeciesRecognitionModel>>(models => models.Count == 0), default);
             var calls = Get<IRepositories>().ReceivedCalls();
-            calls.Where(c => c.GetMethodInfo().Name == nameof(ISpeciesRecognitionRepo.AddRange)).Should().BeEmpty();
+            calls.Where(c => c.GetMethodInfo().Name == nameof(ISpeciesRecognitionRepo.AddRangeAsync)).Should()
+                .BeEmpty();
         }
 
         [Test]
@@ -118,7 +121,7 @@ namespace rpiDaemon.Test.Services
 
             Get<IFileSystemService>().Received(4).DeleteFile(Arg.Any<string>());
             Get<IRepositories>().ReceivedCalls()
-                .Where(c => c.GetMethodInfo().Name == nameof(ISpeciesRecognitionRepo.AddRange)).Should().BeEmpty();
+                .Where(c => c.GetMethodInfo().Name == nameof(ISpeciesRecognitionRepo.AddRangeAsync)).Should().BeEmpty();
         }
 
         [Test]
@@ -133,7 +136,8 @@ namespace rpiDaemon.Test.Services
                     new()
                     {
                         Confidence = MinConfidenceLevel + 0.01,
-                        EnglishName = "ToSave"
+                        EnglishName = "ToSave",
+                        LatinName = "ToSaveLatin"
                     },
                     new()
                     {
@@ -145,14 +149,20 @@ namespace rpiDaemon.Test.Services
                     }
                 }
             });
+            Get<ISpeciesNameTranslator>().GetTaxonomyCodeFromLatinAndEnglishName(Arg.Any<string>(), Arg.Any<string>())
+                .ReturnsForAnyArgs("SpeciesId");
 
             await TestSubject.RunAnalyzer(default);
 
-            Get<IRepositories>().SpeciesRecognitions.Received(1).AddRange(Arg.Any<IEnumerable<SpeciesRecognitionModel>>());
+            Get<IRepositories>().SpeciesRecognitions.Received(1)
+                .AddRangeAsync(Arg.Any<IEnumerable<SpeciesRecognitionModel>>(), default);
             var calls = Get<IRepositories>().SpeciesRecognitions.ReceivedCalls();
-            var arg = calls.Single(c => c.GetMethodInfo().Name == nameof(ISpeciesRecognitionRepo.AddRange))
+            var arg = calls.Single(c => c.GetMethodInfo().Name == nameof(ISpeciesRecognitionRepo.AddRangeAsync))
                 .GetArguments().First();
-            (arg as List<SpeciesRecognitionModel>).First().EnglishName.Should().Be("ToSave");
+            var savedModel = (arg as List<SpeciesRecognitionModel>).First();
+            savedModel.EnglishName.Should().Be("ToSave");
+            savedModel.LatinName.Should().Be("ToSaveLatin");
+            savedModel.EBirdTaxonomyId.Should().Be("SpeciesId");
         }
 
         [Test]
@@ -182,7 +192,7 @@ namespace rpiDaemon.Test.Services
             await TestSubject.RunAnalyzer(default);
 
             var calls = Get<IRepositories>().SpeciesRecognitions.ReceivedCalls();
-            var arg = calls.Single(c => c.GetMethodInfo().Name == nameof(ISpeciesRecognitionRepo.AddRange))
+            var arg = calls.Single(c => c.GetMethodInfo().Name == nameof(ISpeciesRecognitionRepo.AddRangeAsync))
                 .GetArguments().First();
             (arg as List<SpeciesRecognitionModel>).Count.Should().BeLessOrEqualTo(MaxNumberOfFilesToAnalyze);
         }
@@ -210,8 +220,68 @@ namespace rpiDaemon.Test.Services
             await TestSubject.RunAnalyzer(default);
 
             var calls = Get<IRepositories>().SpeciesRecognitions.ReceivedCalls();
-            var arg = calls.Where(c => c.GetMethodInfo().Name == nameof(ISpeciesRecognitionRepo.AddRange)).Should()
+            calls.Where(c => c.GetMethodInfo().Name == nameof(ISpeciesRecognitionRepo.AddRangeAsync)).Should()
                 .HaveCount(0);
+        }
+
+        [Test]
+        public async Task IfRecognizedSpeciesIsHiddenSpecies_DoNotAddRecognition()
+        {
+            SetupMocking();
+            Get<IBirdNetResultConverter>().ConvertJson(Arg.Any<string>()).ReturnsForAnyArgs(new BirdNetOutputDto
+            {
+                Message = "success",
+                Results = new List<ClassificationResultDto>
+                {
+                    new()
+                    {
+                        Confidence = MinConfidenceLevel + 0.01,
+                        EnglishName = "HiddenSpecies",
+                        LatinName = "HiddenSpecies"
+                    }
+                }
+            });
+            Get<ISpeciesNameTranslator>().GetTaxonomyCodeFromLatinAndEnglishName("HiddenSpecies", "HiddenSpecies")
+                .ReturnsForAnyArgs("hiddenSpecies");
+            Get<IRepositories>().HiddenSpecies.GetAllAsync(default).ReturnsForAnyArgs(new List<HiddenSpeciesModel>
+                { new HiddenSpeciesModel { TaxonomySpeciesId = "hiddenSpecies" } });
+
+            await TestSubject.RunAnalyzer(default);
+
+            var calls = Get<IRepositories>().SpeciesRecognitions.ReceivedCalls().ToList();
+            calls.Where(c => c.GetMethodInfo().Name == nameof(ISpeciesRecognitionRepo.AddRangeAsync)).Should()
+                .HaveCount(0);
+            calls.Where(c => c.GetMethodInfo().Name == nameof(ISpeciesRecognitionRepo.AddAsync)).Should()
+                .HaveCount(0);
+        }
+
+        [Test]
+        public async Task ShouldHandleSpeciesIdBeingNull()
+        {
+            SetupMocking();
+            Get<IBirdNetResultConverter>().ConvertJson(Arg.Any<string>()).ReturnsForAnyArgs(new BirdNetOutputDto
+            {
+                Message = "success",
+                Results = new List<ClassificationResultDto>
+                {
+                    new()
+                    {
+                        Confidence = MinConfidenceLevel + 0.01,
+                        EnglishName = "HiddenSpecies",
+                        LatinName = "HiddenSpecies"
+                    }
+                }
+            });
+            Get<ISpeciesNameTranslator>().GetTaxonomyCodeFromLatinAndEnglishName("HiddenSpecies", "HiddenSpecies")
+                .ReturnsNull();
+            Get<IRepositories>().HiddenSpecies.GetAllAsync(default).ReturnsForAnyArgs(new List<HiddenSpeciesModel>
+                { new HiddenSpeciesModel { TaxonomySpeciesId = "hiddenSpecies" } });
+
+            await TestSubject.RunAnalyzer(default);
+
+            var calls = Get<IRepositories>().SpeciesRecognitions.ReceivedCalls().ToList();
+            calls.Where(c => c.GetMethodInfo().Name == nameof(ISpeciesRecognitionRepo.AddRangeAsync)).Should()
+                .HaveCount(1);
         }
 
         private void SetupMocking()

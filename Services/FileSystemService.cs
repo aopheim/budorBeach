@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -36,5 +37,10 @@ public class FileSystemService : IFileSystemService
     public void DeleteDirectory(string path, bool recursive)
     {
         Directory.Delete(path, true);
+    }
+
+    public DateTime GetFileCreationTimeUtc(string fullPath)
+    {
+        return File.GetCreationTimeUtc(fullPath);
     }
 }

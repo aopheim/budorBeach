@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -9,5 +10,6 @@ namespace Services.Interfaces
         void DeleteFile(string path);
         FileStream GetFileStream(string fullPath);
         void DeleteDirectory(string path, bool recursive);
+        DateTime GetFileCreationTimeUtc(string fullPath);
     }
 }

@@ -5,7 +5,6 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Dtos;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Services.Interfaces;
@@ -25,25 +24,27 @@ namespace Services
         private readonly List<string> _englishNamesToExcludeFromUpload =
             new() { "human", "human vocal", "human non-vocal", "human whistle" };
 
-
         private readonly List<string> _latinNamesToExcludeFromUpload =
             new() { "homo sapiens" };
 
         private readonly ILogger<AudioRecordingRecordingAnalyzer> _logger;
+        private readonly ISpeciesNameTranslator _translator;
         private readonly int MaxNumberOfFilesToAnalyze = 15;
         private bool _isRunning;
 
 
         public AudioRecordingRecordingAnalyzer(ILogger<AudioRecordingRecordingAnalyzer> logger,
-            IBirdNetServer birdNetServer, Container container)
+            IBirdNetServer birdNetServer, Container container,
+            ISpeciesNameTranslator translator)
         {
             _logger = logger;
             _birdNetServer = birdNetServer;
             _container = container;
+            _translator = translator;
             _isRunning = false;
         }
 
-        public static double MinConfidenceLevel =>  0.7;
+        public static double MinConfidenceLevel => 0.7;
 
         public bool IsRunning()
         {
@@ -87,6 +88,8 @@ namespace Services
                 ? recordingIds.Take(
                     MaxNumberOfFilesToAnalyze)
                 : recordingIds).ToList();
+            var allHiddenSpeciesIds =
+                (await repos.HiddenSpecies.GetAllAsync(cancellationToken)).Select(s => s.TaxonomySpeciesId);
             _logger.LogInformation($"Found {recordingIdsToAnalyze.Count} recordings to analyze");
             foreach (var recordingId in recordingIdsToAnalyze)
             {
@@ -117,22 +120,26 @@ namespace Services
                 }
 
                 var modelsToSave = result.Results.Where(r => r.Confidence >= MinConfidenceLevel).Select(dto =>
-                    new SpeciesRecognitionModel
+                {
+                    var speciesId = _translator.GetTaxonomyCodeFromLatinAndEnglishName(dto.LatinName, dto.EnglishName);
+                    if (allHiddenSpeciesIds.Contains(speciesId)) return null;
+                    return new SpeciesRecognitionModel
                     {
                         Confidence = dto.Confidence,
                         EnglishName = dto.EnglishName,
                         LatinName = dto.LatinName,
-                        // Should be save time for the wav file. Fix later...
-                        RecognizedAtUtc = DateTime.UtcNow,
-                        RecordingId = recordingIdAsGuid
-                    });
+                        RecognizedAtUtc = fileSystemService.GetFileCreationTimeUtc(filePath),
+                        RecordingId = recordingIdAsGuid,
+                        EBirdTaxonomyId = speciesId
+                    };
+                }).Where(r => r != null);
 
                 speciesRecognitionsToAddToDb.AddRange(modelsToSave);
             }
 
             if (speciesRecognitionsToAddToDb.Any())
             {
-                repos.SpeciesRecognitions?.AddRange(speciesRecognitionsToAddToDb);
+                await repos.SpeciesRecognitions.AddRangeAsync(speciesRecognitionsToAddToDb, cancellationToken);
                 await repos.SaveChangesAsync(cancellationToken);
             }
         }

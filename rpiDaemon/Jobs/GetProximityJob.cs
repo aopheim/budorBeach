@@ -8,8 +8,8 @@ namespace rpiDaemon.Jobs
 {
     public class GetProximityJob : IJob
     {
-        private readonly IBirdPresenceRegistrator _registrator;
         private readonly IProximityService _proximityService;
+        private readonly IBirdPresenceRegistrator _registrator;
 
         public GetProximityJob(IProximityService proximityService, IBirdPresenceRegistrator registrator)
         {
@@ -17,12 +17,10 @@ namespace rpiDaemon.Jobs
             _registrator = registrator;
         }
 
-        public Task Execute(IJobExecutionContext context)
+        public async Task Execute(IJobExecutionContext context)
         {
             var currentDistance = _proximityService.GetDistance(context.CancellationToken);
-            _registrator.ReceiveDistanceUpdate(currentDistance, DateTime.UtcNow);
-
-            return Task.CompletedTask;
+            await _registrator.ReceiveDistanceUpdate(currentDistance, DateTime.UtcNow, context.CancellationToken);
         }
     }
 }

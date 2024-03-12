@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Services.Interfaces;
@@ -33,7 +34,8 @@ namespace Services
 
         public IEnumerable Registrations => _registrations;
 
-        public Task ReceiveDistanceUpdate(double currentDistance, DateTime measuredAt)
+        public async Task ReceiveDistanceUpdate(double currentDistance, DateTime measuredAt, CancellationToken
+            cancellationToken)
         {
             RemoveOutdatedRegistrations();
             var shouldAddRegistrationToQueue = _registrations.Count == 0 || _registrations.First().Item1 < measuredAt;
@@ -47,21 +49,21 @@ namespace Services
             switch (birdIsPresent)
             {
                 case true when !_dbHasOpenPresenceRegistration:
-                    AddBirdPresenceRegistrationToDb(measuredAt, repos);
+                    await AddBirdPresenceRegistrationToDb(measuredAt, repos, cancellationToken);
                     break;
                 case false when !_dbHasOpenPresenceRegistration:
                 case true when _dbHasOpenPresenceRegistration:
-                    return Task.CompletedTask;
+                    return;
                 default:
-                    CloseBirdPresenceRegistrationInDb(measuredAt, repos);
+                    await CloseBirdPresenceRegistrationInDb(measuredAt, repos, cancellationToken);
                     break;
             }
 
-            repos.SaveChangesAsync();
-            return Task.CompletedTask;
+            await repos.SaveChangesAsync(cancellationToken);
         }
 
-        private void AddBirdPresenceRegistrationToDb(DateTime measuredAt, IRepositories repos)
+        private async Task AddBirdPresenceRegistrationToDb(DateTime measuredAt, IRepositories repos,
+            CancellationToken cancellationToken)
         {
             var newReg = new BirdPresenceRegistration
             {
@@ -69,16 +71,17 @@ namespace Services
                 DurationInSeconds = null
             };
 
-            repos.BirdPresenceRegistrations.Add(newReg);
+            await repos.BirdPresenceRegistrations.AddAsync(newReg, cancellationToken);
             _dbHasOpenPresenceRegistration = true;
         }
 
-        private void CloseBirdPresenceRegistrationInDb(DateTime birdDisappearedAt, IRepositories repos)
+        private async Task CloseBirdPresenceRegistrationInDb(DateTime birdDisappearedAt, IRepositories repos,
+            CancellationToken cancellationToken)
         {
             var openRegistration = repos.BirdPresenceRegistrations.GetLatestRegistration();
             openRegistration.DurationInSeconds =
                 (int)Math.Round((birdDisappearedAt - openRegistration.StartedAt).TotalSeconds);
-            repos.BirdPresenceRegistrations.Update(openRegistration);
+            await repos.BirdPresenceRegistrations.UpdateAsync(openRegistration, cancellationToken);
             _dbHasOpenPresenceRegistration = false;
         }
 
@@ -102,6 +105,6 @@ namespace Services
 
     public interface IBirdPresenceRegistrator
     {
-        Task ReceiveDistanceUpdate(double currentDistance, DateTime measuredAt);
+        Task ReceiveDistanceUpdate(double currentDistance, DateTime measuredAt, CancellationToken cancellationToken);
     }
 }

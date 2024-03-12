@@ -83,7 +83,7 @@
 
 <div class="row">
     <div class="col-md-8">
-        <h4>De siste bildene fra fuglekassa</h4>
+        <h3>De siste bildene fra fuglekassa</h3>
 
         @if (!Model?.LatestImages?.Any() ?? true)
         {
@@ -109,30 +109,34 @@
         }
     </div>
     <div class="list-group col-md-4">
-        <h4>
+        <h3>
             De siste gjenkjenningene
             <a tabindex="0" role="button" data-bs-toggle="popover" data-bs-trigger="focus" data-bs-placement="top"
                data-bs-content="I fuglekassa er det også installert en mikrofon. Denne tar kontinuerlig lydopptak som analyseres av kunstig intelligens-nettverket <a href='https://birdnet.cornell.edu/' target='_blank' title='BirdNET'>BirdNET</a>.
 Dette gir en oversikt over hvilke fuglearter som er observert i nærheten. Prosent-andelen angir hvilken konfidens BirdNET har gitt gjenkjenningen. ">
                 <i class="bi bi-info-circle"></i>
             </a>
-        </h4>
-
-        @foreach (var recognition in Model?.LatestSpeciesRecognitions ?? new List<SpeciesRecognitionDto>())
-        {
-            <div class="list-group-item">
-                <div class="row d-flex justify-content-between align-items-center">
-                    <div class="col-sm-4">
-                        <p>
-                            <i class="bi "></i>@DateTimeParser.GetLocalDateTimeAsString(recognition.RecognizedAtUtc)
-                        </p>
-                        <p><i class="bi bi-bar-chart-fill"></i> @Math.Round(recognition.Confidence * 100, 0) %</p>
-                    </div>
-                    <div class="flex-col col-sm-6">
-                        <p>
-                            <i class="bi bi-twitter "></i>@recognition.EnglishSpeciesName
-                        </p>
-                        <p class="fst-italic fw-light">@recognition.LatinSpeciesName</p>
+        </h3>
+        <div class="overflow-auto mt-3" style="height: 70vh;">
+            @foreach (var recognition in Model?.LatestSpeciesRecognitions ?? new List<SpeciesRecognitionDto>())
+            {
+                <div class="row list-group-item">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="col-sm-6">
+                            <p>
+                                <i class="bi "></i>@DateTimeParser.GetLocalDateTimeAsString(recognition.RecognizedAtUtc)
+                            </p>
+                            <p><i class="bi bi-bar-chart-fill"></i> @Math.Round(recognition.Confidence * 100, 0) %</p>
+                        </div>
+                        <div class="col-sm-6">
+                            <p>
+                                <i class="bi bi-twitter"></i>
+                                <a asp-page="species/index/" asp-route-id="@recognition.SpeciesId" style="color: black;">
+                                    @(recognition.NorwegianSpeciesName ?? recognition.EnglishSpeciesName)
+                                </a>
+                            </p>
+                            <p class="fst-italic fw-light">@recognition.LatinSpeciesName</p>
+                        </div>
                     </div>
                     @if (recognition.RecordingUrl != null)
                     {
@@ -143,40 +147,22 @@ Dette gir en oversikt over hvilke fuglearter som er observert i nærheten. Prose
                         </div>
                     }
                 </div>
-            </div>
-        }
+            }
 
-
-    </div>
-</div>
-<div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                Masse tekst!
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
-            </div>
         </div>
+
+
     </div>
 </div>
 <a href="images" class="link-primary">
-    <h2>Til dagens bildegalleri</h2>
+    <h3>Til dagens bildegalleri</h3>
 </a>
 <br/>
 <br/>
 <br/>
-<h2>Siste fuglekassenytt</h2>
+<h3>Siste fuglekassenytt</h3>
 <div class="row">
-    <div class="col-4">
+    <div class="col-4 overflow-auto" style="height: 70vh;">
         <div id="newsfeed" class="list-group">
             @foreach (var entry in NewsFeedService.GetNewsFeedEntries())
             {
@@ -184,7 +170,7 @@ Dette gir en oversikt over hvilke fuglearter som er observert i nærheten. Prose
             }
         </div>
     </div>
-    <div class="col-8">
+    <div class="col-8 overflow-auto" style="height: 70vh;">
         <div data-bs-spy="scroll" data-bs-target="#newsfeed" data-bs-offset="0" tabindex="0" style="max-height: 700px; overflow-x: auto; overflow-y: auto; position: relative;">
             @foreach (var entry in NewsFeedService.GetNewsFeedEntries())
             {

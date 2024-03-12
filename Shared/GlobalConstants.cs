@@ -3,12 +3,13 @@
 public static class GlobalConstants
 {
     public const string AppInsightsConnectionString = "AppInsightsConnectionString";
-    public const string AppInsightsInstrumentationKey = "AppInsightsInstrumentationKey";
     public const string AzuriteStorageConnectionString = "AzuriteStorageConnectionString";
     public const string AzureStorageConnectionString = "AzureStorageConnectionString";
+    public const string AppConfig = "AppConfig";
     public const string ImagesContainerName = "images";
     public const string ThumbnailImagesContainerName = "images-thumbnails";
     public const string AudioRecordingsContainerName = "audio-recordings";
+    public const string RpiDaemonSettingsContainerName = "rpidaemon-settings";
 
     public const string DevelopmentUrl = "http://localhost:3000";
     public const string ProductionUrl = "https://budorbeach.no";
@@ -41,11 +42,13 @@ public static class GlobalConstants
     public const string AudioRecordingsFolderLinux = @"/audioRecordings/";
     public const string ImagesFolder = @"/images/";
     public const string AudioRecordingsFolderWindows = @"%APPDATA%/budorBeach/audioRecordings";
-    public const string VideoRecordingsFolderLinux = @"/home/pi/videos/";
-    public const string AudioServiceFolderLinux = @"/home/pi/budorBeach/AudioService/";
-    public const string BirdNetAnalyzerPathLinux = @"/home/pi/BirdNET-Analyzer/";
+    public const string VideoRecordingsFolderLinux = @"/home/budor/videos/";
+    public const string AudioServiceFolderLinux = @"/home/budor/budorBeach/AudioService/";
+    public const string BirdNetAnalyzerPathLinux = @"/home/budor/BirdNET-Analyzer/";
     public const string AudioServiceFolderWindows = @"C:\repos\budorBeach\AudioService";
     public const string BirdNetAnalyzerPathWindows = @"C:\repos\BirdNET-Analyzer";
+    public const string RpiDaemonSettingsFileName = "settings.json";
+
     public const string ProductionDb = "ProductionDb";
     public const string DevelopmentDb = "DevelopmentDb";
     public const string DockerDevelopmentDb = "DockerDevelopmentDb";

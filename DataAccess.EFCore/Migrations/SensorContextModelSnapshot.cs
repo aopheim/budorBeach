@@ -37,6 +37,16 @@ namespace rpiDaemon.Migrations
                     b.ToTable("BirdPresenceRegistrations");
                 });
 
+            modelBuilder.Entity("Shared.Models.HiddenSpeciesModel", b =>
+                {
+                    b.Property<string>("TaxonomySpeciesId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("TaxonomySpeciesId");
+
+                    b.ToTable("HiddenSpecies");
+                });
+
             modelBuilder.Entity("Shared.Models.ImageUploadModel", b =>
                 {
                     b.Property<string>("FileName")
@@ -96,6 +106,9 @@ namespace rpiDaemon.Migrations
                     b.Property<double>("Confidence")
                         .HasColumnType("float");
 
+                    b.Property<string>("EBirdTaxonomyId")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("EnglishName")
                         .HasColumnType("nvarchar(max)");
 
@@ -107,6 +120,9 @@ namespace rpiDaemon.Migrations
 
                     b.Property<Guid>("RecordingId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("RecordingUploadedAt")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 

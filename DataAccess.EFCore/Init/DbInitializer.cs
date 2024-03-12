@@ -1,16 +1,15 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using DataAccess.EFCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Shared.Models;
 
-namespace rpiDaemon.Init
+namespace DataAccess.EFCore.Init
 {
-    public class DbInitializer
+    public static class DbInitializer
     {
-        public static void Initialize(BudorDbContext context, ILogger<Program> logger)
+        public static void Initialize(BudorDbContext context, ILogger logger)
         {
             context.Database.Migrate();
 
@@ -37,10 +36,11 @@ namespace rpiDaemon.Init
                     recognitions.Add(new SpeciesRecognitionModel
                     {
                         Confidence = new Random().NextDouble(),
-                        EnglishName = "SomeEnglishName",
-                        LatinName = "SomeLatinName",
+                        EnglishName = "Great Tit",
+                        LatinName = "Parus major",
+                        EBirdTaxonomyId = "gretit1",
                         RecordingId = Guid.NewGuid(),
-                        RecognizedAtUtc = DateTime.UtcNow
+                        RecognizedAtUtc = DateTime.UtcNow,
                     });
 
                 foreach (var recognitionModel in recognitions) context.SpeciesRecognitions.Add(recognitionModel);

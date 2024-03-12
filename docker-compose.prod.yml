@@ -7,10 +7,11 @@ services:
       - ASPNETCORE_ENVIRONMENT=Production
       - LD_LIBRARY_PATH=/opt/vc/lib
     volumes:
-      - /home/pi/.microsoft/usersecrets/7a7d43a7-4a55-45c9-b915-7c7aec6d1751:/root/.microsoft/usersecrets/7a7d43a7-4a55-45c9-b915-7c7aec6d1751
-      - /home/pi/audioRecordings:/audioRecordings
-      - /home/pi/images:/images
+      - /home/budor/.microsoft/usersecrets/7a7d43a7-4a55-45c9-b915-7c7aec6d1751:/root/.microsoft/usersecrets/7a7d43a7-4a55-45c9-b915-7c7aec6d1751
+      - /home/budor/audioRecordings:/audioRecordings
+      - /home/budor/images:/images
       - /opt/vc:/opt/vc
+      - /opt/vc/lib:/opt/vc/lib
     depends_on:
       # - birdnetserver
       - audiorecorderlinux
@@ -20,10 +21,12 @@ services:
       # GPIO
       - "/sys/class/gpio:/sys/class/gpio"
     privileged: true
+    platform: linux/arm64
   birdnetserver:
     extends:
       file: docker-compose.yml
       service: birdnetserver
+    platform: linux/arm64
   audiorecorderlinux:
     image: aopheim/audiorecorderlinux:latest
     ports:
@@ -32,4 +35,5 @@ services:
       - /dev/snd:/dev/snd
     restart: unless-stopped
     volumes:
-      - /home/pi/audioRecordings:/audioRecordings
+      - /home/budor/audioRecordings:/audioRecordings
+    platform: linux/arm64

@@ -24,4 +24,8 @@ namespace Shared.Interfaces
         IEnumerable<ImageUploadModel> GetLatestUploads(int numberOfUploads);
         IEnumerable<ImageUploadModel> GetUploadsForDay(DateOnly date);
     }
+
+    public interface IHiddenSpeciesRepo : IRepository<HiddenSpeciesModel>
+    {
+    }
 }

@@ -7,9 +7,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using DataAccess.EFCore;
 using JetBrains.Annotations;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Services.Interfaces;
 using Shared;
@@ -22,17 +24,21 @@ namespace budorWeb.Pages
 {
     public class BudorBeachModel : PageModel
     {
+        private const int NumberOfLatestSpeciesRecognitions = 30;
         private readonly IAzureStorageService _azureStorageService;
         private readonly IConfiguration _config;
         private readonly BudorDbContext _context;
         private readonly PiCameraSettings _currentCameraSettings;
+        private readonly IWebHostEnvironment _environment;
         private readonly ILogger<BudorBeachModel> _logger;
         private readonly IRepositories _repos;
         private readonly ISignalRService _signalRService;
+        private readonly ISpeciesNameTranslator _speciesTranslator;
 
         public BudorBeachModel(ILogger<BudorBeachModel> logger, IConfiguration config, BudorDbContext context,
             ISignalRService signalRService,
-            IRepositories repos, IAzureStorageService azureStorageService)
+            IRepositories repos, IAzureStorageService azureStorageService, IWebHostEnvironment environment,
+            ISpeciesNameTranslator speciesTranslator)
         {
             var stopWatch = new Stopwatch();
             stopWatch.Start();
@@ -41,6 +47,8 @@ namespace budorWeb.Pages
             _signalRService = signalRService;
             _repos = repos;
             _azureStorageService = azureStorageService;
+            _environment = environment;
+            _speciesTranslator = speciesTranslator;
             _logger = logger;
             _config = config;
             _currentCameraSettings = PiCameraSettingsHelper.GetCurrentCameraSettingsFromFile();
@@ -66,6 +74,8 @@ namespace budorWeb.Pages
 
         public async Task OnGetAsync(CancellationToken cancellationToken)
         {
+            // Adding log to see if App Insights logs it
+            _logger.LogInformation("From OnGetAsync");
             await _signalRService.ConsoleLogMessage(".NET Web Client connected!", cancellationToken);
 
             var latestTime = _context.SensorReadings.Max(s => s.MeasuredAtUtc);
@@ -74,7 +84,7 @@ namespace budorWeb.Pages
                     { Name = iu.FileName, ImageUrl = iu.FullSizeImageUrl, ThumbnailUrl = iu.ThumbnailWebPImageUrl })
                 .ToList();
 
-            var latestRecognitions = _repos.SpeciesRecognitions.GetLatestRecognitions(10);
+            var latestRecognitions = _repos.SpeciesRecognitions.GetLatestRecognitions(NumberOfLatestSpeciesRecognitions);
             LatestSpeciesRecognitions = new List<SpeciesRecognitionDto>();
             foreach (var r in latestRecognitions)
             {
@@ -86,11 +96,14 @@ namespace budorWeb.Pages
                 {
                     Confidence = r.Confidence,
                     RecordingUrl = recordingExist
-                        ? @$"https://budorbeach.blob.core.windows.net/{GlobalConstants.AudioRecordingsContainerName}/{fileNameWithExtension}"
+                        ? _environment.IsDevelopment()
+                            ? @$"https://127.0.0.1:10000/devstoreaccount1/{GlobalConstants.AudioRecordingsContainerName}/{fileNameWithExtension}"
+                            : @$"https://budorbeach.blob.core.windows.net/{GlobalConstants.AudioRecordingsContainerName}/{fileNameWithExtension}"
                         : null,
                     LatinSpeciesName = r.LatinName,
-                    NorwegianSpeciesName = "Kråke",
+                    NorwegianSpeciesName = _speciesTranslator.TranslateFromLatinName(r.LatinName),
                     EnglishSpeciesName = r.EnglishName,
+                    SpeciesId = _speciesTranslator.GetTaxonomyCodeFromLatinAndEnglishName(r.LatinName, r.EnglishName),
                     RecognizedAtUtc = r.RecognizedAtUtc,
                     ThumbnailSpeciesImageUrl =
                         "https://upload.wikimedia.org/wikipedia/commons/7/77/Ficedula_hypoleuca_G%C3%B6teborg_2.jpg"
@@ -161,6 +174,7 @@ namespace budorWeb.Pages
         public string LatinSpeciesName { get; set; }
         public string NorwegianSpeciesName { get; set; }
         public string EnglishSpeciesName { get; set; }
+        public string SpeciesId { get; set; }
         public double Confidence { get; set; }
         public string ThumbnailSpeciesImageUrl { get; set; }
         [CanBeNull] public string RecordingUrl { get; set; }
