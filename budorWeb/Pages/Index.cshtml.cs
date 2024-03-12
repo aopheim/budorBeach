@@ -24,6 +24,7 @@ namespace budorWeb.Pages
 {
     public class BudorBeachModel : PageModel
     {
+        private const int NumberOfLatestSpeciesRecognitions = 30;
         private readonly IAzureStorageService _azureStorageService;
         private readonly IConfiguration _config;
         private readonly BudorDbContext _context;
@@ -83,7 +84,7 @@ namespace budorWeb.Pages
                     { Name = iu.FileName, ImageUrl = iu.FullSizeImageUrl, ThumbnailUrl = iu.ThumbnailWebPImageUrl })
                 .ToList();
 
-            var latestRecognitions = _repos.SpeciesRecognitions.GetLatestRecognitions(10);
+            var latestRecognitions = _repos.SpeciesRecognitions.GetLatestRecognitions(NumberOfLatestSpeciesRecognitions);
             LatestSpeciesRecognitions = new List<SpeciesRecognitionDto>();
             foreach (var r in latestRecognitions)
             {
