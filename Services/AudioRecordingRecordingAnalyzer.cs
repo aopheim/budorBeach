@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -93,14 +94,23 @@ namespace Services
             _logger.LogInformation($"Found {recordingIdsToAnalyze.Count} recordings to analyze");
             foreach (var recordingId in recordingIdsToAnalyze)
             {
-                if (!Guid.TryParse(recordingId, out var recordingIdAsGuid)) continue;
+                if (!Guid.TryParse(recordingId, out var recordingIdAsGuid))
+                {
+                    _logger.LogWarning(
+                        $"Found recording with name {recordingId}, which is not parsable to guid. Skipping");
+                    continue;
+                }
+
                 if (repos.SpeciesRecognitions?.Exists(recordingIdAsGuid) ?? false)
                     continue;
                 var filePath = recordingsFolderName + recordingId + ".wav";
+                var stopwatch = new Stopwatch();
+                stopwatch.Start();
                 var response = await
                     _birdNetServer.PostAsync(filePath,
                         cancellationToken);
-                _logger.LogInformation($"Response from server: {response}");
+                stopwatch.Stop();
+                _logger.LogInformation($"Response from server in {stopwatch.ElapsedMilliseconds}ms: {response}");
 
                 var result = resultConverter.ConvertJson(response);
                 if (!result.Results?.Any(r =>
