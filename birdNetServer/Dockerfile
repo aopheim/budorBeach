@@ -1,14 +1,13 @@
-FROM arm32v7/python:3.7-buster
-
-ENV LLVM_CONFIG=/usr/bin/llvm-config-11
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends ffmpeg gcc build-essential cmake libatlas-base-dev clang llvm-11 llvm-11-dev && rm -rf /var/lib/apt/lists/* \  
-    && pip install --upgrade pip \
-    && pip install scipy==1.7.3 numpy==1.21.4 librosa==0.9.1 bottle==0.12.23 tflite==2.10.0 --compile --extra-index-url https://www.piwheels.org/simple --no-cache-dir \
-    && pip install tflite-runtime==2.10.0 --compile --no-cache-dir \
-    && apt-get auto-remove -y \
-    && rm -rf /var/lib/apt/lists/*
-
-# Import all scripts
-COPY . .
-CMD [ "python", "server.py" ]
+FROM arm64v8/python:3.9.18
+RUN apt update && apt upgrade -y && apt install -y \
+    ffmpeg 
+RUN pip install poetry==1.8
+ENV POETRY_NO_INTERACTION=1 \
+    POETRY_VIRTUALENVS_IN_PROJECT=1 \
+    POETRY_VIRTUALENVS_CREATE=1 \
+    POETRY_CACHE_DIR=/tmp/poetry_cache
+WORKDIR /app
+COPY pyproject.toml poetry.lock ./
+RUN poetry install --no-root && rm -rf ${POETRY_CACHE_DIR}
+COPY server.py ./
+CMD [ "poetry", "run", "python", "server.py" ]

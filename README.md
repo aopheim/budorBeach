@@ -7,6 +7,7 @@ Værstasjon og fuglekassekamera på hytta
 - Install NodeJS. Debian distributions (compatible with Raspbian) can be found [here](https://deb.nodesource.com/)
 - Install [yarn](https://yarnpkg.com/) as a package manager by enabling corepack in NodeJS: https://yarnpkg.com/getting-started/install
 - Install [docker](https://docs.docker.com/engine/install/debian/)
+- Copy secrets.json from %AppData%/Microsoft/UserSecrets/7a7d43a7-4a55-45c9-b915-7c7aec6d1751 to /home/budor/.microsoft/usersecrets/7a7d43a7-4a55-45c9-b915-7c7aec6d1751
 
 # Running in Docker
 

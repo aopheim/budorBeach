@@ -1,6 +1,5 @@
 using System;
 using System.Globalization;
-using System.IO;
 using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Text.Json;
@@ -25,9 +24,7 @@ namespace Services
 
         public async Task<string> PostAsync(string filePath, CancellationToken cancellationToken)
         {
-            await using var audioFileAsStream = new FileStream(filePath, FileMode.Open,
-                FileAccess.Read);
-            var form = GetMultipartForm(audioFileAsStream);
+            var form = GetMultipartForm(filePath);
             var birdNetServerUrl = RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
                 ? GlobalConstants.BirdNetServerWindowsUrl
                 : GlobalConstants.BirdNetServerDockerUrl;
@@ -37,17 +34,17 @@ namespace Services
             return await responseMessage.Content.ReadAsStringAsync(cancellationToken);
         }
 
-        private MultipartFormDataContent GetMultipartForm(FileStream audioFileAsStream)
+        private MultipartFormDataContent GetMultipartForm(string filePath)
         {
             var form = new MultipartFormDataContent();
             var dto = new RecordingAnalyzerInputDto
             {
                 Lat = GlobalConstants.BudorLatitude,
-                Long = GlobalConstants.BudorLongitude,
-                Week = ISOWeek.GetWeekOfYear(DateTime.UtcNow)
+                Lon = GlobalConstants.BudorLongitude,
+                Week = ISOWeek.GetWeekOfYear(DateTime.UtcNow),
+                FilePath = filePath
             };
             form.Add(new StringContent(JsonSerializer.Serialize(dto)), "meta");
-            form.Add(new StreamContent(audioFileAsStream), "audio", "recording.wav");
 
             return form;
         }

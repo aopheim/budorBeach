@@ -10,6 +10,7 @@
     "docker:compose:stop": "sudo docker compose stop && sudo docker container stop budorbeach-audiorecorderlinux-1",
     "docker:remove:containers": "sudo docker rm $(sudo docker ps -aq)",
     "docker:pull:rpidaemon": "docker pull aopheim/rpidaemon:latest --platform linux/arm64",
-    "docker:pull:audiorecorderlinux": "docker pull aopheim/audiorecorderlinux --platform linux/arm64"
+    "docker:pull:audiorecorderlinux": "docker pull aopheim/audiorecorderlinux --platform linux/arm64",
+    "docker:pull:birdnetserver": "docker pull aopheim/birdnetserver --platform linux/arm64"
   }
 }
