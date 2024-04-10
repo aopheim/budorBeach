@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "picameraserver"
+version = "0.1.0"
+description = "Docker image for server running picamera2"
+authors = ["Adrian Opheim <adrian.i.opheim@gmail.com>"]
+readme = "README.md"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = ">=3.9, <3.12"
+bottle = "^0.12.25"
+picamera="1.13"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
