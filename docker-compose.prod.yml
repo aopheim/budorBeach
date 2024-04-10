@@ -40,3 +40,9 @@ services:
     volumes:
       - /home/budor/audioRecordings:/audioRecordings
     platform: linux/arm64
+  picameraserver:
+    image: aopheim/picameraserver:latest
+    restart: unless-stopped
+    volumes:
+      - /home/budor/images:/images
+    platform: linux/arm64
