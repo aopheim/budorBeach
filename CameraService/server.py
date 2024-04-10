@@ -1,7 +1,8 @@
 import os
 import bottle
 import json
-from picamera2 import Picamera2
+from picamera import Picamera
+from time import sleep
 
 
 HOST='0.0.0.0'
@@ -21,12 +22,13 @@ def handleRequest():
     try:
         print("Hello from server.py!")
         filename = "test.jpg"
-        picam2 = Picamera2()
-        picam2.start_and_capture_file(filename)
+        camera = Picamera()
+        sleep(2)
+        camera.capture(filename)
+
         return json.dumps(data)
 
     except Exception as e:
-        # Write error log
         print("Error taking image")
         print(e)
         data = {"filename": filename}
