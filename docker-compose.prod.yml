@@ -41,13 +41,14 @@ services:
       - /home/budor/audioRecordings:/audioRecordings
     platform: linux/arm64
   picameraserver:
-    image: aopheim/picameraserver:latest
-    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: Dockerfile
     volumes:
-      - /home/budor/images:/images
-      - /opt/vc:/opt/vc
+      - /run/udev:/run/udev:ro
     environment:
-      - LD_LIBRARY_PATH=/opt/vc/lib
-    platform: linux/arm64
-    devices:
-      - /dev/vchiq
+      - VENV_PATH=/picameraserver
+    ports:
+      - "8000:8000"
+    restart: always
+    privileged: true
