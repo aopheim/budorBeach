@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Logging;
 using Services.Interfaces;
 using Shared;
 using Shared.Interfaces;
@@ -15,39 +16,57 @@ namespace budorWeb.Pages.Species;
 public class Species : PageModel
 {
     private readonly IAzureStorageService _azureStorageService;
+    private readonly ILogger<Species> _logger;
     private readonly IRepositories _repos;
     private readonly ISpeciesNameTranslator _translator;
 
-    public Species(IRepositories repos, ISpeciesNameTranslator translator, IAzureStorageService azureStorageService)
+    public Species(IRepositories repos, ISpeciesNameTranslator translator, IAzureStorageService azureStorageService,
+        ILogger<Species> logger)
     {
         _repos = repos;
         _translator = translator;
         _azureStorageService = azureStorageService;
+        _logger = logger;
     }
 
     public IEnumerable<SpeciesCountDto> AllSpeciesCount { get; set; }
     [CanBeNull] public string SpeciesId { get; set; }
     [CanBeNull] public string NorwegianSpeciesName { get; set; }
     [CanBeNull] public string LatinSpeciesName { get; set; }
+    public DateTime? FromDate { get; set; }
+    public DateTime? ToDate { get; set; }
 
     public IEnumerable<SpeciesRecognitionDto> HighestRecognitionConfidences { get; set; }
 
-    public async Task OnGet([CanBeNull] string id, CancellationToken cancellationToken)
+    public async Task OnGet([CanBeNull] string id, DateTime? fromDate, DateTime? toDate,
+        CancellationToken cancellationToken)
     {
         SpeciesId = id;
         NorwegianSpeciesName = id != null ? _translator.TranslateFromTaxonomyCode(id) : null;
         LatinSpeciesName = id != null ? _translator.GetLatinNameFromTaxonomyCode(id) : null;
-        AllSpeciesCount = SpeciesId == null ? await GetSpeciesCount(cancellationToken) : new List<SpeciesCountDto>();
+        AllSpeciesCount = SpeciesId == null
+            ? await GetSpeciesCount(fromDate, toDate, cancellationToken)
+            : new List<SpeciesCountDto>();
         HighestRecognitionConfidences = SpeciesId != null
             ? await GetRecognitionsWithHighestConfidence(SpeciesId, cancellationToken)
             : new List<SpeciesRecognitionDto>();
+        FromDate = fromDate;
+        ToDate = toDate;
     }
 
-    private async Task<IEnumerable<SpeciesCountDto>> GetSpeciesCount(CancellationToken cancellationToken)
+
+    private async Task<IEnumerable<SpeciesCountDto>> GetSpeciesCount(DateTime? fromDate, DateTime? toDate,
+        CancellationToken cancellationToken)
     {
-        var allSpecies = await _repos.SpeciesRecognitions.GetAllAsync(cancellationToken);
+        var foundRecognitions = new List<SpeciesRecognitionModel>();
+        if (fromDate != null && toDate != null)
+            foundRecognitions =
+                (await _repos.SpeciesRecognitions.WhereAsync(
+                    r => r.RecognizedAtUtc > fromDate && r.RecognizedAtUtc <= toDate,
+                    cancellationToken)).ToList();
+        else foundRecognitions = (await _repos.SpeciesRecognitions.GetAllAsync(cancellationToken)).ToList();
         var dict = new Dictionary<string, List<SpeciesRecognitionModel>>();
-        foreach (var recognition in allSpecies)
+        foreach (var recognition in foundRecognitions)
         {
             if (!dict.ContainsKey(recognition.LatinName))
                 dict[recognition.LatinName] = new List<SpeciesRecognitionModel>();
@@ -60,7 +79,7 @@ public class Species : PageModel
             TotalCount = pair.Value.Count,
             NorwegianName = _translator.TranslateFromLatinName(pair.Key),
             SpeciesId = pair.Value.FirstOrDefault()?.EBirdTaxonomyId ?? ""
-        });
+        }).OrderByDescending(p => p.TotalCount);
     }
 
     private async Task<IEnumerable<SpeciesRecognitionDto>> GetRecognitionsWithHighestConfidence(string speciesId,
@@ -74,7 +93,7 @@ public class Species : PageModel
             RecordingUrl =
                 _azureStorageService.GetBlobUrl(GlobalConstants.AudioRecordingsContainerName, $"{r.RecordingId}.wav"),
             RecognizedAtUtc = r.RecognizedAtUtc
-        }).Take(10);
+        }).Take(50);
     }
 }
 

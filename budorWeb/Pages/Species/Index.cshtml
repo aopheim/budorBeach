@@ -4,7 +4,16 @@
 
 @if (Model.SpeciesId == null)
 {
-    <h1>Alle fuglesang-gjenkjenninger</h1>
+    <button onclick="location.href = '@Url.Page("Index", "OnGet", new { fromDate = DateTime.UtcNow.AddHours(-24), toDate = DateTime.UtcNow })'">Siste 24 timer</button>
+    <button onclick="location.href = '@Url.Page("Index", "OnGet", new { fromDate = DateTime.UtcNow.AddDays(-7), toDate = DateTime.UtcNow })'">Siste 7 dager</button>
+    <button onclick="location.href = '@Url.Page("Index", "OnGet", new { fromDate = DateTime.UtcNow.AddDays(-30), toDate = DateTime.UtcNow })'">Siste 30 dager</button>
+    <button onclick="location.href = '@Url.Page("Index")'">Gjennom tidene</button>
+
+
+    @if (!Model.AllSpeciesCount.Any())
+    {
+        <p>Ingen gjenkjenninger funnet i valgt tidsperiode</p>
+    }
 
     @foreach (var species in Model.AllSpeciesCount)
     {
