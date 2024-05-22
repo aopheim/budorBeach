@@ -120,7 +120,6 @@ public class Startup
         _container.Register<IBirdRecordingAnalyzer, AudioRecordingRecordingAnalyzer>();
         _container.Register<CaptureAudioContinuouslyJob>();
         _container.Register<GetBme280SensorReadingsJob>();
-        _container.Register<TakePictureJob>();
         _container.Register<GetProximityJob>();
         _container.Register<TakeVideoJob>();
         _container.Register<StreamVideoJob>();
