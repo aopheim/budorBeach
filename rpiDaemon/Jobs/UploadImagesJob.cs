@@ -16,7 +16,7 @@ namespace rpiDaemon.Jobs;
 
 public class UploadImagesJob : IJob
 {
-    private const int MaxNumberToUpload = 10;
+    private const int MaxNumberToUpload = 2;
     private readonly IAzureStorageService _azureStorageService;
     private readonly IHostEnvironment _environment;
     private readonly IFileSystemService _fileSystemService;
@@ -60,9 +60,9 @@ public class UploadImagesJob : IJob
         foreach (var filePath in imagesForUpload.Take(MaxNumberToUpload))
         {
             var localFileLocation = Path.Combine(imagesFolder, filePath);
-            await _azureStorageService.UploadFileFromPath(GlobalConstants.ImagesContainerName,
-                $"{localFileLocation}.jpg",
-                $"{filePath}.jpg", context.CancellationToken);
+            await UploadImageToContainerClient(GlobalConstants.ImagesContainerName,
+                $"{filePath}.jpg",
+                $"{localFileLocation}.jpg", context.CancellationToken);
             var compressedImagePath = await _pictureEditService.CompressJpgToWebPFormat($"{localFileLocation}.jpg");
             await UploadImageToContainerClient(GlobalConstants.ThumbnailImagesContainerName,
                 $"{filePath}.webp", compressedImagePath, context.CancellationToken);
