@@ -94,6 +94,9 @@ public class UploadImagesJob : IJob
     private async Task UploadImageToContainerClient(string azureContainerName, string fileNameWithExtension,
         string fullPath, CancellationToken cancellationToken)
     {
+        _logger.LogInformation(
+            "Uploading image to Azure container {ContainerName}. Uploading from path {fullPath}, giving file name {fileName}",
+            azureContainerName, fullPath, fileNameWithExtension);
         await _azureStorageService.UploadFileFromPath(azureContainerName, fullPath, fileNameWithExtension,
             cancellationToken);
         if (fileNameWithExtension.EndsWith(".jpg"))
