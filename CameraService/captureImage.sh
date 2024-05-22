@@ -1,5 +1,5 @@
 #!/bin/bash
-cd ../../images
+cd /home/budor/images
 current_date=$(date +"%Y-%m-%d")
 mkdir -p "${current_date}"
 current_time=$(date +"%H-%M-%S")
