@@ -65,9 +65,11 @@ public class Startup
             //     _environment.IsDevelopment()
             //         ? TimeSpan.FromSeconds(2)
             //         : GetBme280SensorReadingsJob.ActiveStateTriggerInterval);
-            q.AddJobAndTrigger<TakePictureJob>(GlobalConstants.SecondJobs, GlobalConstants.PictureTrigger,
-                _environment.IsDevelopment() ? TimeSpan.FromSeconds(10) : TimeSpan.FromHours(1),
-                DateTime.UtcNow.AddSeconds(10));
+            // q.AddJobAndTrigger<TakePictureJob>(GlobalConstants.SecondJobs, GlobalConstants.PictureTrigger,
+            //     _environment.IsDevelopment() ? TimeSpan.FromSeconds(10) : TimeSpan.FromHours(1),
+            //     DateTime.UtcNow.AddSeconds(10));
+            q.AddJobAndTrigger<UploadImagesJob>(GlobalConstants.SecondJobs, GlobalConstants.UploadImagesTrigger,
+                TimeSpan.FromMinutes(1), DateTime.UtcNow.AddSeconds(10));
             // q.AddJobAndTrigger<TakeVideoJob>(GlobalConstants.SecondJobs, GlobalConstants.VideoRecordingTrigger,
             //     null, DateTime.UtcNow.AddSeconds(20));
             // q.AddJobAndTrigger<StreamVideoJob>(GlobalConstants.SecondJobs, GlobalConstants.StartVideoStreamTrigger,
@@ -123,6 +125,7 @@ public class Startup
         _container.Register<TakeVideoJob>();
         _container.Register<StreamVideoJob>();
         _container.Register<UploadAudioRecordingsJob>();
+        _container.Register<UploadImagesJob>();
         _container.Register<AnalyzeAudioRecordingsJob>();
         _container.Register<StartVideoSurveillanceJob>();
         _container.Register<IndexImageUploadRepoJob>();

@@ -25,13 +25,12 @@ def handleRequest():
         camera = Picamera()
         sleep(2)
         camera.capture(filename)
-
+        data = {"filename": filename}
         return json.dumps(data)
 
     except Exception as e:
         print("Error taking image")
         print(e)
-        data = {"filename": filename}
         return json.dumps(data)
     
 
