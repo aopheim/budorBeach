@@ -13,10 +13,10 @@ namespace Shared.Interfaces
         Task<IEnumerable<T>> WhereAsync(Expression<Func<T, bool>> expression, CancellationToken cancellationToken);
         Task AddAsync(T entity, CancellationToken cancellationToken);
         Task UpdateAsync(T entity, CancellationToken cancellationToken);
-        void UpdateRange(IEnumerable<T> entities, CancellationToken cancellationToken);
+        Task UpdateRange(IEnumerable<T> entities, CancellationToken cancellationToken);
         Task AddRangeAsync(IEnumerable<T> entities, CancellationToken cancellationToken);
         Task RemoveAsync(T entity, CancellationToken cancellationToken);
-        void RemoveRange(IEnumerable<T> entities, CancellationToken cancellationToken);
+        Task RemoveRange(IEnumerable<T> entities, CancellationToken cancellationToken);
     }
 
     public interface IRepositories

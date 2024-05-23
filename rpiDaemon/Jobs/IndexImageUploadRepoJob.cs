@@ -80,7 +80,6 @@ public class IndexImageUploadRepoJob : IJob
                     : null
             }, cancellationToken);
             _logger.LogInformation($"Added ImageUpload entry for filename {fileNameWithoutExtension}");
-            await _repos.SaveChangesAsync(cancellationToken);
         }
 
         stopwatch.Stop();
@@ -109,7 +108,6 @@ public class IndexImageUploadRepoJob : IJob
                 _logger.LogInformation(
                     $"Found no images in Azure Storage for {imageIndex.FileName}. Deleting entry");
                 await _imageUploadRepo.RemoveAsync(imageIndex, cancellationToken);
-                await _repos.SaveChangesAsync(cancellationToken);
                 return;
             }
 

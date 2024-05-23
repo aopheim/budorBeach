@@ -40,3 +40,15 @@ services:
     volumes:
       - /home/budor/audioRecordings:/audioRecordings
     platform: linux/arm64
+  # picameraserver:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   volumes:
+  #     - /run/udev:/run/udev:ro
+  #   environment:
+  #     - VENV_PATH=/picameraserver
+  #   ports:
+  #     - "8000:8000"
+  #   restart: always
+  #   privileged: true

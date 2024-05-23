@@ -10,7 +10,7 @@ services:
       - $APPDATA\budorBeach\audioRecordings:/audioRecordings
     depends_on:
       - dev-db
-      - birdnetserver
+      # - birdnetserver
       - audiorecorderwindows
   dev-db:
     image: mcr.microsoft.com/mssql/server:2019-latest

@@ -50,7 +50,8 @@ def handleRequest():
 
     except Exception as e:
         # Write error log
-        print(f"Error: Cannot analyze file {filePath}. \n{e}", flush=True)
+        print(e)
+        print(f"Error: Cannot analyze file {filePath}. \n", flush=True)
 
         data = {"msg": f"Error during analysis: {e}"}
 
