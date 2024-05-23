@@ -24,6 +24,16 @@ public class FileSystemService : IFileSystemService
         return recordingFileNames.Where(r => r != null);
     }
 
+    public IEnumerable<string> GetFileNamesInFolder(string folderFilePath)
+    {
+        return Directory.GetFiles(folderFilePath).Select(Path.GetFileName).Where(n => true);
+    }
+
+    public IEnumerable<string> GetFolderNamesInFolder(string folderFilePath)
+    {
+        return Directory.GetDirectories(folderFilePath).Select(Path.GetFileName);
+    }
+
     public void DeleteFile(string path)
     {
         File.Delete(path);
@@ -36,7 +46,12 @@ public class FileSystemService : IFileSystemService
 
     public void DeleteDirectory(string path, bool recursive)
     {
-        Directory.Delete(path, true);
+        Directory.Delete(path, recursive);
+    }
+
+    public bool IsDirectoryEmpty(string path)
+    {
+        return !Directory.Exists(path) || !Directory.GetFiles(path).Any();
     }
 
     public DateTime GetFileCreationTimeUtc(string fullPath)

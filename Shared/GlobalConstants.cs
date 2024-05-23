@@ -32,6 +32,7 @@ public static class GlobalConstants
     public const string AudioAnalyzerTrigger = "audioAnalyzerTrigger";
     public const string VideoRecordingTrigger = "videoRecordingTrigger";
     public const string UploadAudioRecordingTrigger = "uploadAudioRecordingTrigger";
+    public const string UploadImagesTrigger = "uploadImagesTrigger";
     public const string StartVideSurveillanceTrigger = "startVideoSurveillanceTrigger";
     public const string StartVideoStreamTrigger = "startVideoStreamTrigger";
     public const string IndexImageUploadDbTrigger = "indexImageUploadDbTrigger";
@@ -42,6 +43,7 @@ public static class GlobalConstants
     public const string AudioRecordingsFolderLinux = @"/audioRecordings/";
     public const string ImagesFolder = @"/images/";
     public const string AudioRecordingsFolderWindows = @"%APPDATA%/budorBeach/audioRecordings";
+    public const string ImagesFolderWindows = @"%APPDATA%/budorBeach/images";
     public const string VideoRecordingsFolderLinux = @"/home/budor/videos/";
     public const string AudioServiceFolderLinux = @"/home/budor/budorBeach/AudioService/";
     public const string BirdNetAnalyzerPathLinux = @"/home/budor/BirdNET-Analyzer/";

@@ -1,9 +1,9 @@
-﻿FROM mcr.microsoft.com/dotnet/aspnet:6.0.25-bullseye-slim-arm64v8 AS base
+﻿FROM mcr.microsoft.com/dotnet/aspnet:8.0.2-bookworm-slim-arm64v8 AS base
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-FROM mcr.microsoft.com/dotnet/sdk:6.0.417-bullseye-slim-arm64v8 AS build
+FROM mcr.microsoft.com/dotnet/sdk:8.0.201-bookworm-slim-arm64v8 AS build
 WORKDIR /src
 COPY ["rpiDaemon/rpiDaemon.csproj", "rpiDaemon/"]
 COPY ["nuget.config", "rpiDaemon/"]
