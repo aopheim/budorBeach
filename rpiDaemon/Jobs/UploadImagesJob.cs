@@ -14,6 +14,7 @@ using Shared.Models;
 
 namespace rpiDaemon.Jobs;
 
+[DisallowConcurrentExecution]
 public class UploadImagesJob : IJob
 {
     private const int MaxNumberToUpload = 2;
@@ -59,13 +60,17 @@ public class UploadImagesJob : IJob
         _logger.LogInformation("Found {Count} files for upload", imagesForUpload.Count());
         foreach (var filePath in imagesForUpload.Take(MaxNumberToUpload))
         {
+            // Seeing weird behavior with Task being cancelled directly after starting upload. Trying to use another CancellationToken...
+            var uploadTimeout = new CancellationTokenSource(TimeSpan.FromSeconds(30));
             var localFileLocation = Path.Combine(imagesFolder, filePath);
             await UploadImageToContainerClient(GlobalConstants.ImagesContainerName,
                 $"{filePath}.jpg",
-                $"{localFileLocation}.jpg", context.CancellationToken);
+                $"{localFileLocation}.jpg", uploadTimeout.Token);
+            _logger.LogInformation($"Uploaded image {localFileLocation}.jpg");
             var compressedImagePath = await _pictureEditService.CompressJpgToWebPFormat($"{localFileLocation}.jpg");
+            _logger.LogInformation($"Saved compressed image at {compressedImagePath}");
             await UploadImageToContainerClient(GlobalConstants.ThumbnailImagesContainerName,
-                $"{filePath}.webp", compressedImagePath, context.CancellationToken);
+                $"{filePath}.webp", compressedImagePath, uploadTimeout.Token);
 
             await _repos.ImageUploads.AddAsync(new ImageUploadModel
             {
@@ -77,7 +82,8 @@ public class UploadImagesJob : IJob
                 ThumbnailWebPImageUrl = _azureStorageService.GetBlobUrl(GlobalConstants.ThumbnailImagesContainerName,
                     $"{filePath}.webp")
             }, context.CancellationToken);
-            _logger.LogInformation("Uploaded image {path}. Deleting it and compressed image", filePath);
+            _logger.LogInformation(
+                "Saved ImageUpload entry {path} to ImageUploads repo. Deleting it and compressed image", filePath);
 
             _fileSystemService.DeleteFile($"{localFileLocation}.jpg");
             _fileSystemService.DeleteFile(compressedImagePath);
