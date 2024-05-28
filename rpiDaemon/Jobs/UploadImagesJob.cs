@@ -57,20 +57,22 @@ public class UploadImagesJob : IJob
             return;
         }
 
-        _logger.LogInformation("Found {Count} files for upload", imagesForUpload.Count());
+        _logger.LogInformation("Found {Count} files for upload. Uploading the first {Max}", imagesForUpload.Count(), MaxNumberToUpload);
         foreach (var filePath in imagesForUpload.Take(MaxNumberToUpload))
         {
             // Seeing weird behavior with Task being cancelled directly after starting upload. Trying to use another CancellationToken...
-            var uploadTimeout = new CancellationTokenSource(TimeSpan.FromSeconds(60));
+            var uploadTimeout = new CancellationTokenSource(TimeSpan.FromSeconds(90));
+            var linkedCToken =
+                CancellationTokenSource.CreateLinkedTokenSource(uploadTimeout.Token, context.CancellationToken);
             var localFileLocation = Path.Combine(imagesFolder, filePath);
             await UploadImageToContainerClient(GlobalConstants.ImagesContainerName,
                 $"{filePath}.jpg",
-                $"{localFileLocation}.jpg", uploadTimeout.Token);
+                $"{localFileLocation}.jpg", linkedCToken.Token);
             _logger.LogInformation($"Uploaded jpg image {localFileLocation}.jpg");
-            var compressedImagePath = await _pictureEditService.CompressJpgToWebPFormat($"{localFileLocation}.jpg");
+            var compressedImagePath = await _pictureEditService.CompressJpgToWebPFormat($"{localFileLocation}.jpg", linkedCToken.Token);
             _logger.LogInformation($"Saved compressed image at {compressedImagePath}");
             await UploadImageToContainerClient(GlobalConstants.ThumbnailImagesContainerName,
-                $"{filePath}.webp", compressedImagePath, uploadTimeout.Token);
+                $"{filePath}.webp", compressedImagePath, linkedCToken.Token);
 
             await _repos.ImageUploads.AddAsync(new ImageUploadModel
             {

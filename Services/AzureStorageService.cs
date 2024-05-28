@@ -16,7 +16,7 @@ namespace Services
 {
     public class AzureStorageService : IAzureStorageService
     {
-        private static readonly TimeSpan UploadTimeOut = TimeSpan.FromSeconds(15);
+        private static readonly TimeSpan UploadTimeOut = TimeSpan.FromSeconds(30);
         private readonly BlobServiceClient _blobServiceClient;
         private readonly CancellationTokenSource _timeOutTokenSource = new CancellationTokenSource(UploadTimeOut);
 
@@ -31,7 +31,7 @@ namespace Services
                         Retry =
                         {
                             MaxRetries = 5, Delay = TimeSpan.FromSeconds(2), Mode = RetryMode.Exponential,
-                            MaxDelay = TimeSpan.FromSeconds(30), NetworkTimeout = TimeSpan.FromMinutes(1)
+                            MaxDelay = TimeSpan.FromSeconds(30), NetworkTimeout = UploadTimeOut
                         }
                     });
         }
@@ -50,7 +50,8 @@ namespace Services
         {
             var blobClient = GetBlobClient(containerName, fileNameWithExtension);
             await using var uploadFileStream = File.OpenRead(filePath);
-            var cTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, _timeOutTokenSource.Token);
+            var cTokenSource =
+                CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, _timeOutTokenSource.Token);
             await blobClient.UploadAsync(uploadFileStream, true, cTokenSource.Token);
             uploadFileStream.Close();
 
