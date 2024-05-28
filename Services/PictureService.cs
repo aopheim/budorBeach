@@ -100,7 +100,7 @@ public class PictureService : IPictureService
         if (fileNameWithExtension.EndsWith(".jpg"))
         {
             var blobClient = _azureStorageService.GetBlobClient(azureContainerName, fileNameWithExtension);
-            await _azureStorageService.SetJpgBlobPropertiesAsync(blobClient);
+            await _azureStorageService.SetJpgBlobPropertiesAsync(blobClient, cancellationToken);
         }
     }
 }
