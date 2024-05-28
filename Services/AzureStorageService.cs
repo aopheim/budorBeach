@@ -3,6 +3,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Azure;
+using Azure.Core;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Microsoft.AspNetCore.Hosting;
@@ -23,8 +24,16 @@ namespace Services
         {
             _blobServiceClient =
                 new BlobServiceClient(environment.IsDevelopment()
-                    ? config[AzuriteStorageConnectionString]
-                    : config[AzureStorageConnectionString]);
+                        ? config[AzuriteStorageConnectionString]
+                        : config[AzureStorageConnectionString],
+                    new BlobClientOptions
+                    {
+                        Retry =
+                        {
+                            MaxRetries = 5, Delay = TimeSpan.FromSeconds(2), Mode = RetryMode.Exponential,
+                            MaxDelay = TimeSpan.FromSeconds(30), NetworkTimeout = TimeSpan.FromMinutes(1)
+                        }
+                    });
         }
 
         private static string AzureStorageConnectionString => GlobalConstants.AzureStorageConnectionString;
@@ -41,8 +50,8 @@ namespace Services
         {
             var blobClient = GetBlobClient(containerName, fileNameWithExtension);
             await using var uploadFileStream = File.OpenRead(filePath);
-            var cToken = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, _timeOutTokenSource.Token);
-            await blobClient.UploadAsync(uploadFileStream, true, cToken.Token);
+            var cTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, _timeOutTokenSource.Token);
+            await blobClient.UploadAsync(uploadFileStream, true, cTokenSource.Token);
             uploadFileStream.Close();
 
             return true;
@@ -63,12 +72,12 @@ namespace Services
             return await blobClient.ExistsAsync(cancellationToken);
         }
 
-        public async Task SetJpgBlobPropertiesAsync(BlobClient blob)
+        public async Task SetJpgBlobPropertiesAsync(BlobClient blob, CancellationToken cancellationToken)
         {
             try
             {
                 // Get the existing properties
-                BlobProperties properties = await blob.GetPropertiesAsync();
+                BlobProperties properties = await blob.GetPropertiesAsync(null, cancellationToken);
 
                 var headers = new BlobHttpHeaders
                 {
@@ -86,7 +95,7 @@ namespace Services
                 };
 
                 // Set the blob's properties.
-                await blob.SetHttpHeadersAsync(headers);
+                await blob.SetHttpHeadersAsync(headers, null, cancellationToken);
             }
             catch (RequestFailedException e)
             {

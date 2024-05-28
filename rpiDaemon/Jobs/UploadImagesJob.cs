@@ -17,7 +17,7 @@ namespace rpiDaemon.Jobs;
 [DisallowConcurrentExecution]
 public class UploadImagesJob : IJob
 {
-    private const int MaxNumberToUpload = 2;
+    private const int MaxNumberToUpload = 6;
     private readonly IAzureStorageService _azureStorageService;
     private readonly IHostEnvironment _environment;
     private readonly IFileSystemService _fileSystemService;
@@ -61,12 +61,12 @@ public class UploadImagesJob : IJob
         foreach (var filePath in imagesForUpload.Take(MaxNumberToUpload))
         {
             // Seeing weird behavior with Task being cancelled directly after starting upload. Trying to use another CancellationToken...
-            var uploadTimeout = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+            var uploadTimeout = new CancellationTokenSource(TimeSpan.FromSeconds(60));
             var localFileLocation = Path.Combine(imagesFolder, filePath);
             await UploadImageToContainerClient(GlobalConstants.ImagesContainerName,
                 $"{filePath}.jpg",
                 $"{localFileLocation}.jpg", uploadTimeout.Token);
-            _logger.LogInformation($"Uploaded image {localFileLocation}.jpg");
+            _logger.LogInformation($"Uploaded jpg image {localFileLocation}.jpg");
             var compressedImagePath = await _pictureEditService.CompressJpgToWebPFormat($"{localFileLocation}.jpg");
             _logger.LogInformation($"Saved compressed image at {compressedImagePath}");
             await UploadImageToContainerClient(GlobalConstants.ThumbnailImagesContainerName,
@@ -108,7 +108,7 @@ public class UploadImagesJob : IJob
         if (fileNameWithExtension.EndsWith(".jpg"))
         {
             var blobClient = _azureStorageService.GetBlobClient(azureContainerName, fileNameWithExtension);
-            await _azureStorageService.SetJpgBlobPropertiesAsync(blobClient);
+            await _azureStorageService.SetJpgBlobPropertiesAsync(blobClient, cancellationToken);
         }
     }
 }
