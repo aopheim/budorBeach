@@ -74,7 +74,7 @@ public class PictureService : IPictureService
                 $"Picture taken at {DateTime.UtcNow}. Camera settings: {JsonSerializer.Serialize(settings)}");
             await UploadImageToContainerClient(GlobalConstants.ImagesContainerName, $"{folderName}/{fileName}.jpg",
                 fullPath, cancellationToken);
-            var compressedImagePath = await _pictureEditService.CompressJpgToWebPFormat(fullPath);
+            var compressedImagePath = await _pictureEditService.CompressJpgToWebPFormat(fullPath, cancellationToken);
             await UploadImageToContainerClient(GlobalConstants.ThumbnailImagesContainerName,
                 $"{folderName}/{fileName}.webp", compressedImagePath, cancellationToken);
             await _repos.ImageUploads.AddAsync(new ImageUploadModel
@@ -100,7 +100,7 @@ public class PictureService : IPictureService
         if (fileNameWithExtension.EndsWith(".jpg"))
         {
             var blobClient = _azureStorageService.GetBlobClient(azureContainerName, fileNameWithExtension);
-            await _azureStorageService.SetJpgBlobPropertiesAsync(blobClient);
+            await _azureStorageService.SetJpgBlobPropertiesAsync(blobClient, cancellationToken);
         }
     }
 }

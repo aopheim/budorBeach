@@ -69,7 +69,7 @@ public class Startup
             //     _environment.IsDevelopment() ? TimeSpan.FromSeconds(10) : TimeSpan.FromHours(1),
             //     DateTime.UtcNow.AddSeconds(10));
             q.AddJobAndTrigger<UploadImagesJob>(GlobalConstants.SecondJobs, GlobalConstants.UploadImagesTrigger,
-                TimeSpan.FromMinutes(1), DateTime.UtcNow.AddSeconds(10));
+                TimeSpan.FromMinutes(2), DateTime.UtcNow.AddSeconds(5));
             // q.AddJobAndTrigger<TakeVideoJob>(GlobalConstants.SecondJobs, GlobalConstants.VideoRecordingTrigger,
             //     null, DateTime.UtcNow.AddSeconds(20));
             // q.AddJobAndTrigger<StreamVideoJob>(GlobalConstants.SecondJobs, GlobalConstants.StartVideoStreamTrigger,
@@ -88,7 +88,7 @@ public class Startup
                 _environment.IsDevelopment() ? DateTime.UtcNow.AddSeconds(15) : DateTime.UtcNow.AddSeconds(60));
             q.AddJobAndTrigger<UploadAudioRecordingsJob>(GlobalConstants.MinuteJobs,
                 GlobalConstants.UploadAudioRecordingTrigger, TimeSpan.FromMinutes(1),
-                DateTime.UtcNow.AddSeconds(10));
+                DateTime.UtcNow.AddSeconds(35));
         });
 
         services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
