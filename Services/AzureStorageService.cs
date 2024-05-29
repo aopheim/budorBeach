@@ -3,8 +3,10 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Azure;
+using Azure.Core;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
+using JetBrains.Annotations;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -15,7 +17,7 @@ namespace Services
 {
     public class AzureStorageService : IAzureStorageService
     {
-        private static readonly TimeSpan UploadTimeOut = TimeSpan.FromSeconds(15);
+        private static readonly TimeSpan UploadTimeOut = TimeSpan.FromSeconds(30);
         private readonly BlobServiceClient _blobServiceClient;
         private readonly CancellationTokenSource _timeOutTokenSource = new CancellationTokenSource(UploadTimeOut);
 
@@ -23,8 +25,16 @@ namespace Services
         {
             _blobServiceClient =
                 new BlobServiceClient(environment.IsDevelopment()
-                    ? config[AzuriteStorageConnectionString]
-                    : config[AzureStorageConnectionString]);
+                        ? config[AzuriteStorageConnectionString]
+                        : config[AzureStorageConnectionString],
+                    new BlobClientOptions
+                    {
+                        Retry =
+                        {
+                            MaxRetries = 5, Delay = TimeSpan.FromSeconds(2), Mode = RetryMode.Exponential,
+                            MaxDelay = TimeSpan.FromSeconds(30), NetworkTimeout = UploadTimeOut
+                        }
+                    });
         }
 
         private static string AzureStorageConnectionString => GlobalConstants.AzureStorageConnectionString;
@@ -41,8 +51,9 @@ namespace Services
         {
             var blobClient = GetBlobClient(containerName, fileNameWithExtension);
             await using var uploadFileStream = File.OpenRead(filePath);
-            var cToken = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, _timeOutTokenSource.Token);
-            await blobClient.UploadAsync(uploadFileStream, true, cToken.Token);
+            var cTokenSource =
+                CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, _timeOutTokenSource.Token);
+            await blobClient.UploadAsync(uploadFileStream, true, cTokenSource.Token);
             uploadFileStream.Close();
 
             return true;
@@ -63,12 +74,12 @@ namespace Services
             return await blobClient.ExistsAsync(cancellationToken);
         }
 
-        public async Task SetJpgBlobPropertiesAsync(BlobClient blob)
+        public async Task SetJpgBlobPropertiesAsync(BlobClient blob, CancellationToken cancellationToken)
         {
             try
             {
                 // Get the existing properties
-                BlobProperties properties = await blob.GetPropertiesAsync();
+                BlobProperties properties = await blob.GetPropertiesAsync(null, cancellationToken);
 
                 var headers = new BlobHttpHeaders
                 {
@@ -86,7 +97,7 @@ namespace Services
                 };
 
                 // Set the blob's properties.
-                await blob.SetHttpHeadersAsync(headers);
+                await blob.SetHttpHeadersAsync(headers, null, cancellationToken);
             }
             catch (RequestFailedException e)
             {
@@ -98,7 +109,7 @@ namespace Services
 
         public string GetBlobUrl(string containerName, string fileNameWithExtension)
         {
-            return GetBlobClient(containerName, fileNameWithExtension).Uri.ToString();
+            return GetBlobClient(containerName, fileNameWithExtension)?.Uri?.ToString();
         }
 
         public BlobClient GetBlobClient(string containerName, string fileNameWithExtension)

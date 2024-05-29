@@ -14,15 +14,20 @@ using Shared.Models;
 
 namespace rpiDaemon.Jobs;
 
+[DisallowConcurrentExecution]
 public class UploadImagesJob : IJob
 {
-    private const int MaxNumberToUpload = 2;
+    private const int MaxNumberToUpload = 10;
     private readonly IAzureStorageService _azureStorageService;
     private readonly IHostEnvironment _environment;
     private readonly IFileSystemService _fileSystemService;
     private readonly ILogger<UploadImagesJob> _logger;
     private readonly IPictureEditService _pictureEditService;
     private readonly IRepositories _repos;
+
+    // WebP compression takes incredibly long time (~30 sec when running on Raspberry Pi. Seems like it is an issue when running on ARM64 architecture: https://github.com/SixLabors/ImageSharp/issues/2125 
+    // Currently disabling it
+    private readonly bool CompressToWebPFormat = false;
 
     public UploadImagesJob(IAzureStorageService azureStorageService, IFileSystemService fileSystemService,
         IPictureEditService pictureEditService, ILogger<UploadImagesJob> logger, IHostEnvironment environment,
@@ -56,16 +61,28 @@ public class UploadImagesJob : IJob
             return;
         }
 
-        _logger.LogInformation("Found {Count} files for upload", imagesForUpload.Count());
+        _logger.LogInformation("Found {Count} files for upload. Uploading the first {Max}", imagesForUpload.Count(),
+            MaxNumberToUpload);
         foreach (var filePath in imagesForUpload.Take(MaxNumberToUpload))
         {
+            // Seeing weird behavior with Task being cancelled directly after starting upload. Trying to use another CancellationToken...
+            var uploadTimeout = new CancellationTokenSource(TimeSpan.FromSeconds(60));
+            var linkedCToken =
+                CancellationTokenSource.CreateLinkedTokenSource(uploadTimeout.Token, context.CancellationToken);
             var localFileLocation = Path.Combine(imagesFolder, filePath);
             await UploadImageToContainerClient(GlobalConstants.ImagesContainerName,
                 $"{filePath}.jpg",
-                $"{localFileLocation}.jpg", context.CancellationToken);
-            var compressedImagePath = await _pictureEditService.CompressJpgToWebPFormat($"{localFileLocation}.jpg");
-            await UploadImageToContainerClient(GlobalConstants.ThumbnailImagesContainerName,
-                $"{filePath}.webp", compressedImagePath, context.CancellationToken);
+                $"{localFileLocation}.jpg", linkedCToken.Token);
+            _logger.LogInformation($"Uploaded jpg image {localFileLocation}.jpg");
+            string compressedImagePath = null;
+            if (CompressToWebPFormat)
+            {
+                compressedImagePath =
+                    await _pictureEditService.CompressJpgToWebPFormat($"{localFileLocation}.jpg", linkedCToken.Token);
+                _logger.LogInformation($"Saved compressed image at {compressedImagePath}");
+                await UploadImageToContainerClient(GlobalConstants.ThumbnailImagesContainerName,
+                    $"{filePath}.webp", compressedImagePath, linkedCToken.Token);
+            }
 
             await _repos.ImageUploads.AddAsync(new ImageUploadModel
             {
@@ -74,13 +91,19 @@ public class UploadImagesJob : IJob
                 FullSizeImageUrl = _azureStorageService.GetBlobUrl(GlobalConstants.ImagesContainerName,
                     $"{filePath}.jpg"),
                 ThumbnailJpgImageUrl = null,
-                ThumbnailWebPImageUrl = _azureStorageService.GetBlobUrl(GlobalConstants.ThumbnailImagesContainerName,
-                    $"{filePath}.webp")
+                ThumbnailWebPImageUrl =
+                    await _azureStorageService.ExistsAsync(GlobalConstants.ThumbnailImagesContainerName,
+                        $"{filePath}.webp", linkedCToken.Token)
+                        ? _azureStorageService.GetBlobUrl(GlobalConstants.ThumbnailImagesContainerName,
+                            $"{filePath}.webp")
+                        : null
             }, context.CancellationToken);
-            _logger.LogInformation("Uploaded image {path}. Deleting it and compressed image", filePath);
+            _logger.LogInformation(
+                "Saved ImageUpload entry {path} to ImageUploads repo. Deleting it and compressed image", filePath);
 
             _fileSystemService.DeleteFile($"{localFileLocation}.jpg");
-            _fileSystemService.DeleteFile(compressedImagePath);
+            if (compressedImagePath != null)
+                _fileSystemService.DeleteFile(compressedImagePath);
         }
 
         foreach (var folderName in folderNamesForUpload)
@@ -102,7 +125,7 @@ public class UploadImagesJob : IJob
         if (fileNameWithExtension.EndsWith(".jpg"))
         {
             var blobClient = _azureStorageService.GetBlobClient(azureContainerName, fileNameWithExtension);
-            await _azureStorageService.SetJpgBlobPropertiesAsync(blobClient);
+            await _azureStorageService.SetJpgBlobPropertiesAsync(blobClient, cancellationToken);
         }
     }
 }
