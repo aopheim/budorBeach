@@ -2,6 +2,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Azure.Storage.Blobs;
+using JetBrains.Annotations;
 
 namespace Services.Interfaces
 {
@@ -20,6 +21,8 @@ namespace Services.Interfaces
             CancellationToken cancellationToken);
 
         Task SetJpgBlobPropertiesAsync(BlobClient blob, CancellationToken cancellationToken);
+
+        [CanBeNull]
         string GetBlobUrl(string containerName, string fileNameWithExtension);
     }
 }

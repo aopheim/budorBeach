@@ -6,6 +6,7 @@ using Azure;
 using Azure.Core;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
+using JetBrains.Annotations;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -108,7 +109,7 @@ namespace Services
 
         public string GetBlobUrl(string containerName, string fileNameWithExtension)
         {
-            return GetBlobClient(containerName, fileNameWithExtension).Uri.ToString();
+            return GetBlobClient(containerName, fileNameWithExtension)?.Uri?.ToString();
         }
 
         public BlobClient GetBlobClient(string containerName, string fileNameWithExtension)

@@ -25,9 +25,10 @@ public class PictureEditService : IPictureEditService
         var outputPath = fullInputJpgPath.Replace(".jpg", ".webp");
         await using var input = _fileSystemService.GetFileStream(fullInputJpgPath);
         var image = await Image.LoadAsync(input, cancellationToken);
+        _logger.LogDebug($"Starting compressing to webp image after {sw.ElapsedMilliseconds} ms");
         await image.SaveAsWebpAsync(outputPath, cancellationToken);
         sw.Stop();
-        _logger.LogInformation($"Compressed image {fullInputJpgPath} to webp in {sw.ElapsedMilliseconds} ms");
+        _logger.LogDebug($"Compressed image {fullInputJpgPath} to webp in {sw.ElapsedMilliseconds} ms");
 
         return outputPath;
     }
