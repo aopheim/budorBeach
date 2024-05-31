@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using Shared.Models;
 
 namespace Shared.Interfaces
@@ -17,6 +19,12 @@ namespace Shared.Interfaces
     {
         bool Exists(Guid recordingId);
         IEnumerable<SpeciesRecognitionModel> GetLatestRecognitions(int numberOfResults);
+
+        Task<IEnumerable<SpeciesRecognitionModel>> GetSpeciesRecognitionsUploadedSince(DateTime fromTime,
+            CancellationToken cancellationToken);
+
+        Task<IEnumerable<SpeciesRecognitionModel>> GetUploadedRecognitionsForEBirdSpeciesId(string eBirdTaxonomyId, int maxReturn,
+            CancellationToken cancellationToken);
     }
 
     public interface IImageUploadRepo : IRepository<ImageUploadModel>

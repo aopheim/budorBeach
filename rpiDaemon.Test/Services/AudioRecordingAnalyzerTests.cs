@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Dtos;
 using FluentAssertions;
@@ -11,6 +12,7 @@ using Services;
 using Services.Interfaces;
 using Shared.Interfaces;
 using Shared.Models;
+using Shared.RpiDaemonSettings;
 
 namespace rpiDaemon.Test.Services
 {
@@ -28,12 +30,14 @@ namespace rpiDaemon.Test.Services
             "e70dc45f-090b-4022-9742-20b80df49646"
         };
 
-        private static double MinConfidenceLevel => AudioRecordingRecordingAnalyzer.MinConfidenceLevel;
+        private static double MinConfidenceLevel => 0.7;
 
         [Test]
         public async Task NoRecordingsAboveMinConfidence_ShouldDeleteAudioRecording()
         {
             SetupMocking();
+            Get<IRpiDaemonSettingsService>().GetRpiDaemonSettings(Arg.Any<CancellationToken>())
+                .ReturnsForAnyArgs(new RpiDaemonSettings());
             Get<IBirdNetResultConverter>().ConvertJson(Arg.Any<string>()).ReturnsForAnyArgs(new BirdNetOutputDto
             {
                 Message = "success",
@@ -198,11 +202,11 @@ namespace rpiDaemon.Test.Services
         }
 
         [Test]
-        public async Task IfRecordingIdAlreadyExistsInDb_DoNotAnalyze()
+        public async Task IfRecordingIdAlreadyExistsInDb_DoNotAnalyze_ButDoNotDelete()
         {
             SetupMocking();
             // Overwriting setup
-            Get<IRepositories>().SpeciesRecognitions.Exists(Arg.Any<Guid>()).ReturnsForAnyArgs(true);
+            Get<IRepositories>().SpeciesRecognitions.WhereAsync(r => true, default).ReturnsForAnyArgs(new List<SpeciesRecognitionModel>(){new SpeciesRecognitionModel(){RecordingId = Guid.NewGuid(),RecordingUploadedAt = null}});
 
             Get<IBirdNetResultConverter>().ConvertJson(Arg.Any<string>()).ReturnsForAnyArgs(new BirdNetOutputDto
             {
@@ -222,6 +226,32 @@ namespace rpiDaemon.Test.Services
             var calls = Get<IRepositories>().SpeciesRecognitions.ReceivedCalls();
             calls.Where(c => c.GetMethodInfo().Name == nameof(ISpeciesRecognitionRepo.AddRangeAsync)).Should()
                 .HaveCount(0);
+            Get<IFileSystemService>().ReceivedCalls()
+                .Where(c => c.GetMethodInfo().Name == nameof(IFileSystemService.DeleteFile)).Should().BeEmpty();
+        }
+
+        [Test]
+        public async Task IfRecordingIdAlreadyExistsInDb_AndIsUploaded_DeleteRecording()
+        {
+            SetupMocking();
+            Get<IRepositories>().SpeciesRecognitions.WhereAsync(r => true, default).ReturnsForAnyArgs(new List<SpeciesRecognitionModel>(){new SpeciesRecognitionModel(){RecordingId = Guid.NewGuid(),RecordingUploadedAt = DateTime.UtcNow}});
+
+            Get<IBirdNetResultConverter>().ConvertJson(Arg.Any<string>()).ReturnsForAnyArgs(new BirdNetOutputDto
+            {
+                Message = "success",
+                Results = new List<ClassificationResultDto>
+                {
+                    new()
+                    {
+                        Confidence = MinConfidenceLevel + 0.01,
+                        EnglishName = "ToSave"
+                    }
+                }
+            });
+
+            await TestSubject.RunAnalyzer(default);
+
+            Get<IFileSystemService>().ReceivedCalls().Where(c => c.GetMethodInfo().Name == nameof(IFileSystemService.DeleteFile)).Should().HaveCount(4);
         }
 
         [Test]

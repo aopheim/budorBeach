@@ -112,7 +112,6 @@ public class Startup
         _container.RegisterSingleton<IBirdPresenceCalculator, BirdPresenceCalculator>();
         _container.RegisterSingleton<IBirdPresenceRegistrator, BirdPresenceRegistrator>();
         _container.RegisterSingleton<IBirdNetServer, BirdNetServer>();
-        _container.RegisterSingleton<IAudioUploader, AudioUploaderService>();
         _container.RegisterSingleton<IExternalSingletonProcess, ExternalSingletonProcess>();
         _container.Register<IAudioService, AudioService.AudioService>();
         _container.Register<IRepositories, Repositories>(Lifestyle.Scoped);
@@ -123,6 +122,7 @@ public class Startup
         _container.Register<GetProximityJob>();
         _container.Register<TakeVideoJob>();
         _container.Register<StreamVideoJob>();
+        _container.Register<IAudioUploader, AudioUploaderService>();
         _container.Register<UploadAudioRecordingsJob>();
         _container.Register<UploadImagesJob>();
         _container.Register<AnalyzeAudioRecordingsJob>();
