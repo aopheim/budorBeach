@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Quartz;
 using Services.Interfaces;
 using Shared;
 using Shared.Interfaces;
@@ -12,11 +13,13 @@ using Shared.Models;
 
 namespace Services
 {
+    [DisallowConcurrentExecution]
     public class AudioUploaderService : IAudioUploader
     {
         private const int MaxNumberOfFilesToUploadInOneRun = 10;
         public const int MaxUploadsIn24Hrs = 200;
-        public const int MaxAudioRecordingsPerSpecies = 500;
+        public const int MaxAudioRecordingsPerSpecies = 20;
+        private static readonly TimeSpan TimeoutOfOneRun = TimeSpan.FromMinutes(1);
         private readonly IAzureStorageService _azureStorageService;
         private readonly IFileSystemService _fileSystemService;
         private readonly ILogger<AudioUploaderService> _logger;
@@ -43,7 +46,9 @@ namespace Services
             _isRunning = true;
             try
             {
-                await StartUploadInternal(cancellationToken);
+                var linkedToken = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken,
+                    new CancellationTokenSource(TimeoutOfOneRun).Token).Token;
+                await StartUploadInternal(linkedToken);
             }
             catch (Exception e)
             {
@@ -64,6 +69,8 @@ namespace Services
             var numberOfRecordingsUploadedLast24Hours =
                 (await _repos.SpeciesRecognitions.GetSpeciesRecognitionsUploadedSince(DateTime.UtcNow.AddHours(-24),
                     cancellationToken))?.Count() ?? 0;
+            _logger.LogInformation(
+                $"{numberOfRecordingsUploadedLast24Hours} recordings are uploaded the last 24 hours. Max {MaxUploadsIn24Hrs}");
             var recognitionsForPotentialUpload =
                 (await _repos.SpeciesRecognitions.WhereAsync(
                     srm => srm.RecordingUploadedAt == null && localRecordingIds.Contains(srm.RecordingId),
@@ -120,8 +127,9 @@ namespace Services
                 (await _repos.SpeciesRecognitions.GetUploadedRecognitionsForEBirdSpeciesId(recognition.EBirdTaxonomyId,
                     MaxAudioRecordingsPerSpecies,
                     cancellationToken)).ToList();
-            
-            if (!uploadedRecognitionsForSpecies.Any() || (recognition.Confidence > (uploadedRecognitionsForSpecies?.Min(r => r.Confidence) ?? 0))) return true;
+
+            if (!uploadedRecognitionsForSpecies.Any() || recognition.Confidence >
+                (uploadedRecognitionsForSpecies?.Min(r => r.Confidence) ?? 0)) return true;
             return false;
         }
 
