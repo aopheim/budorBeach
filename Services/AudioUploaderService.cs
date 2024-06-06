@@ -71,6 +71,12 @@ namespace Services
                     cancellationToken))?.Count() ?? 0;
             _logger.LogInformation(
                 $"{numberOfRecordingsUploadedLast24Hours} recordings are uploaded the last 24 hours. Max {MaxUploadsIn24Hrs}");
+            if (numberOfRecordingsUploadedLast24Hours >= MaxUploadsIn24Hrs)
+            {
+                _logger.LogInformation($"Max recording upload number of {MaxUploadsIn24Hrs} reached. Exiting");
+                return;
+            }
+
             var recognitionsForPotentialUpload =
                 (await _repos.SpeciesRecognitions.WhereAsync(
                     srm => srm.RecordingUploadedAt == null && localRecordingIds.Contains(srm.RecordingId),
@@ -78,6 +84,12 @@ namespace Services
 
             var recognitionsForPotentialUploadByRecordingId =
                 recognitionsForPotentialUpload.GroupBy(r => r.RecordingId).ToDictionary(g => g.Key, g => g.ToList());
+            if (!recognitionsForPotentialUploadByRecordingId.Any())
+            {
+                _logger.LogInformation("Found no recordings to check for upload. Exiting.");
+                return;
+            }
+
             _logger.LogInformation(
                 $"Found {recognitionsForPotentialUploadByRecordingId.Count} potential recordings for upload. Taking {MaxNumberOfFilesToUploadInOneRun}.");
             foreach (var (recordingId, recognitionsInRecording) in recognitionsForPotentialUploadByRecordingId.Take(

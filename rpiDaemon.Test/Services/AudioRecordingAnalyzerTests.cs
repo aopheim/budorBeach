@@ -18,7 +18,7 @@ namespace rpiDaemon.Test.Services
 {
     public class AudioRecordingAnalyzerTests : UnitTestBase<AudioRecordingRecordingAnalyzer>
     {
-        private static readonly int MaxNumberOfFilesToAnalyze = 15;
+        private static readonly int MaxNumberOfFilesToAnalyze = 100;
         private static readonly string HumanLatinName = "Homo Sapiens";
         private static readonly string HumanEnglishName = "Human";
 
@@ -158,8 +158,8 @@ namespace rpiDaemon.Test.Services
 
             await TestSubject.RunAnalyzer(default);
 
-            Get<IRepositories>().SpeciesRecognitions.Received(1)
-                .AddRangeAsync(Arg.Any<IEnumerable<SpeciesRecognitionModel>>(), default);
+            await Get<IRepositories>().SpeciesRecognitions.Received(1)
+                .AddRangeAsync(Arg.Any<IEnumerable<SpeciesRecognitionModel>>(), Arg.Any<CancellationToken>());
             var calls = Get<IRepositories>().SpeciesRecognitions.ReceivedCalls();
             var arg = calls.Single(c => c.GetMethodInfo().Name == nameof(ISpeciesRecognitionRepo.AddRangeAsync))
                 .GetArguments().First();
