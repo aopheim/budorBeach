@@ -196,9 +196,8 @@ namespace rpiDaemon.Test.Services
             await TestSubject.RunAnalyzer(default);
 
             var calls = Get<IRepositories>().SpeciesRecognitions.ReceivedCalls();
-            var arg = calls.Single(c => c.GetMethodInfo().Name == nameof(ISpeciesRecognitionRepo.AddRangeAsync))
-                .GetArguments().First();
-            (arg as List<SpeciesRecognitionModel>).Count.Should().BeLessOrEqualTo(MaxNumberOfFilesToAnalyze);
+            calls.Where(c => c.GetMethodInfo().Name == nameof(ISpeciesRecognitionRepo.AddRangeAsync)).Count()
+                .Should().Be(MaxNumberOfFilesToAnalyze);
         }
 
         [Test]
@@ -206,7 +205,9 @@ namespace rpiDaemon.Test.Services
         {
             SetupMocking();
             // Overwriting setup
-            Get<IRepositories>().SpeciesRecognitions.WhereAsync(r => true, default).ReturnsForAnyArgs(new List<SpeciesRecognitionModel>(){new SpeciesRecognitionModel(){RecordingId = Guid.NewGuid(),RecordingUploadedAt = null}});
+            Get<IRepositories>().SpeciesRecognitions.WhereAsync(r => true, default).ReturnsForAnyArgs(
+                new List<SpeciesRecognitionModel>
+                    { new SpeciesRecognitionModel { RecordingId = Guid.NewGuid(), RecordingUploadedAt = null } });
 
             Get<IBirdNetResultConverter>().ConvertJson(Arg.Any<string>()).ReturnsForAnyArgs(new BirdNetOutputDto
             {
@@ -234,7 +235,11 @@ namespace rpiDaemon.Test.Services
         public async Task IfRecordingIdAlreadyExistsInDb_AndIsUploaded_DeleteRecording()
         {
             SetupMocking();
-            Get<IRepositories>().SpeciesRecognitions.WhereAsync(r => true, default).ReturnsForAnyArgs(new List<SpeciesRecognitionModel>(){new SpeciesRecognitionModel(){RecordingId = Guid.NewGuid(),RecordingUploadedAt = DateTime.UtcNow}});
+            Get<IRepositories>().SpeciesRecognitions.WhereAsync(r => true, default).ReturnsForAnyArgs(
+                new List<SpeciesRecognitionModel>
+                {
+                    new SpeciesRecognitionModel { RecordingId = Guid.NewGuid(), RecordingUploadedAt = DateTime.UtcNow }
+                });
 
             Get<IBirdNetResultConverter>().ConvertJson(Arg.Any<string>()).ReturnsForAnyArgs(new BirdNetOutputDto
             {
@@ -251,7 +256,8 @@ namespace rpiDaemon.Test.Services
 
             await TestSubject.RunAnalyzer(default);
 
-            Get<IFileSystemService>().ReceivedCalls().Where(c => c.GetMethodInfo().Name == nameof(IFileSystemService.DeleteFile)).Should().HaveCount(4);
+            Get<IFileSystemService>().ReceivedCalls()
+                .Where(c => c.GetMethodInfo().Name == nameof(IFileSystemService.DeleteFile)).Should().HaveCount(4);
         }
 
         [Test]
@@ -311,7 +317,7 @@ namespace rpiDaemon.Test.Services
 
             var calls = Get<IRepositories>().SpeciesRecognitions.ReceivedCalls().ToList();
             calls.Where(c => c.GetMethodInfo().Name == nameof(ISpeciesRecognitionRepo.AddRangeAsync)).Should()
-                .HaveCount(1);
+                .HaveCount(4);
         }
 
         private void SetupMocking()

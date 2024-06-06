@@ -145,7 +145,7 @@ namespace Services
                     continue;
                 }
 
-                var modelsToSave = result.Results.Where(r => r.Confidence >= MinConfidenceLevel).Select(dto =>
+                var modelsToSave = result.Results?.Where(r => r.Confidence >= MinConfidenceLevel).Select(dto =>
                 {
                     var speciesId = _translator.GetTaxonomyCodeFromLatinAndEnglishName(dto.LatinName, dto.EnglishName);
                     if (allHiddenSpeciesIds.Contains(speciesId)) return null;
@@ -158,13 +158,15 @@ namespace Services
                         RecordingId = recordingIdAsGuid,
                         EBirdTaxonomyId = speciesId
                     };
-                }).Where(r => r != null);
+                }).Where(r => r != null)?.ToList() ?? new List<SpeciesRecognitionModel>();
 
-                speciesRecognitionsToAddToDb.AddRange(modelsToSave);
+
+                if (modelsToSave.Any())
+                {
+                    await _repos.SpeciesRecognitions.AddRangeAsync(modelsToSave, cancellationToken);
+                    speciesRecognitionsToAddToDb.Clear();
+                }
             }
-
-            if (speciesRecognitionsToAddToDb.Any())
-                await _repos.SpeciesRecognitions.AddRangeAsync(speciesRecognitionsToAddToDb, cancellationToken);
         }
 
         private bool BirdNetOutputContainsSensoredSpecies(BirdNetOutputDto dto)
