@@ -31,7 +31,8 @@ namespace Services
         private readonly IBirdNetResultConverter _resultConverter;
         private readonly IRpiDaemonSettingsService _rpiDaemonSettingsService;
         private readonly ISpeciesNameTranslator _translator;
-        private readonly int MaxNumberOfFilesToAnalyze = 15;
+        private readonly int MaxNumberOfFilesToAnalyze = 100;
+        private readonly TimeSpan TimeoutOfAnalyzer = TimeSpan.FromSeconds(60);
         private bool _isRunning;
 
 
@@ -62,7 +63,9 @@ namespace Services
             _isRunning = true;
             try
             {
-                await RunAnalyzerInternal(cancellationToken);
+                var linkedToken = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken,
+                    new CancellationTokenSource(TimeoutOfAnalyzer).Token).Token;
+                await RunAnalyzerInternal(linkedToken);
             }
             catch (Exception e)
             {
@@ -86,7 +89,6 @@ namespace Services
 
             var recordingIds = _fileSystemService.GetFileNamesWithoutExtensionInFolder(recordingsFolderName).ToList();
 
-            var speciesRecognitionsToAddToDb = new List<SpeciesRecognitionModel>();
             var recordingIdsToAnalyze = (recordingIds.Count > MaxNumberOfFilesToAnalyze
                 ? recordingIds.Take(
                     MaxNumberOfFilesToAnalyze)
@@ -145,7 +147,7 @@ namespace Services
                     continue;
                 }
 
-                var modelsToSave = result.Results.Where(r => r.Confidence >= MinConfidenceLevel).Select(dto =>
+                var modelsToSave = result.Results?.Where(r => r.Confidence >= MinConfidenceLevel).Select(dto =>
                 {
                     var speciesId = _translator.GetTaxonomyCodeFromLatinAndEnglishName(dto.LatinName, dto.EnglishName);
                     if (allHiddenSpeciesIds.Contains(speciesId)) return null;
@@ -158,13 +160,11 @@ namespace Services
                         RecordingId = recordingIdAsGuid,
                         EBirdTaxonomyId = speciesId
                     };
-                }).Where(r => r != null);
+                })?.Where(r => r != null)?.ToList() ?? new List<SpeciesRecognitionModel>();
 
-                speciesRecognitionsToAddToDb.AddRange(modelsToSave);
+
+                if (modelsToSave.Any()) await _repos.SpeciesRecognitions.AddRangeAsync(modelsToSave, cancellationToken);
             }
-
-            if (speciesRecognitionsToAddToDb.Any())
-                await _repos.SpeciesRecognitions.AddRangeAsync(speciesRecognitionsToAddToDb, cancellationToken);
         }
 
         private bool BirdNetOutputContainsSensoredSpecies(BirdNetOutputDto dto)

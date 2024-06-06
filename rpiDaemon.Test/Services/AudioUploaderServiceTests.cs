@@ -112,7 +112,7 @@ namespace rpiDaemon.Test.Services
             await TestSubject.StartUpload(default);
 
             await Get<IRepositories>().SpeciesRecognitions.Received(1)
-                .UpdateRangeAsync(Arg.Any<List<SpeciesRecognitionModel>>(), default);
+                .UpdateRangeAsync(Arg.Any<List<SpeciesRecognitionModel>>(), Arg.Any<CancellationToken>());
             var calls = Get<IRepositories>().SpeciesRecognitions.ReceivedCalls();
             var arg = calls.Single(c => c.GetMethodInfo().Name == nameof(ISpeciesRecognitionRepo.UpdateRangeAsync))
                 .GetArguments().First();
@@ -379,7 +379,7 @@ namespace rpiDaemon.Test.Services
             await TestSubject.StartUpload(default);
 
             await Get<IRepositories>().SpeciesRecognitions.Received(1)
-                .UpdateRangeAsync(Arg.Any<List<SpeciesRecognitionModel>>(), default);
+                .UpdateRangeAsync(Arg.Any<List<SpeciesRecognitionModel>>(), Arg.Any<CancellationToken>());
             var calls = Get<IRepositories>().SpeciesRecognitions.ReceivedCalls();
             var arg = calls.Single(c => c.GetMethodInfo().Name == nameof(ISpeciesRecognitionRepo.UpdateRangeAsync))
                 .GetArguments().First();
