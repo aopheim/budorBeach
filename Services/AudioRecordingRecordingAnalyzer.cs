@@ -6,46 +6,51 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Dtos;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Services.Interfaces;
 using Shared;
 using Shared.Interfaces;
 using Shared.Models;
-using SimpleInjector;
-using SimpleInjector.Lifestyles;
 
 namespace Services
 {
     public class AudioRecordingRecordingAnalyzer : IBirdRecordingAnalyzer
     {
         private readonly IBirdNetServer _birdNetServer;
-        private readonly Container _container;
 
         private readonly List<string> _englishNamesToExcludeFromUpload =
             new() { "human", "human vocal", "human non-vocal", "human whistle" };
+
+        private readonly IFileSystemService _fileSystemService;
 
         private readonly List<string> _latinNamesToExcludeFromUpload =
             new() { "homo sapiens" };
 
         private readonly ILogger<AudioRecordingRecordingAnalyzer> _logger;
+        private readonly IRepositories _repos;
+        private readonly IBirdNetResultConverter _resultConverter;
+        private readonly IRpiDaemonSettingsService _rpiDaemonSettingsService;
         private readonly ISpeciesNameTranslator _translator;
         private readonly int MaxNumberOfFilesToAnalyze = 15;
         private bool _isRunning;
 
 
         public AudioRecordingRecordingAnalyzer(ILogger<AudioRecordingRecordingAnalyzer> logger,
-            IBirdNetServer birdNetServer, Container container,
-            ISpeciesNameTranslator translator)
+            IBirdNetServer birdNetServer,
+            ISpeciesNameTranslator translator, IRepositories repos, IBirdNetResultConverter resultConverter,
+            IFileSystemService fileSystemService, IRpiDaemonSettingsService rpiDaemonSettingsService)
         {
             _logger = logger;
             _birdNetServer = birdNetServer;
-            _container = container;
             _translator = translator;
+            _repos = repos;
+            _resultConverter = resultConverter;
+            _fileSystemService = fileSystemService;
+            _rpiDaemonSettingsService = rpiDaemonSettingsService;
             _isRunning = false;
         }
 
-        public static double MinConfidenceLevel => 0.7;
+        public double MinConfidenceLevel { get; set; }
 
         public bool IsRunning()
         {
@@ -70,11 +75,8 @@ namespace Services
 
         private async Task RunAnalyzerInternal(CancellationToken cancellationToken)
         {
-            using var scope = AsyncScopedLifestyle.BeginScope(_container);
-            var repos = scope.GetRequiredService<IRepositories>();
-            var resultConverter = scope.GetRequiredService<IBirdNetResultConverter>();
-            var fileSystemService = scope.GetRequiredService<IFileSystemService>();
-
+            MinConfidenceLevel = (await _rpiDaemonSettingsService.GetRpiDaemonSettings(cancellationToken))
+                .SpeciesRecognitionConfidence;
             var windowsPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) +
                               @"\BudorBeach\audioRecordings\";
             var linuxPath = GlobalConstants.AudioRecordingsFolderLinux;
@@ -82,7 +84,7 @@ namespace Services
                 ? windowsPath
                 : linuxPath;
 
-            var recordingIds = fileSystemService.GetFileNamesWithoutExtensionInFolder(recordingsFolderName).ToList();
+            var recordingIds = _fileSystemService.GetFileNamesWithoutExtensionInFolder(recordingsFolderName).ToList();
 
             var speciesRecognitionsToAddToDb = new List<SpeciesRecognitionModel>();
             var recordingIdsToAnalyze = (recordingIds.Count > MaxNumberOfFilesToAnalyze
@@ -90,8 +92,10 @@ namespace Services
                     MaxNumberOfFilesToAnalyze)
                 : recordingIds).ToList();
             var allHiddenSpeciesIds =
-                (await repos.HiddenSpecies.GetAllAsync(cancellationToken)).Select(s => s.TaxonomySpeciesId);
-            _logger.LogInformation($"Found {recordingIdsToAnalyze.Count} recordings to analyze");
+                (await _repos.HiddenSpecies.GetAllAsync(cancellationToken)).Select(s => s.TaxonomySpeciesId);
+
+            _logger.LogInformation(
+                $"Found {recordingIdsToAnalyze.Count} recordings to analyze. Min confidence set to {MinConfidenceLevel}");
             foreach (var recordingId in recordingIdsToAnalyze)
             {
                 if (!Guid.TryParse(recordingId, out var recordingIdAsGuid))
@@ -101,31 +105,43 @@ namespace Services
                     continue;
                 }
 
-                if (repos.SpeciesRecognitions?.Exists(recordingIdAsGuid) ?? false)
-                    continue;
                 var filePath = recordingsFolderName + recordingId + ".wav";
+                var existingRecognitionsForRecording =
+                    (await _repos.SpeciesRecognitions.WhereAsync(r => r.RecordingId == recordingIdAsGuid,
+                        cancellationToken))?.ToList() ?? new List<SpeciesRecognitionModel>();
+                if (existingRecognitionsForRecording.Any())
+                {
+                    _logger.LogInformation($"Recording {recordingIdAsGuid} already analyzed.");
+                    if (existingRecognitionsForRecording.Any(r => r.RecordingUploadedAt != null))
+                    {
+                        _logger.LogWarning($"Recording {recordingIdAsGuid} already uploaded. Deleting recording.");
+                        _fileSystemService.DeleteFile(filePath);
+                    }
+
+                    continue;
+                }
+
                 var stopwatch = new Stopwatch();
                 stopwatch.Start();
-                var response = await
-                    _birdNetServer.PostAsync(filePath,
-                        cancellationToken);
+                var response = await _birdNetServer.PostAsync(filePath, cancellationToken);
                 stopwatch.Stop();
-                _logger.LogInformation($"Response from server in {stopwatch.ElapsedMilliseconds}ms: {response}");
+                _logger.LogInformation(
+                    $"Response from BirdNet server in {stopwatch.ElapsedMilliseconds}ms: {response}");
 
-                var result = resultConverter.ConvertJson(response);
+                var result = _resultConverter.ConvertJson(response);
                 if (!result.Results?.Any(r =>
                         r?.Confidence > MinConfidenceLevel) ?? true)
                 {
                     _logger.LogInformation(
                         $"No results with higher confidence than {MinConfidenceLevel}. Deleting recording");
-                    fileSystemService.DeleteFile(filePath);
+                    _fileSystemService.DeleteFile(filePath);
                     continue;
                 }
 
                 if (BirdNetOutputContainsSensoredSpecies(result))
                 {
                     _logger.LogInformation("Human detected in recording. Deleting.");
-                    fileSystemService.DeleteFile(filePath);
+                    _fileSystemService.DeleteFile(filePath);
                     continue;
                 }
 
@@ -138,7 +154,7 @@ namespace Services
                         Confidence = dto.Confidence,
                         EnglishName = dto.EnglishName,
                         LatinName = dto.LatinName,
-                        RecognizedAtUtc = fileSystemService.GetFileCreationTimeUtc(filePath),
+                        RecognizedAtUtc = _fileSystemService.GetFileCreationTimeUtc(filePath),
                         RecordingId = recordingIdAsGuid,
                         EBirdTaxonomyId = speciesId
                     };
@@ -148,10 +164,7 @@ namespace Services
             }
 
             if (speciesRecognitionsToAddToDb.Any())
-            {
-                await repos.SpeciesRecognitions.AddRangeAsync(speciesRecognitionsToAddToDb, cancellationToken);
-                await repos.SaveChangesAsync(cancellationToken);
-            }
+                await _repos.SpeciesRecognitions.AddRangeAsync(speciesRecognitionsToAddToDb, cancellationToken);
         }
 
         private bool BirdNetOutputContainsSensoredSpecies(BirdNetOutputDto dto)
