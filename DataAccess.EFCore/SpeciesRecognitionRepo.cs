@@ -38,7 +38,8 @@ namespace DataAccess.EFCore
             string eBirdTaxonomyId, int maxReturn, CancellationToken cancellationToken)
         {
             return (await WhereAsync(r => r.RecordingUploadedAt != null && r.EBirdTaxonomyId == eBirdTaxonomyId,
-                cancellationToken))?.Take(maxReturn) ?? new List<SpeciesRecognitionModel>();
+                       cancellationToken))?.OrderByDescending(m => m.Confidence).Take(maxReturn) ??
+                   new List<SpeciesRecognitionModel>();
         }
     }
 }

@@ -128,8 +128,19 @@ namespace Services
                     MaxAudioRecordingsPerSpecies,
                     cancellationToken)).ToList();
 
+            var minConfidenceForUpload = uploadedRecognitionsForSpecies.Any()
+                ? uploadedRecognitionsForSpecies.Min(r => r.Confidence)
+                : 0;
             if (!uploadedRecognitionsForSpecies.Any() || recognition.Confidence >
-                (uploadedRecognitionsForSpecies?.Min(r => r.Confidence) ?? 0)) return true;
+                minConfidenceForUpload)
+            {
+                _logger.LogInformation(
+                    $"Recognized {recognition.EnglishName} / {recognition.EBirdTaxonomyId} with confidence {recognition.Confidence}. Min confidence among {uploadedRecognitionsForSpecies.Count} recognitions is {minConfidenceForUpload}. Uploading.");
+                return true;
+            }
+
+            _logger.LogInformation(
+                $"Recognized {recognition.EnglishName} / {recognition.EBirdTaxonomyId} with confidence {recognition.Confidence}. Min confidence among {uploadedRecognitionsForSpecies.Count} recognitions is {minConfidenceForUpload}. Deleting recording.");
             return false;
         }
 
