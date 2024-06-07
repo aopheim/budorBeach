@@ -566,6 +566,57 @@ namespace budorWeb.Services
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2023-7-1/6-4-42.webp",
                         "https://budorbeach.blob.core.windows.net/images-thumbnails/2023-7-1/8-19-42.webp"
                     }
+                },
+                new NewsFeedEntry
+                {
+                    Id = "zn",
+                    Date = new DateTime(2024, 05, 21),
+                    Header = "Familiebyggingen er i gang",
+                    Body =
+                        "Etter diverse oppstartsproblemer har vi akkurat i tide fått kontakt med kameraet i fuglekassa igjen. Og der har det skjedd mye! Et nytt rede er bygd, og det er kommet to fine egg. Det ser igjen ut som det er svarthvit fluesnapper som har slått seg til ro i fuglekassa på Budor.",
+                    ImageUrls = new List<string>
+                    {
+                        "https://budorbeach.blob.core.windows.net/images/2024-05-21/16-21-20.jpg"
+                    }
+                },
+                new NewsFeedEntry
+                {
+                    Id = "zo",
+                    Date = new DateTime(2024, 05, 24),
+                    Header = "Nye egg",
+                    Body =
+                        "Fru Fluesnapper leverer nye egg som bestilt. Hver morgen har det kommet et nytt egg i redet. Fem egg ser det ut som det skal bli i år. Det siste egget ble lagt i dag. Etter å ha vært mye frem og tilbake, er hun nå mye mer inne og ruger på eggene.",
+                    ImageUrls = new List<string>
+                    {
+                        "https://budorbeach.blob.core.windows.net/images/2024-05-22/08-50-03.jpg",
+                        "https://budorbeach.blob.core.windows.net/images/2024-05-23/11-32-13.jpg",
+                        "https://budorbeach.blob.core.windows.net/images/2024-05-24/05-00-01.jpg",
+                        "https://budorbeach.blob.core.windows.net/images/2024-05-23/16-00-01.jpg",
+                        "https://budorbeach.blob.core.windows.net/images/2024-05-24/06-00-01.jpg"
+                    }
+                },
+                new NewsFeedEntry
+                {
+                    Id = "zp",
+                    Date = new DateTime(2024, 06, 03),
+                    Header = "Tålmodig fluesnapper-ruging",
+                    Body =
+                        "Fru Fluesnapper ligger nå hele dagen og ruger på sine fem egg. Herr Fluesnapper har vi enda ikke sett",
+                    ImageUrls = new List<string>
+                    {
+                        "https://budorbeach.blob.core.windows.net/images/2024-05-28/08-00-01.jpg",
+                        "https://budorbeach.blob.core.windows.net/images/2024-05-28/16-00-01.jpg"
+                    }
+                },
+                new NewsFeedEntry
+                {
+                    Id = "zq",
+                    Date = new DateTime(2024, 06, 07, 05, 00, 00),
+                    Header = "Klekking!",
+                    Body =
+                        "I morgentimene i dag begynte eggene å klekke. Og hvem andre enn Herr Fluesnapper kom flyvende til fødestua for å hjelpe til. Foreløpig ser det ut som det bare er to egg som er klekket, men flere vil nok klekke i løpet av dagen. Fru Fluesnapper har nå ruget i 14 dager siden hun la det siste egget. Nå er det full aktivitet med mating av baby-fluesnappere.",
+                    ImageUrls = new List<string>
+                        { "https://budorbeach.blob.core.windows.net/images/2024-06-07/03-00-01.jpg" },
                 }
             }.OrderByDescending(e => e.Date).ToList();
         }

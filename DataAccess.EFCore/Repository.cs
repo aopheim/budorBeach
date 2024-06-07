@@ -58,7 +58,7 @@ namespace DataAccess.EFCore
             await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task UpdateRange(IEnumerable<T> entities, CancellationToken cancellationToken)
+        public async Task UpdateRangeAsync(IEnumerable<T> entities, CancellationToken cancellationToken)
         {
             _context.Set<T>().UpdateRange(entities);
             await _context.SaveChangesAsync(cancellationToken);

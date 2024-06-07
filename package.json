@@ -13,6 +13,9 @@
     "docker:pull:rpidaemon": "docker pull aopheim/rpidaemon:latest --platform linux/arm64",
     "docker:pull:audiorecorderlinux": "docker pull aopheim/audiorecorderlinux --platform linux/arm64",
     "docker:pull:birdnetserver": "docker pull aopheim/birdnetserver --platform linux/arm64",
-    "docker:pull:picameraserver": "docker pull aopheim/picameraserver --platform linux/arm64"
+    "docker:pull:picameraserver": "docker pull aopheim/picameraserver --platform linux/arm64",
+	"docker:logs:rpidaemon": "sudo docker container logs budorbeach-rpidaemon-1 --tail 150 -f -t",
+	"docker:logs:birdnetserver": "sudo docker container logs budorbeach-birdnetserver-1 --tail 150 -f -t",
+	"docker:logs:audiorecorderlinux": "sudo docker container logs budorbeach-audiorecorderlinux-1 --tail 150 -f -t"
   }
 }
