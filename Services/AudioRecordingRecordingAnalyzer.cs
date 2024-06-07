@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
+using BirdSpeciesNameTranslator;
 using Dtos;
 using Microsoft.Extensions.Logging;
 using Services.Interfaces;
@@ -30,7 +31,7 @@ namespace Services
         private readonly IRepositories _repos;
         private readonly IBirdNetResultConverter _resultConverter;
         private readonly IRpiDaemonSettingsService _rpiDaemonSettingsService;
-        private readonly ISpeciesNameTranslator _translator;
+        private readonly IBirdSpeciesNameTranslator _translator;
         private readonly int MaxNumberOfFilesToAnalyze = 100;
         private readonly TimeSpan TimeoutOfAnalyzer = TimeSpan.FromSeconds(60);
         private bool _isRunning;
@@ -38,7 +39,7 @@ namespace Services
 
         public AudioRecordingRecordingAnalyzer(ILogger<AudioRecordingRecordingAnalyzer> logger,
             IBirdNetServer birdNetServer,
-            ISpeciesNameTranslator translator, IRepositories repos, IBirdNetResultConverter resultConverter,
+            IBirdSpeciesNameTranslator translator, IRepositories repos, IBirdNetResultConverter resultConverter,
             IFileSystemService fileSystemService, IRpiDaemonSettingsService rpiDaemonSettingsService)
         {
             _logger = logger;
@@ -149,7 +150,9 @@ namespace Services
 
                 var modelsToSave = result.Results?.Where(r => r.Confidence >= MinConfidenceLevel).Select(dto =>
                 {
-                    var speciesId = _translator.GetTaxonomyCodeFromLatinAndEnglishName(dto.LatinName, dto.EnglishName);
+                    var speciesId =
+                        _translator.GetTaxonomyCodeFromLatinAndEnglishName(dto.LatinName ?? "",
+                            dto.EnglishName ?? "");
                     if (allHiddenSpeciesIds.Contains(speciesId)) return null;
                     return new SpeciesRecognitionModel
                     {

@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using BirdSpeciesNameTranslator;
 using Microsoft.Extensions.Logging;
 using Services.Interfaces;
 using Shared;
@@ -18,10 +19,10 @@ public class MigrationService : IMigrationService
     private readonly IImageConverter _imageConverter;
     private readonly ILogger<MigrationService> _logger;
     private readonly IRepositories _repos;
-    private readonly ISpeciesNameTranslator _translator;
+    private readonly IBirdSpeciesNameTranslator _translator;
 
     public MigrationService(IAzureStorageService azureStorageService, ILogger<MigrationService> logger,
-        IImageConverter imageConverter, IRepositories repos, ISpeciesNameTranslator translator)
+        IImageConverter imageConverter, IRepositories repos, IBirdSpeciesNameTranslator translator)
     {
         _azureStorageService = azureStorageService;
         _logger = logger;
@@ -77,16 +78,15 @@ public class MigrationService : IMigrationService
 
     public async Task MigrateSpeciesRecognitionsToIncludeEBirdTaxonomyId(CancellationToken cancellationToken)
     {
-        var allRecognitions = (await _repos.SpeciesRecognitions.GetAllAsync(cancellationToken)).ToList();
-        _logger.LogInformation($"Found {allRecognitions.Count} recognitions to migrate");
-        foreach (var recognition in allRecognitions.Where(recognition =>
-                     recognition.EBirdTaxonomyId == null && recognition.LatinName?.Length > 0 &&
-                     recognition.EnglishName?.Length > 0))
+        var recognitionsToMigrate = (await _repos.SpeciesRecognitions.WhereAsync(recognition =>
+            recognition.EBirdTaxonomyId == null && recognition.LatinName.Length > 0 &&
+            recognition.EnglishName.Length > 0, cancellationToken)).ToList();
+        _logger.LogInformation($"Found {recognitionsToMigrate.Count} recognitions to migrate");
+        foreach (var recognition in recognitionsToMigrate)
         {
             recognition.EBirdTaxonomyId =
                 _translator.GetTaxonomyCodeFromLatinAndEnglishName(recognition.LatinName, recognition.EnglishName);
             await _repos.SpeciesRecognitions.UpdateAsync(recognition, cancellationToken);
-            await _repos.SaveChangesAsync(cancellationToken);
         }
 
         _logger.LogInformation("Migration of recognitions finished");

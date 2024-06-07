@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using BirdSpeciesNameTranslator;
 using DataAccess.EFCore;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Hosting;
@@ -33,12 +34,12 @@ namespace budorWeb.Pages
         private readonly ILogger<BudorBeachModel> _logger;
         private readonly IRepositories _repos;
         private readonly ISignalRService _signalRService;
-        private readonly ISpeciesNameTranslator _speciesTranslator;
+        private readonly IBirdSpeciesNameTranslator _speciesTranslator;
 
         public BudorBeachModel(ILogger<BudorBeachModel> logger, IConfiguration config, BudorDbContext context,
             ISignalRService signalRService,
             IRepositories repos, IAzureStorageService azureStorageService, IWebHostEnvironment environment,
-            ISpeciesNameTranslator speciesTranslator)
+            IBirdSpeciesNameTranslator speciesTranslator)
         {
             var stopWatch = new Stopwatch();
             stopWatch.Start();
@@ -84,7 +85,8 @@ namespace budorWeb.Pages
                     { Name = iu.FileName, ImageUrl = iu.FullSizeImageUrl, ThumbnailUrl = iu.ThumbnailWebPImageUrl })
                 .ToList();
 
-            var latestRecognitions = _repos.SpeciesRecognitions.GetLatestRecognitions(NumberOfLatestSpeciesRecognitions);
+            var latestRecognitions =
+                _repos.SpeciesRecognitions.GetLatestRecognitions(NumberOfLatestSpeciesRecognitions);
             LatestSpeciesRecognitions = new List<SpeciesRecognitionDto>();
             foreach (var r in latestRecognitions)
             {
