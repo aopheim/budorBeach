@@ -1,3 +1,4 @@
+using BirdSpeciesNameTranslator;
 using DataAccess.EFCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -62,11 +63,11 @@ namespace budorWeb
         private void InitializeContainer()
         {
             _container.RegisterSingleton<ISignalRService, SignalRService>();
+            _container.RegisterSingleton<IBirdSpeciesNameTranslator, SpeciesNameTranslator>();
             _container.Register<IAzureStorageService, AzureStorageService>();
             _container.Register<IMigrationService, MigrationService>();
             _container.Register<IImageConverter, ImageConverter>();
             _container.Register<IRepositories, Repositories>(Lifestyle.Scoped);
-            _container.Register<ISpeciesNameTranslator, SpeciesNameTranslator>();
             _container.Register<IRpiDaemonSettingsService, RpiDaemonSettingsService>();
         }
 

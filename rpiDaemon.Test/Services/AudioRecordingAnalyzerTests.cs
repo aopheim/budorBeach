@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using BirdSpeciesNameTranslator;
 using Dtos;
 using FluentAssertions;
 using NSubstitute;
@@ -153,7 +154,8 @@ namespace rpiDaemon.Test.Services
                     }
                 }
             });
-            Get<ISpeciesNameTranslator>().GetTaxonomyCodeFromLatinAndEnglishName(Arg.Any<string>(), Arg.Any<string>())
+            Get<IBirdSpeciesNameTranslator>()
+                .GetTaxonomyCodeFromLatinAndEnglishName(Arg.Any<string>(), Arg.Any<string>())
                 .ReturnsForAnyArgs("SpeciesId");
 
             await TestSubject.RunAnalyzer(default);
@@ -277,7 +279,7 @@ namespace rpiDaemon.Test.Services
                     }
                 }
             });
-            Get<ISpeciesNameTranslator>().GetTaxonomyCodeFromLatinAndEnglishName("HiddenSpecies", "HiddenSpecies")
+            Get<IBirdSpeciesNameTranslator>().GetTaxonomyCodeFromLatinAndEnglishName("HiddenSpecies", "HiddenSpecies")
                 .ReturnsForAnyArgs("hiddenSpecies");
             Get<IRepositories>().HiddenSpecies.GetAllAsync(default).ReturnsForAnyArgs(new List<HiddenSpeciesModel>
                 { new HiddenSpeciesModel { TaxonomySpeciesId = "hiddenSpecies" } });
@@ -308,7 +310,7 @@ namespace rpiDaemon.Test.Services
                     }
                 }
             });
-            Get<ISpeciesNameTranslator>().GetTaxonomyCodeFromLatinAndEnglishName("HiddenSpecies", "HiddenSpecies")
+            Get<IBirdSpeciesNameTranslator>().GetTaxonomyCodeFromLatinAndEnglishName("HiddenSpecies", "HiddenSpecies")
                 .ReturnsNull();
             Get<IRepositories>().HiddenSpecies.GetAllAsync(default).ReturnsForAnyArgs(new List<HiddenSpeciesModel>
                 { new HiddenSpeciesModel { TaxonomySpeciesId = "hiddenSpecies" } });
