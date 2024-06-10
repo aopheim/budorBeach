@@ -153,7 +153,13 @@ namespace Services
                     var speciesId =
                         _translator.GetTaxonomyCodeFromLatinAndEnglishName(dto.LatinName ?? "",
                             dto.EnglishName ?? "");
-                    if (allHiddenSpeciesIds.Contains(speciesId)) return null;
+                    if (allHiddenSpeciesIds.Contains(speciesId))
+                    {
+                        _logger.LogInformation(
+                            $"Recording {recordingIdAsGuid} contains hidden species id {speciesId}. Will not save recognition");
+                        return null;
+                    }
+
                     return new SpeciesRecognitionModel
                     {
                         Confidence = dto.Confidence,
@@ -165,6 +171,11 @@ namespace Services
                     };
                 })?.Where(r => r != null)?.ToList() ?? new List<SpeciesRecognitionModel>();
 
+                if (!modelsToSave.Any())
+                {
+                    _logger.LogInformation($"Found no recogntion models to save for recording {recordingIdAsGuid}");
+                    continue;
+                }
 
                 if (modelsToSave.Any()) await _repos.SpeciesRecognitions.AddRangeAsync(modelsToSave, cancellationToken);
             }
