@@ -129,6 +129,36 @@ namespace rpiDaemon.Test.Services
         }
 
         [Test]
+        public async Task IfHiddenSpeciesIsDetected_DeleteRecording_NotSaveRecognition()
+        {
+            SetupMocking();
+            Get<IBirdNetResultConverter>().ConvertJson(Arg.Any<string>()).ReturnsForAnyArgs(new BirdNetOutputDto
+            {
+                Message = "success",
+                Results = new List<ClassificationResultDto>
+                {
+                    new()
+                    {
+                        LatinName = "HiddenSpecies",
+                        Confidence = 0.8,
+                        EnglishName = "HiddenSpecies"
+                    }
+                }
+            });
+            Get<ISpeciesNameTranslator>()
+                .GetTaxonomyCodeFromLatinAndEnglishName(Arg.Is("HiddenSpecies"), Arg.Is("HiddenSpecies"))
+                .ReturnsForAnyArgs("hiddenSpeciesId");
+            Get<IRepositories>().HiddenSpecies.GetAllAsync(Arg.Any<CancellationToken>()).ReturnsForAnyArgs(
+                new List<HiddenSpeciesModel> { new HiddenSpeciesModel { TaxonomySpeciesId = "hiddenSpeciesId" } });
+
+            await TestSubject.RunAnalyzer(default);
+
+            Get<IFileSystemService>().Received(4).DeleteFile(Arg.Any<string>());
+            Get<IRepositories>().ReceivedCalls()
+                .Where(c => c.GetMethodInfo().Name == nameof(ISpeciesRecognitionRepo.AddRangeAsync)).Should().BeEmpty();
+        }
+
+        [Test]
         public async Task OnlySpeciesWithConfidenceAboveLimitShouldBeSaved()
         {
             SetupMockingWithOneFile();

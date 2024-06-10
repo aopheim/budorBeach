@@ -94,7 +94,7 @@ namespace Services
                     MaxNumberOfFilesToAnalyze)
                 : recordingIds).ToList();
             var allHiddenSpeciesIds =
-                (await _repos.HiddenSpecies.GetAllAsync(cancellationToken)).Select(s => s.TaxonomySpeciesId);
+                (await _repos.HiddenSpecies.GetAllAsync(cancellationToken)).Select(s => s.TaxonomySpeciesId).ToList();
 
             _logger.LogInformation(
                 $"Found {recordingIdsToAnalyze.Count} recordings to analyze. Min confidence set to {MinConfidenceLevel}");
@@ -140,17 +140,19 @@ namespace Services
                     continue;
                 }
 
-                if (BirdNetOutputContainsSensoredSpecies(result))
+                if (BirdNetOutputContainsSensoredSpecies(result, allHiddenSpeciesIds))
                 {
-                    _logger.LogInformation("Human detected in recording. Deleting.");
+                    _logger.LogInformation($"Sensored species detected in recording {recordingIdAsGuid}. Deleting.");
                     _fileSystemService.DeleteFile(filePath);
                     continue;
                 }
 
                 var modelsToSave = result.Results?.Where(r => r.Confidence >= MinConfidenceLevel).Select(dto =>
                 {
-                    var speciesId = _translator.GetTaxonomyCodeFromLatinAndEnglishName(dto.LatinName, dto.EnglishName);
-                    if (allHiddenSpeciesIds.Contains(speciesId)) return null;
+                    var speciesId =
+                        _translator.GetTaxonomyCodeFromLatinAndEnglishName(dto.LatinName ?? "",
+                            dto.EnglishName ?? "");
+
                     return new SpeciesRecognitionModel
                     {
                         Confidence = dto.Confidence,
@@ -160,19 +162,30 @@ namespace Services
                         RecordingId = recordingIdAsGuid,
                         EBirdTaxonomyId = speciesId
                     };
-                })?.Where(r => r != null)?.ToList() ?? new List<SpeciesRecognitionModel>();
+                })?.ToList() ?? new List<SpeciesRecognitionModel>();
 
+
+                if (!modelsToSave.Any())
+                {
+                    _logger.LogInformation(
+                        $"Found no recogntion models to save for recording {recordingIdAsGuid}. Deleting recording");
+                    _fileSystemService.DeleteFile(filePath);
+                    continue;
+                }
 
                 if (modelsToSave.Any()) await _repos.SpeciesRecognitions.AddRangeAsync(modelsToSave, cancellationToken);
             }
         }
 
-        private bool BirdNetOutputContainsSensoredSpecies(BirdNetOutputDto dto)
+        private bool BirdNetOutputContainsSensoredSpecies(BirdNetOutputDto dto, IEnumerable<string> allHiddenSpeciesIds)
         {
             return dto.Results?.Any(item =>
                        _latinNamesToExcludeFromUpload.Contains(item.LatinName?.ToLower())
                        || _englishNamesToExcludeFromUpload.Contains(item.EnglishName
-                           ?.ToLower())) ??
+                           ?.ToLower())
+                       || allHiddenSpeciesIds.Contains(
+                           _translator.GetTaxonomyCodeFromLatinAndEnglishName(item.LatinName ?? "",
+                               item.EnglishName ?? ""))) ??
                    true;
         }
     }
