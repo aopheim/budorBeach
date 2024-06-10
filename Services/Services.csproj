@@ -8,6 +8,7 @@
         <ProjectReference Include="..\CameraService\CameraService.csproj" />
         <ProjectReference Include="..\Shared\Shared.csproj" />
         <ProjectReference Include="..\Dtos\Dtos.csproj" />
+        <ProjectReference Include="..\BirdSpeciesNameTranslator\BirdSpeciesNameTranslator.csproj" />
     </ItemGroup>
     <ItemGroup>
         <FrameworkReference Include="Microsoft.AspNetCore.App" />
