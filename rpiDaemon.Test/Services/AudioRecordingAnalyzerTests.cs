@@ -146,7 +146,7 @@ namespace rpiDaemon.Test.Services
                     }
                 }
             });
-            Get<ISpeciesNameTranslator>()
+            Get<IBirdSpeciesNameTranslator>()
                 .GetTaxonomyCodeFromLatinAndEnglishName(Arg.Is("HiddenSpecies"), Arg.Is("HiddenSpecies"))
                 .ReturnsForAnyArgs("hiddenSpeciesId");
             Get<IRepositories>().HiddenSpecies.GetAllAsync(Arg.Any<CancellationToken>()).ReturnsForAnyArgs(
