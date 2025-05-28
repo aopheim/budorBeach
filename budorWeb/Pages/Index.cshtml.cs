@@ -79,8 +79,7 @@ namespace budorWeb.Pages
             _logger.LogInformation("From OnGetAsync");
             await _signalRService.ConsoleLogMessage(".NET Web Client connected!", cancellationToken);
 
-            var latestTime = _context.SensorReadings.Max(s => s.MeasuredAtUtc);
-            LatestSensorReadingModel = _context.SensorReadings.FirstOrDefault(s => s.MeasuredAtUtc == latestTime);
+            LatestSensorReadingModel = _context.SensorReadings.OrderByDescending(s => s.MeasuredAtUtc).FirstOrDefault();
             LatestImages = _repos.ImageUploads.GetLatestUploads(6).Select(iu => new ImageDto
                     { Name = iu.FileName, ImageUrl = iu.FullSizeImageUrl, ThumbnailUrl = iu.ThumbnailWebPImageUrl })
                 .ToList();
