@@ -617,6 +617,31 @@ namespace budorWeb.Services
                         "I morgentimene i dag begynte eggene å klekke. Og hvem andre enn Herr Fluesnapper kom flyvende til fødestua for å hjelpe til. Foreløpig ser det ut som det bare er to egg som er klekket, men flere vil nok klekke i løpet av dagen. Fru Fluesnapper har nå ruget i 14 dager siden hun la det siste egget. Nå er det full aktivitet med mating av baby-fluesnappere.",
                     ImageUrls = new List<string>
                         { "https://budorbeach.blob.core.windows.net/images/2024-06-07/03-00-01.jpg" },
+                }, 
+                new NewsFeedEntry()
+                {
+                    Id ="zr",
+                    Date = new DateTime(2025, 05, 01), 
+                    Header = "Ny sesong i fuglekassa",
+                    Body = "I år igjen er det innflytting i fuglekassa. På bare noen dager er det laget et fint rede",
+                    ImageUrls =  new List<string>()
+                    {
+                        "https://budorbeach.blob.core.windows.net/images/2025-05-01/07-00-01.jpg" ,
+                        "https://budorbeach.blob.core.windows.net/images/2025-05-06/09-00-01.jpg"
+                    }
+                }, new NewsFeedEntry()
+                {
+                    Id ="zs",
+                    Date = new DateTime(2025, 05, 20),
+                    Header = "Ny eggrekord",
+                    Body = "Det legges massevis av egg i fuglekassa! Det ser ut som det er 11 egg som er blitt lagt nå de siste dagene. Det ser også ut som Herr og Fru Fluesnapper ikke har kommet tilbake i år, men at det i år blir kjøttmeisbabyer som skal klekkes. ",
+                    ImageUrls = new List<string>()
+                    {
+                        "https://budorbeach.blob.core.windows.net/images/2025-05-26/08-00-01.jpg",
+                        "https://budorbeach.blob.core.windows.net/images/2025-05-26/12-00-01.jpg",
+                        "https://budorbeach.blob.core.windows.net/images/2025-05-28/12-00-01.jpg"
+                    }
+                    
                 }
             }.OrderByDescending(e => e.Date).ToList();
         }
