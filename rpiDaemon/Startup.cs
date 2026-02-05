@@ -54,6 +54,10 @@ public class Startup
                 Configuration[GlobalConstants.AppInsightsConnectionString];
             options.EnableAdaptiveSampling = false;
         });
+        
+        // Register HttpClient for CameraService
+        services.AddHttpClient<CameraService.CameraService>();
+        
         InitializeContainer();
 
         services.AddQuartz(q =>
@@ -66,9 +70,9 @@ public class Startup
             //     _environment.IsDevelopment()
             //         ? TimeSpan.FromSeconds(2)
             //         : GetBme280SensorReadingsJob.ActiveStateTriggerInterval);
-            // q.AddJobAndTrigger<TakePictureJob>(GlobalConstants.SecondJobs, GlobalConstants.PictureTrigger,
-            //     _environment.IsDevelopment() ? TimeSpan.FromSeconds(10) : TimeSpan.FromHours(1),
-            //     DateTime.UtcNow.AddSeconds(10));
+            q.AddJobAndTrigger<TakePictureJob>(GlobalConstants.SecondJobs, GlobalConstants.PictureTrigger,
+                _environment.IsDevelopment() ? TimeSpan.FromSeconds(10) : TimeSpan.FromHours(1),
+                DateTime.UtcNow.AddSeconds(10));
             q.AddJobAndTrigger<UploadImagesJob>(GlobalConstants.SecondJobs, GlobalConstants.UploadImagesTrigger,
                 TimeSpan.FromMinutes(2), DateTime.UtcNow.AddSeconds(5));
             // q.AddJobAndTrigger<TakeVideoJob>(GlobalConstants.SecondJobs, GlobalConstants.VideoRecordingTrigger,
@@ -124,6 +128,7 @@ public class Startup
         _container.Register<GetProximityJob>();
         _container.Register<TakeVideoJob>();
         _container.Register<StreamVideoJob>();
+        _container.Register<TakePictureJob>();
         _container.Register<IAudioUploader, AudioUploaderService>();
         _container.Register<UploadAudioRecordingsJob>();
         _container.Register<UploadImagesJob>();

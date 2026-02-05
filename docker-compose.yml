@@ -4,3 +4,19 @@ services:
     ports:
       - 80
     restart: unless-stopped
+  picameraserver:
+    build:
+      context: ./CameraService
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8080"
+    restart: unless-stopped
+    platform: linux/arm64
+    devices:
+      - /dev/vchiq:/dev/vchiq
+      - /dev/vcsm-cma:/dev/vcsm-cma
+    privileged: true
+    volumes:
+      - /opt/vc:/opt/vc:ro
+      - /run/dbus:/run/dbus:ro
+
