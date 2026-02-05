@@ -1,6 +1,7 @@
 using System;
 using System.Runtime.InteropServices;
 using AudioService.Interfaces;
+using BirdSpeciesNameTranslator;
 using CameraService.Interfaces;
 using DataAccess.EFCore;
 using Microsoft.AspNetCore.Builder;
@@ -113,6 +114,7 @@ public class Startup
         _container.RegisterSingleton<IBirdPresenceRegistrator, BirdPresenceRegistrator>();
         _container.RegisterSingleton<IBirdNetServer, BirdNetServer>();
         _container.RegisterSingleton<IExternalSingletonProcess, ExternalSingletonProcess>();
+        _container.RegisterSingleton<IBirdSpeciesNameTranslator, SpeciesNameTranslator>();
         _container.Register<IAudioService, AudioService.AudioService>();
         _container.Register<IRepositories, Repositories>(Lifestyle.Scoped);
 
@@ -134,7 +136,6 @@ public class Startup
         _container.Register<IExternalProcess, ExternalProcess>();
         _container.Register<IPictureService, PictureService>();
         _container.Register<IPictureEditService, PictureEditService>();
-        _container.Register<ISpeciesNameTranslator, SpeciesNameTranslator>();
         _container.Register<IQuartzNetService, QuartzNetService>();
         _container.Register<IRpiDaemonSettingsService, RpiDaemonSettingsService>();
     }

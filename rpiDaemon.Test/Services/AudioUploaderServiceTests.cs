@@ -96,7 +96,7 @@ namespace rpiDaemon.Test.Services
             var idNotToUpload = Guid.NewGuid();
             Get<IFileSystemService>().GetFileNamesWithoutExtensionInFolder(Arg.Any<string>())
                 .ReturnsForAnyArgs(new List<string> { idToUpload.ToString(), idNotToUpload.ToString() });
-            SpeciesRecognitionModel modelToUpload = new() { RecordingId = idToUpload,Confidence = 0.9};
+            SpeciesRecognitionModel modelToUpload = new() { RecordingId = idToUpload, Confidence = 0.9 };
             Get<IRepositories>().SpeciesRecognitions.WhereAsync(srm => true, default)
                 .ReturnsForAnyArgs(new List<SpeciesRecognitionModel>
                 {
@@ -118,6 +118,31 @@ namespace rpiDaemon.Test.Services
                 .GetArguments().First();
             var savedModel = arg as List<SpeciesRecognitionModel>;
             savedModel.Single().RecordingUploadedAt.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(10));
+        }
+
+        [Test]
+        public async Task WhenNotUploadingRecording_DoNotSetRecordingUploadedAtOnSpeciesRecognitionModel()
+        {
+            var idNotToUpload = Guid.NewGuid();
+            Get<IFileSystemService>().GetFileNamesWithoutExtensionInFolder(Arg.Any<string>())
+                .ReturnsForAnyArgs(new List<string> { idNotToUpload.ToString() });
+            SpeciesRecognitionModel modelToUpload = new() { RecordingId = idNotToUpload, Confidence = 0.2 };
+            Get<IRepositories>().SpeciesRecognitions.WhereAsync(srm => true, default)
+                .ReturnsForAnyArgs(new List<SpeciesRecognitionModel>
+                {
+                    modelToUpload
+                });
+            var alreadyUploadedForSpecies =
+                Fixture.CreateMany<SpeciesRecognitionModel>(100).ToList();
+            foreach (var model in alreadyUploadedForSpecies) model.Confidence = 0.9;
+            Get<IRepositories>().SpeciesRecognitions
+                .GetUploadedRecognitionsForEBirdSpeciesId(Arg.Any<string>(), 100, Arg.Any<CancellationToken>())
+                .ReturnsForAnyArgs(alreadyUploadedForSpecies);
+
+            await TestSubject.StartUpload(default);
+
+            await Get<IRepositories>().SpeciesRecognitions.Received(0)
+                .UpdateRangeAsync(Arg.Any<List<SpeciesRecognitionModel>>(), Arg.Any<CancellationToken>());
         }
 
         [Test]

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using BirdSpeciesNameTranslator;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Logging;
 using Services.Interfaces;
 using Shared;
 using Shared.Interfaces;
@@ -16,17 +16,14 @@ namespace budorWeb.Pages.Species;
 public class Species : PageModel
 {
     private readonly IAzureStorageService _azureStorageService;
-    private readonly ILogger<Species> _logger;
     private readonly IRepositories _repos;
-    private readonly ISpeciesNameTranslator _translator;
+    private readonly IBirdSpeciesNameTranslator _translator;
 
-    public Species(IRepositories repos, ISpeciesNameTranslator translator, IAzureStorageService azureStorageService,
-        ILogger<Species> logger)
+    public Species(IRepositories repos, IBirdSpeciesNameTranslator translator, IAzureStorageService azureStorageService)
     {
         _repos = repos;
         _translator = translator;
         _azureStorageService = azureStorageService;
-        _logger = logger;
     }
 
     public IEnumerable<SpeciesCountDto> AllSpeciesCount { get; set; }
