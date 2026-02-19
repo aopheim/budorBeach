@@ -11,6 +11,7 @@ using JetBrains.Annotations;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -79,7 +80,7 @@ namespace budorWeb.Pages
             _logger.LogInformation("From OnGetAsync");
             await _signalRService.ConsoleLogMessage(".NET Web Client connected!", cancellationToken);
 
-            LatestSensorReadingModel = _context.SensorReadings.OrderByDescending(s => s.MeasuredAtUtc).FirstOrDefault();
+            LatestSensorReadingModel =await  _context.SensorReadings.OrderByDescending(s => s.MeasuredAtUtc).FirstOrDefaultAsync(cancellationToken);
             LatestImages = _repos.ImageUploads.GetLatestUploads(6).Select(iu => new ImageDto
                     { Name = iu.FileName, ImageUrl = iu.FullSizeImageUrl, ThumbnailUrl = iu.ThumbnailWebPImageUrl })
                 .ToList();
@@ -87,13 +88,13 @@ namespace budorWeb.Pages
             var latestRecognitions =
                 _repos.SpeciesRecognitions.GetLatestRecognitions(NumberOfLatestSpeciesRecognitions);
             LatestSpeciesRecognitions = new List<SpeciesRecognitionDto>();
-            foreach (var r in latestRecognitions)
+            var speciesRecDtosTasks = latestRecognitions.Select(async r =>
             {
                 var fileNameWithExtension = $"{r.RecordingId}.wav";
                 var recordingExist = await _azureStorageService.ExistsAsync(
                     GlobalConstants.AudioRecordingsContainerName,
                     fileNameWithExtension, cancellationToken);
-                LatestSpeciesRecognitions.Add(new SpeciesRecognitionDto
+                return new SpeciesRecognitionDto
                 {
                     Confidence = r.Confidence,
                     RecordingUrl = recordingExist
@@ -108,8 +109,10 @@ namespace budorWeb.Pages
                     RecognizedAtUtc = r.RecognizedAtUtc,
                     ThumbnailSpeciesImageUrl =
                         "https://upload.wikimedia.org/wikipedia/commons/7/77/Ficedula_hypoleuca_G%C3%B6teborg_2.jpg"
-                });
-            }
+                };
+            });
+                
+            LatestSpeciesRecognitions = (await Task.WhenAll(speciesRecDtosTasks)).ToList();
         }
 
         public async Task<IActionResult> OnPostAsync(CancellationToken cancellationToken)
