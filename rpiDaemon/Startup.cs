@@ -54,10 +54,7 @@ public class Startup
                 Configuration[GlobalConstants.AppInsightsConnectionString];
             options.EnableAdaptiveSampling = false;
         });
-        
-        // Register HttpClient for CameraService
-        services.AddHttpClient<CameraService.CameraService>();
-        
+        services.AddHttpClient();        
         InitializeContainer();
 
         services.AddQuartz(q =>

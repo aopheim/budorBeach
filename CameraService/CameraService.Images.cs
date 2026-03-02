@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using CameraService.Interfaces;
 using Microsoft.Extensions.Logging;
 using Shared.PiCameraSettings;
+using Microsoft.Extensions.Http;
 
 namespace CameraService
 {
@@ -13,27 +14,15 @@ namespace CameraService
     {
         private readonly bool _isWindows;
         private readonly ILogger<CameraService> _logger;
-        private readonly HttpClient _httpClient;
+        private readonly IHttpClientFactory _httpClientFactory;
         private bool _cameraIsInUse;
 
-        public CameraService(ILogger<CameraService> logger, HttpClient? httpClient = null)
+        public CameraService(ILogger<CameraService> logger, IHttpClientFactory httpClientFactory)
         {
             _logger = logger;
             _isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
             _cameraIsInUse = false;
-            
-            if (httpClient != null)
-            {
-                _httpClient = httpClient;
-            }
-            else
-            {
-                _httpClient = new HttpClient
-                {
-                    Timeout = TimeSpan.FromSeconds(30),
-                    BaseAddress = new Uri(GetCameraServiceUrl())
-                };
-            }
+            _httpClientFactory = httpClientFactory;
         }
 
         private string GetCameraServiceUrl()
@@ -74,7 +63,11 @@ namespace CameraService
                     "application/json"
                 );
 
-                var response = await _httpClient.PostAsync("/takeimage", content);
+                using var httpClient = _httpClientFactory.CreateClient();
+                httpClient.Timeout = TimeSpan.FromSeconds(30);
+                httpClient.BaseAddress = new Uri(GetCameraServiceUrl());
+                
+                var response = await httpClient.PostAsync("/takeimage", content);
 
                 if (!response.IsSuccessStatusCode)
                 {

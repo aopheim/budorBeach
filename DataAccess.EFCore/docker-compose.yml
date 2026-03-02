@@ -1,0 +1,35 @@
+services:
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: budor_db_local
+    environment:
+      ACCEPT_EULA: 'Y'
+      SA_PASSWORD: 'YourStrong!Password123'
+      MSSQL_PID: Developer
+    ports:
+      - "1433:1433"
+    volumes:
+      - mssql_data:/var/opt/mssql
+    healthcheck:
+      test: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P 'YourStrong!Password123' -Q "SELECT 1" || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  azurite:
+    image: mcr.microsoft.com/azure-storage/azurite:latest
+    container_name: budor_azurite_dev
+    ports:
+      - "10000:10000"  # Blob service
+      - "10001:10001"  # Queue service
+      - "10002:10002"  # Table service
+    volumes:
+      - azurite_data:/data
+    command: azurite --blobHost 0.0.0.0 --queueHost 0.0.0.0 --tableHost 0.0.0.0
+
+volumes:
+  mssql_data:
+    driver: local
+  azurite_data:
+    driver: local

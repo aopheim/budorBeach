@@ -7,10 +7,10 @@ Værstasjon og fuglekassekamera på hytta
 - Install NodeJS. Debian distributions (compatible with Raspbian) can be found [here](https://deb.nodesource.com/)
 - Install [yarn](https://yarnpkg.com/) as a package manager by enabling corepack in NodeJS: https://yarnpkg.com/getting-started/install
 - Install [docker](https://docs.docker.com/engine/install/debian/)
+- Add the missing user secrets for local development as [described here](https://learn.microsoft.com/en-us/aspnet/core/security/app-secrets?view=aspnetcore-10.0&tabs=windows#how-the-secret-manager-tool-works)
 - Copy secrets.json from %AppData%/Microsoft/UserSecrets/7a7d43a7-4a55-45c9-b915-7c7aec6d1751 to /home/budor/.microsoft/usersecrets/7a7d43a7-4a55-45c9-b915-7c7aec6d1751
 
 # Running in Docker
-
 From the root directory, run ´yarn docker:compose:dev`or`yarn docker:compose:prod` for running in development/production mode.
 
 # Applying database migrations

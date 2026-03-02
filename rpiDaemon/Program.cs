@@ -34,7 +34,8 @@ public class Program
                         builder.AddUserSecrets<Startup>();
                         IConfiguration config = builder.Build();
                         var appConfigConnectionString = config[GlobalConstants.AppConfig];
-                        builder.AddAzureAppConfiguration(appConfigConnectionString);
+                        if((appConfigConnectionString?.Length ?? 0) > 1)
+                            builder.AddAzureAppConfiguration(appConfigConnectionString);
                     })
                     .ConfigureLogging((context, builder) =>
                     {
