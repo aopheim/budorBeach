@@ -80,7 +80,8 @@ namespace budorWeb.Pages
             _logger.LogInformation("From OnGetAsync");
             await _signalRService.ConsoleLogMessage(".NET Web Client connected!", cancellationToken);
 
-            LatestSensorReadingModel =await  _context.SensorReadings.OrderByDescending(s => s.MeasuredAtUtc).FirstOrDefaultAsync(cancellationToken);
+            LatestSensorReadingModel = await _context.SensorReadings.OrderByDescending(s => s.MeasuredAtUtc)
+                .FirstOrDefaultAsync(cancellationToken);
             LatestImages = _repos.ImageUploads.GetLatestUploads(6).Select(iu => new ImageDto
                     { Name = iu.FileName, ImageUrl = iu.FullSizeImageUrl, ThumbnailUrl = iu.ThumbnailWebPImageUrl })
                 .ToList();
@@ -91,9 +92,7 @@ namespace budorWeb.Pages
             var speciesRecDtosTasks = latestRecognitions.Select(async r =>
             {
                 var fileNameWithExtension = $"{r.RecordingId}.wav";
-                var recordingExist = await _azureStorageService.ExistsAsync(
-                    GlobalConstants.AudioRecordingsContainerName,
-                    fileNameWithExtension, cancellationToken);
+                var recordingExist = r.RecordingUploadedAt != null;
                 return new SpeciesRecognitionDto
                 {
                     Confidence = r.Confidence,
@@ -111,7 +110,7 @@ namespace budorWeb.Pages
                         "https://upload.wikimedia.org/wikipedia/commons/7/77/Ficedula_hypoleuca_G%C3%B6teborg_2.jpg"
                 };
             });
-                
+
             LatestSpeciesRecognitions = (await Task.WhenAll(speciesRecDtosTasks)).ToList();
         }
 

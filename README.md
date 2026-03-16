@@ -7,5 +7,4 @@ BudorBeach-repoet i korte trekk:
 - `rpiDaemon` er .NET-servicen som kjører på Raspberry pi-en via Docker. Den orkestrerer alt av datainnsamling: sensoravlesning, bildetaking, lydopptak, analyse av lydfiler++. Bruker Quartz.NET for å kjøre jobber periodisk, og har satt opp SQL Server for persistering. 
 - `birdNetServer` er et lite Python-api som internt kjører BirdNET-Analyzer. Eksponerer enkle endepunkt som kalles av rpiDaemon i Docker. 
 
-
 ![Skjermbilde fra budorbeach.no mars 2026. Venter i spenning på at vårfuglene kommer!](screenshot_budorweb.png)
