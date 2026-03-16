@@ -29,3 +29,7 @@ To setup a pre-commit hook for preventing secrets being committed, [follow this 
 # Debugging web app not starting
 
 Use the diagnostic tool: Diagnose and solve problems -> Diagnostic tools let you see application event logs. Useful if the web app does not start, so logs are not catched by Application Insights
+
+# Setting cron job
+Currently, taking pictures are done through a cron job run at set intervals. To see the current cronjob setting, run
+`crontab -u budor -l`. Edit the settings with `crontab -u budor -e` 
