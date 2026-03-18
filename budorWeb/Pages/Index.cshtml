@@ -1,7 +1,6 @@
 ﻿@page
-@using Microsoft.AspNetCore.Mvc.TagHelpers
-@using global::Shared.DateTimeHelpers
 @using budorWeb.Services
+@using global::Shared.DateTimeHelpers
 @model BudorBeachModel
 @{
     ViewData["Title"] = "Budor Beach";
@@ -12,74 +11,74 @@
 }
 
 <div class="container my-3">
-    <div class="row">
-        <div class="col">
-            <p>Værdata sist oppdatert</p>
-            <p id="lastUpdatedAt">@DateTimeParser.GetLocalDateTimeAsString(Model.LatestSensorReadingModel?.MeasuredAtUtc)</p>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-4">
-            <div class="text-center">
-                <i class="fa fa-thermometer-three-quarters"></i>
-                <p id="temperatureInDegreesC">@Math.Round(Model.LatestSensorReadingModel?.TemperatureInDegreesC ?? default, 1)°C</p>
-            </div>
-        </div>
-        <div class="col-sm-4">
-            <div class="text-center">
-                <i class="fa fa-humidity"></i>
-                <p id="relativeHumidityInPercent">@Math.Round(Model.LatestSensorReadingModel?.RelativeHumidityInPercent ?? default, 1)%</p>
-            </div>
-        </div>
-        <div class="col-sm-4">
-            <div class="text-center">
-                <i class="fa fa-humidity"></i>
-                <p id="pressureInhPa">@Math.Round(Model.LatestSensorReadingModel?.PressureInhPa ?? default, 1)hPa</p>
-            </div>
-        </div>
-        @* <div class="alert alert-danger" role="alert"> *@
-        @*     Det ser dessverre ut som kameraet i fuglekassa har falt ned. En fuglekassetekniker er på vei for å feste det bedre. Værdata-sensorene har dessverre også streiket i det siste. Sannsynligvis har en ledning blitt røsket ut av august-regnværet. Vi håper å få dette på beina igjen så fort som mulig. *@
-        @* </div> *@
-        @{
-            const int last12 = 12;
-            const int lastDay = 24;
-            const int lastThreeDays = 24 * 3;
-            const int lastSevenDays = 24 * 7;
-            const int lastMonth = 24 * 30;
-            const int lastThreeMonths = 24 * 30 * 3;
-            const int lastSixMonths = 24 * 30 * 6;
-            const int lastYear = 24 * 30 * 12;
-        }
-        <div class="col-sm-12 col-lg-2">
-            <select class="form-select" id="chartDropDown" aria-label="Se data fra siste...">
-                <option value="@last12" selected="selected">Siste 12 timer</option>
-                <option value="@lastDay">Siste døgn</option>
-                <option value="@lastThreeDays">Siste tre dager</option>
-                <option value="@lastSevenDays">Siste uke</option>
-                <option value="@lastMonth">Siste måned</option>
-                <option value="@lastThreeMonths">Siste 3 måneder</option>
-                <option value="@lastSixMonths">Siste 6 måneder</option>
-                <option value="@lastYear">Siste år</option>
-            </select>
-        </div>
-        <div class="row">
-            <div class="col-md-4">
-                <div class="card-body">
-                    <canvas id="tempChart"></canvas>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card-body">
-                    <canvas id="humidityChart"></canvas>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card-body">
-                    <canvas id="pressureChart"></canvas>
-                </div>
-            </div>
-        </div>
-    </div>
+    @*     <div class="row"> *@
+    @*         <div class="col"> *@
+    @*             <p>Værdata sist oppdatert</p> *@
+    @*             <p id="lastUpdatedAt">@DateTimeParser.GetLocalDateTimeAsString(Model.LatestSensorReadingModel?.MeasuredAtUtc)</p> *@
+    @*         </div> *@
+    @*     </div> *@
+    @*     <div class="row"> *@
+    @*         <div class="col-sm-4"> *@
+    @*             <div class="text-center"> *@
+    @*                 <i class="fa fa-thermometer-three-quarters"></i> *@
+    @*                 <p id="temperatureInDegreesC">@Math.Round(Model.LatestSensorReadingModel?.TemperatureInDegreesC ?? default, 1)°C</p> *@
+    @*             </div> *@
+    @*         </div> *@
+    @*         <div class="col-sm-4"> *@
+    @*             <div class="text-center"> *@
+    @*                 <i class="fa fa-humidity"></i> *@
+    @*                 <p id="relativeHumidityInPercent">@Math.Round(Model.LatestSensorReadingModel?.RelativeHumidityInPercent ?? default, 1)%</p> *@
+    @*             </div> *@
+    @*         </div> *@
+    @*         <div class="col-sm-4"> *@
+    @*             <div class="text-center"> *@
+    @*                 <i class="fa fa-humidity"></i> *@
+    @*                 <p id="pressureInhPa">@Math.Round(Model.LatestSensorReadingModel?.PressureInhPa ?? default, 1)hPa</p> *@
+    @*             </div> *@
+    @*         </div> *@
+    @*         $1$ <div class="alert alert-danger" role="alert"> #1# *@
+    @*         $1$     Det ser dessverre ut som kameraet i fuglekassa har falt ned. En fuglekassetekniker er på vei for å feste det bedre. Værdata-sensorene har dessverre også streiket i det siste. Sannsynligvis har en ledning blitt røsket ut av august-regnværet. Vi håper å få dette på beina igjen så fort som mulig. #1# *@
+    @*         $1$ </div> #1# *@
+    @*         @{ *@
+    @*             const int last12 = 12; *@
+    @*             const int lastDay = 24; *@
+    @*             const int lastThreeDays = 24 * 3; *@
+    @*             const int lastSevenDays = 24 * 7; *@
+    @*             const int lastMonth = 24 * 30; *@
+    @*             const int lastThreeMonths = 24 * 30 * 3; *@
+    @*             const int lastSixMonths = 24 * 30 * 6; *@
+    @*             const int lastYear = 24 * 30 * 12; *@
+    @*         } *@
+    @*         <div class="col-sm-12 col-lg-2"> *@
+    @*             <select class="form-select" id="chartDropDown" aria-label="Se data fra siste..."> *@
+    @*                 <option value="@last12" selected="selected">Siste 12 timer</option> *@
+    @*                 <option value="@lastDay">Siste døgn</option> *@
+    @*                 <option value="@lastThreeDays">Siste tre dager</option> *@
+    @*                 <option value="@lastSevenDays">Siste uke</option> *@
+    @*                 <option value="@lastMonth">Siste måned</option> *@
+    @*                 <option value="@lastThreeMonths">Siste 3 måneder</option> *@
+    @*                 <option value="@lastSixMonths">Siste 6 måneder</option> *@
+    @*                 <option value="@lastYear">Siste år</option> *@
+    @*             </select> *@
+    @*         </div> *@
+    @*         <div class="row"> *@
+    @*             <div class="col-md-4"> *@
+    @*                 <div class="card-body"> *@
+    @*                     <canvas id="tempChart"></canvas> *@
+    @*                 </div> *@
+    @*             </div> *@
+    @*             <div class="col-md-4"> *@
+    @*                 <div class="card-body"> *@
+    @*                     <canvas id="humidityChart"></canvas> *@
+    @*                 </div> *@
+    @*             </div> *@
+    @*             <div class="col-md-4"> *@
+    @*                 <div class="card-body"> *@
+    @*                     <canvas id="pressureChart"></canvas> *@
+    @*                 </div> *@
+    @*             </div> *@
+    @*         </div> *@
+    @*     </div> *@
 
     <div class="row">
         <div class="col-md-8">
@@ -126,12 +125,14 @@ Dette gir en oversikt over hvilke fuglearter som er observert i nærheten. Prose
                                 <p>
                                     <i class="bi "></i>@DateTimeParser.GetLocalDateTimeAsString(recognition.RecognizedAtUtc)
                                 </p>
-                                <p><i class="bi bi-bar-chart-fill"></i> @Math.Round(recognition.Confidence * 100, 0) %</p>
+                                <p><i class="bi bi-bar-chart-fill"></i> @Math.Round(recognition.Confidence * 100, 0) %
+                                </p>
                             </div>
                             <div class="col-sm-6">
                                 <p>
                                     <i class="bi bi-twitter"></i>
-                                    <a asp-page="species/index/" asp-route-id="@recognition.SpeciesId" style="color: black;">
+                                    <a asp-page="species/index/" asp-route-id="@recognition.SpeciesId"
+                                       style="color: black;">
                                         @(recognition.NorwegianSpeciesName ?? recognition.EnglishSpeciesName)
                                     </a>
                                 </p>
@@ -166,12 +167,14 @@ Dette gir en oversikt over hvilke fuglearter som er observert i nærheten. Prose
             <div id="newsfeed" class="list-group">
                 @foreach (var entry in NewsFeedService.GetNewsFeedEntries())
                 {
-                    <a class="list-group-item list-group-item-action" href="#@entry.Id">@DateTimeParser.GetLocalDateAsString(entry.Date) - @entry.Header</a>
+                    <a class="list-group-item list-group-item-action"
+                       href="#@entry.Id">@DateTimeParser.GetLocalDateAsString(entry.Date) - @entry.Header</a>
                 }
             </div>
         </div>
         <div class="col-8 overflow-auto" style="height: 70vh;">
-            <div data-bs-spy="scroll" data-bs-target="#newsfeed" data-bs-offset="0" tabindex="0" style="max-height: 700px; overflow-x: auto; overflow-y: auto; position: relative;">
+            <div data-bs-spy="scroll" data-bs-target="#newsfeed" data-bs-offset="0" tabindex="0"
+                 style="max-height: 700px; overflow-x: auto; overflow-y: auto; position: relative;">
                 @foreach (var entry in NewsFeedService.GetNewsFeedEntries())
                 {
                     var carouselControlsId = "carousel-controls" + entry.Id;
@@ -201,11 +204,13 @@ Dette gir en oversikt over hvilke fuglearter som er observert i nærheten. Prose
                                     }
                                 }
                             </div>
-                            <button class="carousel-control-prev" type="button" data-bs-target="#@carouselControlsId" data-bs-slide="prev">
+                            <button class="carousel-control-prev" type="button" data-bs-target="#@carouselControlsId"
+                                    data-bs-slide="prev">
                                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                                 <span class="visually-hidden">Previous</span>
                             </button>
-                            <button class="carousel-control-next" type="button" data-bs-target="#@carouselControlsId" data-bs-slide="next">
+                            <button class="carousel-control-next" type="button" data-bs-target="#@carouselControlsId"
+                                    data-bs-slide="next">
                                 <span class="carousel-control-next-icon" aria-hidden="true"></span>
                                 <span class="visually-hidden">Next</span>
                             </button>
@@ -223,14 +228,17 @@ Dette gir en oversikt over hvilke fuglearter som er observert i nærheten. Prose
             <div class="col-sm-6">
                 <div class="text-center">
                     <h5>ISO (0 = auto)</h5>
-                    <input type="range" asp-for="IsoSetting" id="iso-slider" value="@Model.IsoSetting" min="0" max="800" step="100" onclick="showValue('iso-slider', 'iso-slider-val')">
+                    <input type="range" asp-for="IsoSetting" id="iso-slider" value="@Model.IsoSetting" min="0" max="800"
+                           step="100" onclick="showValue('iso-slider', 'iso-slider-val')">
                     <h4 id="iso-slider-val">@Model.IsoSetting</h4>
                 </div>
             </div>
             <div class="col-sm-6">
                 <div class="text-center">
                     <h5>Lukkerhastighet (0 = auto)</h5>
-                    <input type="range" asp-for="ShutterTimeSetting" id="shutterspeed-slider" value="@Model.ShutterTimeSetting" min="0" max="6000" step="10" onclick="showValue('shutterspeed-slider', 'shutterspeed-slider-val')">
+                    <input type="range" asp-for="ShutterTimeSetting" id="shutterspeed-slider"
+                           value="@Model.ShutterTimeSetting" min="0" max="6000" step="10"
+                           onclick="showValue('shutterspeed-slider', 'shutterspeed-slider-val')">
                     <h4 id="shutterspeed-slider-val">@Model.ShutterTimeSetting</h4>
                 </div>
             </div>
@@ -241,16 +249,16 @@ Dette gir en oversikt over hvilke fuglearter som er observert i nærheten. Prose
 
 <script src="~/js/signalr/dist/browser/signalr.min.js"></script>
 <script src="~/js/webclient.js"></script>
-<script src="~/js/sensorChart.js"></script>
+@* <script src="~/js/sensorChart.js"></script> *@
 <script type="text/javascript">
     function showValue(elementId, valueElementId) {
         var val = document.getElementById(elementId).value;
         document.getElementById(valueElementId).innerHTML = val;
     }
-    
+
     // For enabling popovers
     var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
     var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
-      return new bootstrap.Popover(popoverTriggerEl, {html: true})
+        return new bootstrap.Popover(popoverTriggerEl, {html: true})
     })
 </script>
