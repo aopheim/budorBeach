@@ -3,20 +3,17 @@ services:
     image: aopheim/rpidaemon:latest
     ports:
       - 80
-    restart: unless-stopped
-  picameraserver:
-    build:
-      context: ./CameraService
-      dockerfile: Dockerfile
-    ports:
-      - "8000:8080"
-    restart: unless-stopped
-    platform: linux/arm64
-    devices:
-      - /dev/vchiq:/dev/vchiq
-      - /dev/vcsm-cma:/dev/vcsm-cma
+    restart: unless-stopped  camera:
+    image: bluenviron/mediamtx:latest
+    container_name: camera-service
     privileged: true
+    restart: unless-stopped
+    ports:
+      - "8554:8554"   # RTSP
+      - "8888:8888"   # Web (optional)
     volumes:
-      - /opt/vc:/opt/vc:ro
-      - /run/dbus:/run/dbus:ro
-
+      - ./mediamtx.yml:/mediamtx.yml
+    devices:
+      - /dev/video0
+      - /dev/media0
+      - /dev/vchiq
