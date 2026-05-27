@@ -1,0 +1,14 @@
+paths:
+  cam:
+    hls: yes
+    runOnInit: >
+      libcamera-vid
+      --inline
+      --width 1280
+      --height 720
+      --framerate 30
+      --timeout 0
+      -o - |
+      ffmpeg -i - -c:v copy -f rtsp rtsp://localhost:8554/cam
+    runOnInitRestart: yes
+    

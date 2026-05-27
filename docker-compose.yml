@@ -3,4 +3,17 @@ services:
     image: aopheim/rpidaemon:latest
     ports:
       - 80
+    restart: unless-stopped  camera:
+    image: bluenviron/mediamtx:latest
+    container_name: camera-service
+    privileged: true
     restart: unless-stopped
+    ports:
+      - "8554:8554"   # RTSP
+      - "8888:8888"   # Web (optional)
+    volumes:
+      - ./mediamtx.yml:/mediamtx.yml
+    devices:
+      - /dev/video0
+      - /dev/media0
+      - /dev/vchiq

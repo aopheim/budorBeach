@@ -10,7 +10,6 @@ using Shared.PiCameraSettings;
 
 namespace rpiDaemon.Jobs
 {
-    [Obsolete("Pictures are currently taken with a cron job, as MMALSharp will no longer work.")]
     [DisallowConcurrentExecution]
     [UsedImplicitly]
     public class TakePictureJob : IJob

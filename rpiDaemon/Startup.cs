@@ -54,6 +54,7 @@ public class Startup
                 Configuration[GlobalConstants.AppInsightsConnectionString];
             options.EnableAdaptiveSampling = false;
         });
+        services.AddHttpClient();        
         InitializeContainer();
 
         services.AddQuartz(q =>
@@ -66,9 +67,9 @@ public class Startup
             //     _environment.IsDevelopment()
             //         ? TimeSpan.FromSeconds(2)
             //         : GetBme280SensorReadingsJob.ActiveStateTriggerInterval);
-            // q.AddJobAndTrigger<TakePictureJob>(GlobalConstants.SecondJobs, GlobalConstants.PictureTrigger,
-            //     _environment.IsDevelopment() ? TimeSpan.FromSeconds(10) : TimeSpan.FromHours(1),
-            //     DateTime.UtcNow.AddSeconds(10));
+            q.AddJobAndTrigger<TakePictureJob>(GlobalConstants.SecondJobs, GlobalConstants.PictureTrigger,
+                _environment.IsDevelopment() ? TimeSpan.FromSeconds(10) : TimeSpan.FromHours(1),
+                DateTime.UtcNow.AddSeconds(10));
             q.AddJobAndTrigger<UploadImagesJob>(GlobalConstants.SecondJobs, GlobalConstants.UploadImagesTrigger,
                 TimeSpan.FromMinutes(2), DateTime.UtcNow.AddSeconds(5));
             // q.AddJobAndTrigger<TakeVideoJob>(GlobalConstants.SecondJobs, GlobalConstants.VideoRecordingTrigger,
@@ -90,6 +91,16 @@ public class Startup
             q.AddJobAndTrigger<UploadAudioRecordingsJob>(GlobalConstants.MinuteJobs,
                 GlobalConstants.UploadAudioRecordingTrigger, TimeSpan.FromMinutes(1),
                 DateTime.UtcNow.AddSeconds(35));
+            q.AddJobAndTrigger<UploadVideoRecordingsJob>(GlobalConstants.MinuteJobs,
+                "uploadVideoRecordingsTrigger", TimeSpan.FromMinutes(2),
+                DateTime.UtcNow.AddSeconds(40));
+
+            // Motion detection job scheduled daily at 06:00 local time
+            var nowLocal = DateTime.Now;
+            var next = new DateTime(nowLocal.Year, nowLocal.Month, nowLocal.Day, 6, 0, 0);
+            if (nowLocal > next) next = next.AddDays(1);
+            var nextUtc = next.ToUniversalTime();
+            q.AddJobAndTrigger<MotionDetectionJob>(GlobalConstants.DailyJobs, GlobalConstants.MotionDetectionTrigger, TimeSpan.FromDays(1), nextUtc);
         });
 
         services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
@@ -124,11 +135,14 @@ public class Startup
         _container.Register<GetProximityJob>();
         _container.Register<TakeVideoJob>();
         _container.Register<StreamVideoJob>();
+        _container.Register<TakePictureJob>();
         _container.Register<IAudioUploader, AudioUploaderService>();
         _container.Register<UploadAudioRecordingsJob>();
         _container.Register<UploadImagesJob>();
+        _container.Register<UploadVideoRecordingsJob>();
         _container.Register<AnalyzeAudioRecordingsJob>();
         _container.Register<StartVideoSurveillanceJob>();
+        _container.Register<MotionDetectionJob>();
         _container.Register<IndexImageUploadRepoJob>();
         _container.Register<IBirdNetResultConverter, BirdNetResultConverter>();
         _container.Register<IFileSystemService, FileSystemService>();

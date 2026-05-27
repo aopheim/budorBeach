@@ -9,6 +9,7 @@ public static class GlobalConstants
     public const string ImagesContainerName = "images";
     public const string ThumbnailImagesContainerName = "images-thumbnails";
     public const string AudioRecordingsContainerName = "audio-recordings";
+    public const string VideoRecordingsContainerName = "video-recordings";
     public const string RpiDaemonSettingsContainerName = "rpidaemon-settings";
 
     public const string DevelopmentUrl = "http://localhost:3000";
@@ -37,6 +38,8 @@ public static class GlobalConstants
     public const string StartVideoStreamTrigger = "startVideoStreamTrigger";
     public const string IndexImageUploadDbTrigger = "indexImageUploadDbTrigger";
 
+    public const string MotionDetectionTrigger = "motionDetectionTrigger";
+
     public const double BudorLatitude = 60.974951;
     public const double BudorLongitude = 11.285140;
 
@@ -45,6 +48,7 @@ public static class GlobalConstants
     public const string AudioRecordingsFolderWindows = @"%APPDATA%/budorBeach/audioRecordings";
     public const string ImagesFolderWindows = @"%APPDATA%/budorBeach/images";
     public const string VideoRecordingsFolderLinux = @"/home/budor/videos/";
+    public const string MotionRecordingsFolderLinux = @"/motionRecordings/";
     public const string AudioServiceFolderLinux = @"/home/budor/budorBeach/AudioService/";
     public const string BirdNetAnalyzerPathLinux = @"/home/budor/BirdNET-Analyzer/";
     public const string AudioServiceFolderWindows = @"C:\repos\budorBeach\AudioService";

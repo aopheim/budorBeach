@@ -6,6 +6,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - LD_LIBRARY_PATH=/opt/vc/lib
+      - CAMERA_SERVICE_URL=http://picameraserver:8080
     volumes:
       - /home/budor/.microsoft/usersecrets/7a7d43a7-4a55-45c9-b915-7c7aec6d1751:/root/.microsoft/usersecrets/7a7d43a7-4a55-45c9-b915-7c7aec6d1751
       - /home/budor/audioRecordings:/audioRecordings
@@ -15,13 +16,16 @@ services:
     depends_on:
       - birdnetserver
       - audiorecorderlinux
+      - picameraserver
     devices:
-      # Camera
-      - "/dev/vchiq:/dev/vchiq"
       # GPIO
       - "/sys/class/gpio:/sys/class/gpio"
     privileged: true
     platform: linux/arm64
+  picameraserver:
+    extends:
+      file: docker-compose.yml
+      service: picameraserver
   birdnetserver:
     image: aopheim/birdnetserver:latest
     ports:
@@ -40,15 +44,3 @@ services:
     volumes:
       - /home/budor/audioRecordings:/audioRecordings
     platform: linux/arm64
-  # picameraserver:
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile
-  #   volumes:
-  #     - /run/udev:/run/udev:ro
-  #   environment:
-  #     - VENV_PATH=/picameraserver
-  #   ports:
-  #     - "8000:8000"
-  #   restart: always
-  #   privileged: true

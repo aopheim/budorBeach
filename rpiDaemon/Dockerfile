@@ -23,7 +23,8 @@ FROM build AS publish
 RUN dotnet publish "rpiDaemon.csproj" -c Release -o /app/publish -r linux-arm64 --self-contained
 
 FROM base AS final
-RUN cd .. && mkdir audioRecordings && mkdir images
+RUN apt-get update && apt-get install -y ffmpeg && rm -rf /var/lib/apt/lists/*
+RUN cd .. && mkdir audioRecordings && mkdir images && mkdir motionRecordings
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "rpiDaemon.dll"]
